@@ -1,61 +1,65 @@
 import Sidebar from '@/components/Sidebar';
-import { PERSONAL_INFO, PROJECTS } from '@/constants';
+import ProjectCard from '@/components/ProjectCard';
+import { PROJECTS, PERSONAL_INFO } from '@/constants';
+import { MapPin, Mail, Phone, GraduationCap } from 'lucide-react';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen bg-white text-slate-900">
+    <main className="min-h-screen pl-20 transition-all bg-[#0f172a] text-slate-200">
       <Sidebar />
       
-      <main className="flex-1 md:ml-64">
-        <section className="px-8 py-24 bg-slate-50">
-          <div className="max-w-4xl">
-            <h2 className="text-blue-600 font-semibold mb-2">Xin chào, tôi là</h2>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
-              {PERSONAL_INFO.name}
-            </h1>
-            <p className="text-lg md:text-xl text-slate-600 leading-relaxed max-w-2xl">
-              {PERSONAL_INFO.summary}
-            </p>
+      <div className="max-w-7xl mx-auto p-8">
+        <header className="mb-12 py-10">
+          <h2 className="text-blue-500 font-mono mb-2">/ hello_world</h2>
+          <h1 className="text-6xl font-black tracking-tighter mb-4 bg-gradient-to-r from-white to-slate-500 bg-clip-text text-transparent">
+            {PERSONAL_INFO.name}
+          </h1>
+          <div className="text-slate-400 text-lg max-w-3xl leading-relaxed space-y-4">
+            <p>{PERSONAL_INFO.summary}</p>
+            <div className="flex flex-wrap gap-6 text-sm text-slate-500 font-mono">
+              <span className="flex items-center gap-2"><MapPin size={14} /> {PERSONAL_INFO.location}</span>
+              <span className="flex items-center gap-2"><Mail size={14} /> {PERSONAL_INFO.email}</span>
+              <span className="flex items-center gap-2"><Phone size={14} /> 0855576569</span>
+            </div>
           </div>
+        </header>
+
+        <section id="projects" className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {PROJECTS.map((project, idx) => (
+            <ProjectCard 
+              key={idx} 
+              project={project}
+              size={idx === 0 || project.title.includes("ChillingStories") ? 'special' : 'normal'}
+            />
+          ))}
         </section>
 
-        <section id="projects" className="px-8 py-20 max-w-6xl">
-          <h2 className="text-3xl font-bold mb-12 flex items-center gap-4">
-            Dự án cá nhân
-            <span className="h-px bg-slate-200 flex-1"></span>
-          </h2>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {PROJECTS.map((project, idx) => (
-              <div key={idx} className="group border border-slate-200 rounded-2xl p-6 hover:shadow-xl transition-all">
-                <div className="flex flex-col h-full">
-                  <h3 className="text-xl font-bold group-hover:text-blue-600 transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-slate-500 text-sm my-4 flex-1">
-                    {project.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.tech.map(t => (
-                      <span key={t} className="px-3 py-1 bg-slate-100 text-slate-600 text-[10px] font-bold uppercase rounded-md">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                  <a 
-                    href={project.link} 
-                    target="_blank"
-                    className="text-sm font-bold text-blue-600 inline-flex items-center gap-2 hover:gap-4 transition-all"
-                  >
-                    GITHUB REPO <span>→</span>
-                  </a>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div className="p-8 rounded-3xl border border-white/5 bg-gradient-to-br from-blue-600/10 to-transparent backdrop-blur-md">
+                <h4 className="text-xl font-bold mb-4 text-white">Kỹ năng chuyên môn</h4>
+                <div className="space-y-2 text-slate-400 text-sm">
+                  <p>• Android: Kotlin, Jetpack Compose, MVVM, CameraX</p>
+                  <p>• Backend: Node.js, Express, MySQL, Docker</p>
+                  <p>• Infrastructure: CI/CD GitHub Actions, Cloudflare Tunnel</p>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-      </main>
-    </div>
+            </div>
+            
+            <div className="p-8 rounded-3xl border border-white/5 bg-[#1e293b]/30 flex items-center justify-between">
+                <div>
+                    <div className="flex items-center gap-2 text-blue-500 mb-2">
+                      <GraduationCap size={20} />
+                      <span className="text-xs font-mono font-bold uppercase tracking-widest">Education</span>
+                    </div>
+                    <h4 className="text-xl font-bold mb-1 text-white">Thủy Lợi University</h4>
+                    <p className="text-slate-500 text-sm">Bachelor of IT (2022 - Present)</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] text-slate-500 font-bold uppercase mb-1">GPA</p>
+                  <div className="text-4xl font-black text-blue-500 tracking-tighter">3.17</div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </main>
   );
 }
