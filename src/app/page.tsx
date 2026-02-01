@@ -2,6 +2,7 @@ import Sidebar from '@/components/Sidebar';
 import ProjectCard from '@/components/ProjectCard';
 import { PROJECTS, PERSONAL_INFO } from '@/constants';
 import { MapPin, Mail, Phone, GraduationCap } from 'lucide-react';
+import HeroCard from '@/components/HeroCard';
 
 export default function Home() {
   return (
@@ -9,20 +10,7 @@ export default function Home() {
       <Sidebar />
       
       <div className="max-w-7xl mx-auto p-8">
-        <header className="mb-12 py-10">
-          <h2 className="text-blue-500 font-mono mb-2">/ hello_world</h2>
-          <h1 className="text-6xl font-black tracking-tighter mb-4 bg-gradient-to-r from-white to-slate-500 bg-clip-text text-transparent">
-            {PERSONAL_INFO.name}
-          </h1>
-          <div className="text-slate-400 text-lg max-w-3xl leading-relaxed space-y-4">
-            <p>{PERSONAL_INFO.summary}</p>
-            <div className="flex flex-wrap gap-6 text-sm text-slate-500 font-mono">
-              <span className="flex items-center gap-2"><MapPin size={14} /> {PERSONAL_INFO.location}</span>
-              <span className="flex items-center gap-2"><Mail size={14} /> {PERSONAL_INFO.email}</span>
-              <span className="flex items-center gap-2"><Phone size={14} /> 0855576569</span>
-            </div>
-          </div>
-        </header>
+        <HeroCard />
 
         <section id="projects" className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {PROJECTS.map((project, idx) => (
