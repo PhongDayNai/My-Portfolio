@@ -1,0 +1,37 @@
+name: Deploy Portfolio with Cloudflare Access
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Cloudflared
+        run: |
+          curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+          sudo dpkg -i cloudflared.deb
+
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          proxy_command: /usr/local/bin/cloudflared access ssh --hostname %h --service-token-id ${{ secrets.CF_CLIENT_ID }} --service-token-secret ${{ secrets.CF_CLIENT_SECRET }}
+          script: |
+            cd ~/Programming/my-portfolio
+            git pull origin main
+            
+            docker build -t portfolio-app .
+            docker stop portfolio-container || true
+            docker rm portfolio-container || true
+            docker run -d \
+              --name portfolio-container \
+              -p 2664:2664 \
+              --restart always \
+              portfolio-app
