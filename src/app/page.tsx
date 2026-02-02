@@ -6,7 +6,7 @@ import HeroCard from '@/components/HeroCard';
 
 export default function Home() {
   return (
-    <main className="min-h-screen pl-20 transition-all bg-[#0f172a] text-slate-200">
+    <main className="min-h-screen pl-20 transition-all text-slate-200">
       <Sidebar />
       
       <div className="max-w-7xl mx-auto p-8">
