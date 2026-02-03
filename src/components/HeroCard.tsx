@@ -1,6 +1,12 @@
+"use client";
 import { PERSONAL_INFO } from '@/constants';
+import { useLanguage } from '@/context/LanguageContext';
+import { translations } from '@/constants/translations';
 
 export default function HeroCard() {
+  const { lang } = useLanguage();
+  const text = translations[lang].hero;
+
   return (
     <section className="relative min-h-[600px] flex flex-col justify-center px-8 md:px-20 bg-[#030712] overflow-hidden rounded-[2.5rem] border border-white/5 mx-4 my-8">
       <div 
@@ -21,23 +27,23 @@ export default function HeroCard() {
       
       <div className="relative z-10 max-w-5xl">
         <h2 className="text-blue-500 font-mono text-sm mb-6 tracking-[0.3em] uppercase">
-          / hello_world
+          {text.hello}
         </h2>
 
         <h1 className="text-white text-7xl md:text-[6rem] font-black leading-[0.95] tracking-tighter mb-10 uppercase select-none">
-          DƯƠNG <br /> HÙNG PHONG
+          {text.firstName} <br /> {text.lastName}
         </h1>
 
         <p className="text-slate-400 text-lg md:text-xl max-w-2xl leading-relaxed mb-12">
-          {PERSONAL_INFO.summary}
+          {text.summary}
         </p>
 
         <div className="flex flex-wrap gap-5">
           <button className="bg-[#135bec] hover:bg-blue-700 text-white px-10 py-5 rounded-2xl font-bold text-sm transition-all shadow-xl shadow-blue-500/20 active:scale-95">
-            View Portfolio
+            {text.viewPortfolio}
           </button>
           <button className="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-10 py-5 rounded-2xl font-bold text-sm transition-all backdrop-blur-md active:scale-95">
-            Contact Me
+            {text.contactMe}
           </button>
         </div>
       </div>

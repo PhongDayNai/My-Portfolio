@@ -1,13 +1,18 @@
 'use client';
 import { Home, FolderCode, User, Briefcase } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/context/LanguageContext';
+import { translations } from '@/constants/translations';
 
 export default function Sidebar() {
+  const { lang } = useLanguage();
+  const text = translations[lang].nav;
+
   const menu = [
-    { name: 'Trang chủ', icon: Home, href: '#home' },
-    { name: 'Dự án', icon: FolderCode, href: '#projects' },
-    { name: 'Kinh nghiệm', icon: Briefcase, href: '#experience' },
-    { name: 'Cá nhân', icon: User, href: '#about' },
+    { name: text.home, icon: Home, href: '#home' },
+    { name: text.projects, icon: FolderCode, href: '#projects' },
+    { name: text.experience, icon: Briefcase, href: '#experience' },
+    { name: text.profile, icon: User, href: '#about' },
   ];
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {

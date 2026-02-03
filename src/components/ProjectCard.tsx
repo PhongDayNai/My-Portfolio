@@ -2,14 +2,21 @@
 import { Github } from 'lucide-react';
 import { Project } from '@/constants';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/context/LanguageContext';
+import { translations } from '@/constants/translations';
 
 interface ProjectCardProps {
   project: Project;
   size?: 'normal' | 'special';
+  idx: number;
 }
 
-export default function ProjectCard({ project, size = 'normal' }: ProjectCardProps) {
+export default function ProjectCard({ project, size = 'normal', idx }: ProjectCardProps) {
+  const { lang } = useLanguage();
   const isSpecial = size === 'special';
+  
+  const t = translations[lang].sections;
+  const projectTranslation = translations[lang].projects[idx];
 
   return (
     <motion.a
@@ -29,23 +36,21 @@ export default function ProjectCard({ project, size = 'normal' }: ProjectCardPro
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex justify-between items-start mb-4">
           <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">
-            {isSpecial ? 'Featured Project' : 'Project'}
+            {isSpecial ? t.featuredProject : t.project}
           </span>
           <div className="flex gap-3">
-            <div 
-              className="hover:text-blue-400 transition-colors"
-            >
+            <div className="hover:text-blue-400 transition-colors">
               <Github size={20} />
             </div>
           </div>
         </div>
 
-        <h3 className={`font-bold mb-3 ${isSpecial ? 'text-3xl' : 'text-xl'} text-white`}>
-          {project.title}
+        <h3 className={`font-bold mb-3 ${isSpecial ? 'text-3xl' : 'text-xl'} text-white uppercase tracking-tighter`}>
+          {projectTranslation?.title || project.title}
         </h3>
         
         <p className="text-slate-400 text-sm mb-6 flex-1 leading-relaxed">
-          {project.description}
+          {projectTranslation?.desc || project.description}
         </p>
         
         <div className="flex flex-wrap gap-2 mt-auto">

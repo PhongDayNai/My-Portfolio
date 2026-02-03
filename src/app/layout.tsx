@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Be_Vietnam_Pro } from "next/font/google";
 import SpotlightLayout from "@/components/SpotlightLayout";
 import SplashScreen from "@/components/SplashScreen";
+import { LanguageProvider } from '@/context/LanguageContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 const beVietnam = Be_Vietnam_Pro({
   subsets: ["vietnamese"],
@@ -28,9 +30,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {isLoading ? (
           <SplashScreen finishLoading={() => setIsLoading(false)} />
         ) : (
-          <SpotlightLayout>
-            {children}
-          </SpotlightLayout>
+          <LanguageProvider>
+            <SpotlightLayout>
+              <LanguageSwitcher />
+              {children}
+            </SpotlightLayout>
+          </LanguageProvider>
         )}
       </body>
     </html>
