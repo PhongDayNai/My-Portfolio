@@ -4,9 +4,11 @@ import { ExternalLink } from "lucide-react";
 import { SOCIALS } from "@/constants";
 import Magnetic from "./Magnetic";
 import { useLanguage } from '@/context/LanguageContext';
+import { translations } from '@/constants/translations';
 
 export default function SocialGrid() {
   const { lang } = useLanguage();
+  const socialTranslations = translations[lang].socials;
 
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -32,10 +34,10 @@ export default function SocialGrid() {
             </div>
             <div className="mt-4">
               <span className="block text-sm font-bold text-white uppercase tracking-tighter">
-                {social.name}
+                {socialTranslations[idx]?.name || social.name}
               </span>
               <span className="text-[10px] text-slate-500 font-mono">
-                {typeof social.desc === 'object' ? social.desc[lang] : social.desc}
+                {socialTranslations[idx]?.desc || social.desc}
               </span>
             </div>
           </motion.a>

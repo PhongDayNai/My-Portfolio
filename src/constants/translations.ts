@@ -84,6 +84,12 @@ export const translations = {
           "Tập trung nghiên cứu chuyên sâu về Android SDK và Kiến trúc hệ thống."
         ]
       }
+    ],
+    socials: [
+      { name: "GitHub", desc: "@PhongDayNai" },
+      { name: "Facebook", desc: "Phong" },
+      { name: "TikTok", desc: "Sở thích & Đời sống" },
+      { name: "Personal Server", desc: "Hệ thống Self-hosted" },
     ]
   },
   en: {
@@ -171,6 +177,12 @@ export const translations = {
           "Focused research on Android SDK and System Architecture."
         ]
       }
+    ],
+    socials: [
+      { name: "GitHub", desc: "@PhongDayNai" },
+      { name: "Facebook", desc: "Phong" },
+      { name: "TikTok", desc: "Hobby & Life" },
+      { name: "Personal Server", desc: "Self-hosted Lab" },
     ]
   }
 };
