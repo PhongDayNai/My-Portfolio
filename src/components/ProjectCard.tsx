@@ -1,5 +1,7 @@
-import { Github, ExternalLink } from 'lucide-react';
+"use client";
+import { Github } from 'lucide-react';
 import { Project } from '@/constants';
+import { motion } from 'framer-motion';
 
 interface ProjectCardProps {
   project: Project;
@@ -10,22 +12,35 @@ export default function ProjectCard({ project, size = 'normal' }: ProjectCardPro
   const isSpecial = size === 'special';
 
   return (
-    <a href={project.link} target="_blank" rel="noopener noreferrer" className={`group relative overflow-hidden rounded-3xl border border-white/5 bg-[#1e293b]/30 p-8 hover:bg-[#1e293b]/50 transition-all shadow-xl
-      ${isSpecial ? 'md:col-span-2 md:row-span-1 border-blue-500/30' : 'col-span-1'}
-    `}>
+    <motion.a
+      href={project.link} 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      whileHover={{ y: -10 }}
+      transition={{ 
+        type: "tween", 
+        duration: 0.15,
+        ease: "easeOut" 
+      }}
+      className={`group relative overflow-hidden rounded-3xl border border-white/5 bg-[#1e293b]/30 p-8 hover:bg-[#1e293b]/50 transition-all shadow-xl cursor-none
+        ${isSpecial ? 'md:col-span-2 md:row-span-1 border-blue-500/30' : 'col-span-1'}
+      `}
+    >
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex justify-between items-start mb-4">
           <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">
             {isSpecial ? 'Featured Project' : 'Project'}
           </span>
           <div className="flex gap-3">
-            <div className="hover:text-blue-400 transition-colors">
+            <div 
+              className="hover:text-blue-400 transition-colors"
+            >
               <Github size={20} />
             </div>
           </div>
         </div>
 
-        <h3 className={`font-bold mb-3 ${isSpecial ? 'text-3xl' : 'text-xl'}`}>
+        <h3 className={`font-bold mb-3 ${isSpecial ? 'text-3xl' : 'text-xl'} text-white`}>
           {project.title}
         </h3>
         
@@ -35,16 +50,17 @@ export default function ProjectCard({ project, size = 'normal' }: ProjectCardPro
         
         <div className="flex flex-wrap gap-2 mt-auto">
           {project.tech.map(t => (
-            <span key={t} className="px-3 py-1 bg-white/5 rounded-full text-[10px] text-slate-300 border border-white/5">
+            <span 
+              key={t} 
+              className="px-3 py-1 bg-white/5 rounded-full text-[10px] text-slate-300 font-mono border border-white/5"
+            >
               {t}
             </span>
           ))}
         </div>
       </div>
 
-      {isSpecial && (
-        <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-blue-600/10 blur-[100px] group-hover:bg-blue-600/20 transition-all" />
-      )}
-    </a>
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
+    </motion.a>
   );
 }
