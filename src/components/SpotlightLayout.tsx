@@ -26,7 +26,13 @@ export default function SpotlightLayout({ children }: { children: React.ReactNod
       mouseY.set(e.clientY);
 
       const target = e.target as HTMLElement;
-      const isSelectable = target.closest('button') || target.closest('a') || target.tagName === 'BUTTON' || target.tagName === 'A';
+      const isSelectable = 
+        target.tagName === 'BUTTON' || 
+        target.tagName === 'A' || 
+        target.closest('button') || 
+        target.closest('a') ||
+        target.getAttribute('role') === 'button';
+      
       setIsHovered(!!isSelectable);
     };
 
@@ -36,7 +42,6 @@ export default function SpotlightLayout({ children }: { children: React.ReactNod
 
   return (
     <>
-      {/* Lớp hiệu ứng cố định - Tách biệt hoàn toàn với Content */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <motion.div
           className="absolute hidden md:block"
@@ -55,24 +60,39 @@ export default function SpotlightLayout({ children }: { children: React.ReactNod
         />
       </div>
 
-      {/* Lớp nội dung chính - Để trôi tự nhiên trên trục Y */}
       <div className="relative z-10 min-h-screen">
         {children}
       </div>
 
-      {/* Lớp con trỏ chuột - Luôn trên cùng */}
-      <div className="fixed inset-0 pointer-events-none z-[9999]">
-        <motion.div
-          className="absolute bg-white mix-blend-difference rounded-full"
-          animate={{ width: isHovered ? 40 : 8, height: isHovered ? 40 : 8 }}
-          style={{ left: cursorX, top: cursorY, x: "-50%", y: "-50%" }}
-        />
-        <motion.div
-          className="absolute border border-white/30 rounded-full"
-          animate={{ width: isHovered ? 0 : 32, height: isHovered ? 0 : 32, opacity: isHovered ? 0 : 1 }}
-          style={{ left: cursorX, top: cursorY, x: "-50%", y: "-50%" }}
-        />
-      </div>
+      <motion.div
+        className="fixed top-0 left-0 pointer-events-none z-[9999] bg-white mix-blend-difference rounded-full"
+        animate={{
+          width: isHovered ? 40 : 10,
+          height: isHovered ? 40 : 10,
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        style={{
+          left: cursorX,
+          top: cursorY,
+          x: "-50%",
+          y: "-50%",
+        }}
+      />
+      
+      <motion.div
+        className="fixed top-0 left-0 pointer-events-none z-[9998] border border-white/20 rounded-full"
+        animate={{
+          width: isHovered ? 0 : 40,
+          height: isHovered ? 0 : 40,
+          opacity: isHovered ? 0 : 1
+        }}
+        style={{
+          left: cursorX,
+          top: cursorY,
+          x: "-50%",
+          y: "-50%",
+        }}
+      />
     </>
   );
 }
