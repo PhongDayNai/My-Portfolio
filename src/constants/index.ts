@@ -58,3 +58,44 @@ export const WORK_EXPERIENCE = [
     ]
   }
 ];
+
+export const TIMELINE_DATA = [
+  {
+    id: 1,
+    title: "Mobile App Developer",
+    organization: "ChainZ",
+    date: "12/2025 - Hiện tại",
+    status: "active",
+    description: [
+      "Phát triển các giải pháp di động trên nền tảng Flutter và Android Native.",
+      "Tối ưu hóa quy trình kết nối API và quản lý trạng thái ứng dụng.",
+      "Làm việc trong môi trường chuyên nghiệp với quy trình Scrum/Agile."
+    ],
+    type: "work"
+  },
+  {
+    id: 2,
+    title: "Full-Stack Developer (Independent)",
+    organization: "Personal Projects",
+    date: "2023 - Hiện tại",
+    status: "active",
+    description: [
+      "Vận hành hệ thống ChillingStories (Node.js/Docker/CI-CD).",
+      "Phát triển hệ thống HTEM - Smart Electronic Menu.",
+      "Tự quản lý hệ thống Home-lab và Cloudflare Tunnel cá nhân."
+    ],
+    type: "work"
+  },
+  {
+    id: 3,
+    title: "Sinh viên CNTT",
+    organization: "Đại học Thủy Lợi",
+    date: "2022 - Hiện tại",
+    status: "studying",
+    description: [
+      "GPA: 3.17/4.0.",
+      "Tập trung nghiên cứu chuyên sâu về Android SDK và Kiến trúc hệ thống."
+    ],
+    type: "education"
+  }
+];
