@@ -10,7 +10,7 @@ export default function ProjectCard({ project, size = 'normal' }: ProjectCardPro
   const isSpecial = size === 'special';
 
   return (
-    <div className={`group relative overflow-hidden rounded-3xl border border-white/5 bg-[#1e293b]/30 p-8 hover:bg-[#1e293b]/50 transition-all shadow-xl
+    <a href={project.link} target="_blank" rel="noopener noreferrer" className={`group relative overflow-hidden rounded-3xl border border-white/5 bg-[#1e293b]/30 p-8 hover:bg-[#1e293b]/50 transition-all shadow-xl
       ${isSpecial ? 'md:col-span-2 md:row-span-1 border-blue-500/30' : 'col-span-1'}
     `}>
       <div className="relative z-10 flex flex-col h-full">
@@ -19,9 +19,9 @@ export default function ProjectCard({ project, size = 'normal' }: ProjectCardPro
             {isSpecial ? 'Featured Project' : 'Project'}
           </span>
           <div className="flex gap-3">
-            <a href={project.link} target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">
+            <div className="hover:text-blue-400 transition-colors">
               <Github size={20} />
-            </a>
+            </div>
           </div>
         </div>
 
@@ -45,6 +45,6 @@ export default function ProjectCard({ project, size = 'normal' }: ProjectCardPro
       {isSpecial && (
         <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-blue-600/10 blur-[100px] group-hover:bg-blue-600/20 transition-all" />
       )}
-    </div>
+    </a>
   );
 }
