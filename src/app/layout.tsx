@@ -5,7 +5,8 @@ import { Be_Vietnam_Pro } from "next/font/google";
 import SpotlightLayout from "@/components/SpotlightLayout";
 import SplashScreen from "@/components/SplashScreen";
 import { LanguageProvider } from '@/context/LanguageContext';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import LanguageSwitcher1 from '@/components/LanguageSwitcher1';
+import LanguageSwitcher2 from '@/components/LanguageSwitcher2';
 
 const beVietnam = Be_Vietnam_Pro({
   subsets: ["vietnamese"],
@@ -32,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         ) : (
           <LanguageProvider>
             <SpotlightLayout>
-              <LanguageSwitcher />
+              <LanguageSwitcher2 />
               {children}
             </SpotlightLayout>
           </LanguageProvider>

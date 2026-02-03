@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 import { Globe } from 'lucide-react';
 
-export default function LanguageSwitcher() {
+export default function LanguageSwitcher1() {
   const { lang, setLang } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
