@@ -26,13 +26,7 @@ export default function SpotlightLayout({ children }: { children: React.ReactNod
       mouseY.set(e.clientY);
 
       const target = e.target as HTMLElement;
-      const isSelectable = 
-        target.tagName === 'BUTTON' || 
-        target.tagName === 'A' || 
-        target.closest('button') || 
-        target.closest('a') ||
-        target.getAttribute('role') === 'button';
-      
+      const isSelectable = target.closest('button') || target.closest('a') || target.tagName === 'BUTTON' || target.tagName === 'A';
       setIsHovered(!!isSelectable);
     };
 
@@ -41,54 +35,44 @@ export default function SpotlightLayout({ children }: { children: React.ReactNod
   }, [mouseX, mouseY]);
 
   return (
-    <div className="relative min-h-screen bg-[#101622] overflow-hidden">
-      <motion.div
-        className="fixed pointer-events-none z-0"
-        style={{
-          left: smoothX,
-          top: smoothY,
-          x: "-50%",
-          y: "-50%",
-          scaleX,
-          scaleY,
-          width: 150,
-          height: 150,
-          background: "radial-gradient(circle, rgba(37, 99, 235, 0.4) 0%, transparent 80%)",
-          filter: "blur(15px)",
-        }}
-      />
+    <>
+      {/* Lớp hiệu ứng cố định - Tách biệt hoàn toàn với Content */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <motion.div
+          className="absolute hidden md:block"
+          style={{
+            left: smoothX,
+            top: smoothY,
+            x: "-50%",
+            y: "-50%",
+            scaleX,
+            scaleY,
+            width: 150,
+            height: 150,
+            background: "radial-gradient(circle, rgba(37, 99, 235, 0.4) 0%, transparent 80%)",
+            filter: "blur(15px)",
+          }}
+        />
+      </div>
 
-      <motion.div
-        className="fixed pointer-events-none z-[9999] bg-white mix-blend-difference rounded-full"
-        animate={{
-          width: isHovered ? 40 : 8,
-          height: isHovered ? 40 : 8,
-        }}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        style={{
-          left: cursorX,
-          top: cursorY,
-          x: "-50%",
-          y: "-50%",
-        }}
-      />
+      {/* Lớp nội dung chính - Để trôi tự nhiên trên trục Y */}
+      <div className="relative z-10 min-h-screen">
+        {children}
+      </div>
 
-      <motion.div
-        className="fixed pointer-events-none z-[9998] border border-white/30 rounded-full"
-        animate={{
-          width: isHovered ? 0 : 32,
-          height: isHovered ? 0 : 32,
-          opacity: isHovered ? 0 : 1
-        }}
-        style={{
-          left: cursorX,
-          top: cursorY,
-          x: "-50%",
-          y: "-50%",
-        }}
-      />
-
-      <div className="relative z-10">{children}</div>
-    </div>
+      {/* Lớp con trỏ chuột - Luôn trên cùng */}
+      <div className="fixed inset-0 pointer-events-none z-[9999]">
+        <motion.div
+          className="absolute bg-white mix-blend-difference rounded-full"
+          animate={{ width: isHovered ? 40 : 8, height: isHovered ? 40 : 8 }}
+          style={{ left: cursorX, top: cursorY, x: "-50%", y: "-50%" }}
+        />
+        <motion.div
+          className="absolute border border-white/30 rounded-full"
+          animate={{ width: isHovered ? 0 : 32, height: isHovered ? 0 : 32, opacity: isHovered ? 0 : 1 }}
+          style={{ left: cursorX, top: cursorY, x: "-50%", y: "-50%" }}
+        />
+      </div>
+    </>
   );
 }

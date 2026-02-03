@@ -1,3 +1,5 @@
+import { Github, Facebook, Globe, Video } from 'lucide-react';
+
 export interface Project {
   title: string;
   description: string;
@@ -98,4 +100,35 @@ export const TIMELINE_DATA = [
     ],
     type: "education"
   }
+];
+
+export const SOCIALS = [
+  { 
+    name: "GitHub", 
+    icon: Github, 
+    link: "https://github.com/PhongDayNai", 
+    color: "hover:bg-white/10",
+    desc: "@PhongDayNai" 
+  },
+  { 
+    name: "Facebook", 
+    icon: Facebook, 
+    link: "https://www.facebook.com/phongdaynai",
+    color: "hover:bg-blue-600/20",
+    desc: "Phong"
+  },
+  { 
+    name: "TikTok", 
+    icon: Video, 
+    link: "https://www.tiktok.com/@phongdaynai",
+    color: "hover:bg-pink-600/20",
+    desc: "Hobby & Life"
+  },
+  { 
+    name: "Personal Server", 
+    icon: Globe, 
+    link: "https://portfolio.phongdaynai.id.vn",
+    color: "hover:bg-orange-500/20",
+    desc: "Self-hosted Lab"
+  },
 ];
