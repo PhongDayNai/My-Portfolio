@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import ProjectCard from '@/components/ProjectCard';
 import { PROJECTS } from '@/constants';
@@ -9,6 +10,9 @@ import ProfileCard from '@/components/ProfileCard';
 import SocialGrid from '@/components/SocialGrid';
 import SkillsCard from '@/components/SkillsCard';
 import EducationCard from '@/components/EducationCard';
+import PhotoStack from '@/components/PhotoStack';
+import PhotoSphere from '@/components/PhotoSphere';
+import SpotlightPhoto from '@/components/SpotlightPhoto';
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/constants/translations';
 
@@ -16,6 +20,19 @@ export default function Home() {
   const { lang } = useLanguage();
   const t = translations[lang].sections;
 
+  const [randomComponent, setRandomComponent] = useState<React.ReactNode>(null);
+
+  useEffect(() => {
+    const components = [
+      <PhotoStack key="stack" />,
+      <PhotoSphere key="sphere" />,
+      <SpotlightPhoto key="spotlight" />
+    ];
+
+    const randomIndex = Math.floor(Math.random() * components.length);
+    setRandomComponent(components[randomIndex]);
+  }, []);
+  
   return (
     <main className="min-h-screen pl-10 transition-all text-slate-200 bg-transparent">
       <Sidebar />
@@ -58,6 +75,8 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
             <div className="lg:col-span-2 space-y-6">
               <ProfileCard />
+              {/* <PhotoStack /> */}
+              {randomComponent}
               <SkillsCard />
               <EducationCard />
             </div>
