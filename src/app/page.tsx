@@ -34,7 +34,7 @@ export default function Home() {
   }, []);
   
   return (
-    <main className="min-h-screen pl-10 transition-all text-slate-200 bg-transparent">
+    <main className="min-h-screen pl-0 lg:pl-10 transition-all text-slate-200 bg-transparent">
       <Sidebar />
       
       <div id="home" className="max-w-7xl mx-auto p-8 space-y-32">

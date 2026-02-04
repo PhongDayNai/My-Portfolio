@@ -29,7 +29,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="fixed left-8 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
+    <aside className="hidden lg:flex fixed left-8 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
       <div className="relative flex flex-col items-center gap-10">
         
         <div className="absolute top-0 bottom-0 w-[1px] bg-white/5 z-0" />
