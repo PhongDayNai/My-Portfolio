@@ -1,12 +1,17 @@
 "use client";
 import { motion } from "framer-motion";
-import { User, MapPin, Mail } from "lucide-react";
+import { User, MapPin, Mail, Phone } from "lucide-react";
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/constants/translations';
 
 export default function ProfileCard() {
   const { lang } = useLanguage();
   const text = translations[lang].profile;
+
+  const email = "dhphong266@gmail.com";
+  const phoneNumber = "0855576569";
+  const address = text.location;
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
   return (
     <motion.div 
@@ -34,15 +39,32 @@ export default function ProfileCard() {
         {text.description}
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="flex items-center gap-3 text-slate-300 bg-white/5 p-3 rounded-2xl border border-white/5">
-          <MapPin size={18} className="text-blue-500" />
-          <span className="text-sm">{text.location}</span>
-        </div>
-        <div className="flex items-center gap-3 text-slate-300 bg-white/5 p-3 rounded-2xl border border-white/5">
-          <Mail size={18} className="text-blue-500" />
-          <span className="text-sm">dhphong266@gmail.com</span>
-        </div>
+      <div className="flex flex-wrap gap-3 pointer-events-auto">
+        <a 
+          href={googleMapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 text-slate-300 bg-white/5 p-3 px-4 rounded-2xl border border-white/5 hover:bg-blue-500/10 transition-all hover:border-blue-500/30 whitespace-nowrap"
+        >
+          <MapPin size={18} className="text-blue-500 flex-shrink-0" />
+          <span className="text-sm">{address}</span>
+        </a>
+
+        <a 
+          href={`mailto:${email}`}
+          className="flex items-center gap-3 text-slate-300 bg-white/5 p-3 px-4 rounded-2xl border border-white/5 hover:bg-blue-500/10 transition-all hover:border-blue-500/30 whitespace-nowrap"
+        >
+          <Mail size={18} className="text-blue-500 flex-shrink-0" />
+          <span className="text-sm">{email}</span>
+        </a>
+
+        <a 
+          href={`tel:${phoneNumber}`}
+          className="flex items-center gap-3 text-slate-300 bg-white/5 p-3 px-4 rounded-2xl border border-white/5 hover:bg-blue-500/10 transition-all hover:border-blue-500/30 whitespace-nowrap"
+        >
+          <Phone size={18} className="text-blue-500 flex-shrink-0" />
+          <span className="text-sm">{phoneNumber}</span>
+        </a>
       </div>
     </motion.div>
   );
