@@ -11,7 +11,7 @@ export default function ProjectSection() {
   const { lang } = useLanguage();
   const t = translations[lang].projects;
   const [activeTab, setActiveTab] = useState<"professional" | "personal">(
-    "professional",
+    "personal",
   );
 
   const [profPage, setProfPage] = useState(0);
@@ -94,7 +94,7 @@ export default function ProjectSection() {
     <motion.div layout className="space-y-10 overflow-hidden">
       <div className="flex justify-center">
         <div className="flex p-1.5 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl">
-          {(["professional", "personal"] as const).map((tab) => (
+          {(["personal", "professional"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => {
