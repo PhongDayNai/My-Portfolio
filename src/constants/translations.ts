@@ -60,9 +60,10 @@ export const translations = {
         org: "ChainZ",
         date: "12/2025 - Hiện tại",
         desc: [
-          "Phát triển các giải pháp di động trên nền tảng Flutter và Android Native.",
-          "Tối ưu hóa quy trình kết nối API và quản lý trạng thái ứng dụng.",
-          "Làm việc trong môi trường chuyên nghiệp với quy trình Scrum/Agile."
+          "Phát triển ứng dụng Android Native (Kotlin/Jetpack Compose).",
+          "Xây dựng đa dạng sản phẩm (Plantie AI, CameraGPS).",
+          "Tối ưu hóa kết nối API và quản lý trạng thái ứng dụng.",
+          "Làm việc trong quy trình Scrum/Agile chuyên nghiệp."
         ]
       },
       {
@@ -70,18 +71,23 @@ export const translations = {
         org: "Dự án cá nhân",
         date: "2023 - Hiện tại",
         desc: [
-          "Vận hành hệ thống ChillingStories (Node.js/Docker/CI-CD).",
-          "Phát triển hệ thống HTEM - Smart Electronic Menu.",
-          "Tự quản lý hệ thống Home-lab và Cloudflare Tunnel cá nhân."
+          "Xây dựng trọn gói hệ thống HTEM & ChefMate (Android, Web Admin, Backend).",
+          "Phát triển Android Native (Jetpack Compose) và quản lý trạng thái phức tạp.",
+          "Thiết kế Dashboard Admin bằng ReactJS, quản lý dữ liệu thời gian thực.",
+          "Triển khai Backend (Node.js) trên Docker với quy trình CI/CD tự động.",
+          "Quản trị Home-server cá nhân, bảo mật qua Cloudflare Tunnel."
         ]
       },
       {
-        title: "Sinh viên CNTT",
+        title: "Sinh viên Công nghệ thông tin",
         org: "Đại học Thủy Lợi",
         date: "2022 - Hiện tại",
         desc: [
-          "GPA: 3.17/4.0.",
-          "Tập trung nghiên cứu chuyên sâu về Android SDK và Kiến trúc hệ thống."
+          "GPA tích lũy: 3.17/4.0.",
+          "Làm chủ các ngôn ngữ nền tảng: C/C++, Java, Python, JavaScript.",
+          "Nghiên cứu lý thuyết về quy trình và vòng đời phát triển phần mềm.",
+          "Tự đào sâu phát triển Mobile/Web và kiến trúc hệ thống hiện đại.",
+          "Thực hành tối ưu UX và triển khai hệ thống vào dự án thực tế."
         ]
       }
     ],
@@ -153,9 +159,10 @@ export const translations = {
         org: "ChainZ",
         date: "12/2025 - Present",
         desc: [
-          "Develop mobile solutions on Flutter and Android Native platforms.",
-          "Optimize API integration processes and app state management.",
-          "Work in a professional environment with Scrum/Agile processes."
+          "Developing Android Native apps (Kotlin/Jetpack Compose).",
+          "Building diverse products (Plantie AI, CameraGPS).",
+          "Optimizing API integration and app state management.",
+          "Operating in professional Scrum/Agile workflows."
         ]
       },
       {
@@ -163,18 +170,23 @@ export const translations = {
         org: "Personal Projects",
         date: "2023 - Present",
         desc: [
-          "Operate ChillingStories system (Node.js/Docker/CI-CD).",
-          "Develop HTEM - Smart Electronic Menu system.",
-          "Self-manage Home-lab system and personal Cloudflare Tunnel."
+          "End-to-end development of HTEM & ChefMate (Android, Web Admin, Backend).",
+          "Developed Android Native (Jetpack Compose) with complex state management.",
+          "Designed ReactJS Admin Dashboards for real-time data control.",
+          "Deployed Node.js backends on Docker with automated CI/CD pipelines.",
+          "Managed personal Home-server secured via Cloudflare Tunnel."
         ]
       },
       {
-        title: "IT Student",
+        title: "Information Technology Student",
         org: "Thuy Loi University",
         date: "2022 - Present",
         desc: [
-          "GPA: 3.17/4.0.",
-          "Focused research on Android SDK and System Architecture."
+          "Academic: Maintaining a cumulative GPA of 3.17/4.0.",
+          "Core Languages: Proficient in C/C++, Java, Python, and JS.",
+          "Theory: Studying software development lifecycles and methodologies.",
+          "Self-Research: Deep-diving into Mobile/Web & system architecture.",
+          "Application: Implementing UX optimization and real-world deployment."
         ]
       }
     ],
