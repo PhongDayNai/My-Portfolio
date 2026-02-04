@@ -10,7 +10,8 @@ export const translations = {
       hello: "/ hello_world",
       firstName: "DƯƠNG",
       lastName: "HÙNG PHONG",
-      summary: "Multi-disciplinary Developer với hơn 1 năm kinh nghiệm thực chiến trong phát triển Android (Kotlin) và Full-stack.",
+      summary:
+        "Multi-disciplinary Developer với hơn 1 năm kinh nghiệm thực chiến trong phát triển Android (Kotlin) và Full-stack.",
       viewPortfolio: "Xem Portfolio",
       contactMe: "Liên hệ",
     },
@@ -27,7 +28,8 @@ export const translations = {
       tag: "About Me",
       heading: "Xây dựng giải pháp",
       subHeading: "tối ưu & sáng tạo",
-      description: "Tôi là một nhà phát triển Full-stack đam mê việc tạo ra các ứng dụng di động và hệ thống backend hiệu suất cao. Với nền tảng từ Đại học Thủy Lợi và kinh nghiệm thực chiến tại ChainZ, tôi luôn chú trọng vào trải nghiệm người dùng và tính ổn định của mã nguồn.",
+      description:
+        "Tôi là một nhà phát triển Full-stack đam mê việc tạo ra các ứng dụng di động và hệ thống backend hiệu suất cao. Với nền tảng từ Đại học Thủy Lợi và kinh nghiệm thực chiến tại ChainZ, tôi luôn chú trọng vào trải nghiệm người dùng và tính ổn định của mã nguồn.",
       location: "Khương Đình, Thanh Xuân, Hà Nội",
     },
     education: {
@@ -36,24 +38,41 @@ export const translations = {
       duration: "2022 - Hiện tại",
       gpaLabel: "GPA Hiện tại",
     },
-    projects: [
-      {
-        title: "ChillingStories - Backend & Infrastructure",
-        desc: "Phát triển hệ thống API đọc truyện và cơ sở dữ liệu với quy trình CI/CD tự động, vận hành trên Docker."
-      },
-      {
-        title: "HTEM - High-Tech Electronic Menu",
-        desc: "Hệ thống menu điện tử tích hợp Android (Jetpack Compose), ReactJS (Admin) và Node.js server."
-      },
-      {
-        title: "ChefMate - Smart Cooking Companion",
-        desc: "Nền tảng hỗ trợ nấu ăn thông minh với hệ thống tìm kiếm kép và quản lý công thức nấu ăn riêng tư."
-      },
-      {
-        title: "Plantie AI - Plant Detection",
-        desc: "Ứng dụng Android sử dụng AI để nhận diện thực vật, chẩn đoán bệnh và tư vấn chăm sóc cây qua Live Chat."
-      }
-    ],
+    projects: {
+      tabs: { professional: "Dự án Công ty", personal: "Dự án Cá nhân" },
+      professional: [
+        {
+          title: "Plantie AI - Plant Detection",
+          desc: "Hệ thống AI nhận diện thực vật và tư vấn chăm sóc qua Live Chat AI.",
+        },
+        {
+          title: "GPS Camera - Timestamp & Maps",
+          desc: "Tối ưu CameraX templates nhúng dữ liệu vị trí và môi trường thời gian thực.",
+        },
+        {
+          title: "Muslim Pro+ - Lifestyle Companion",
+          desc: "Tích hợp Sensor và Maps API xây dựng các tính năng định vị chính xác.",
+        },
+        {
+          title: "Nano Banana - Photo Editor",
+          desc: "Thiết kế UI/UX và bộ lọc xử lý ảnh hiệu suất cao bằng Jetpack Compose.",
+        },
+      ],
+      personal: [
+        {
+          title: "ChillingStories - Infrastructure",
+          desc: "Vận hành hạ tầng Server và quy trình CI/CD tự động cho hệ thống API.",
+        },
+        {
+          title: "HTEM - High-Tech Electronic Menu",
+          desc: "Xây dựng hệ sinh thái menu điện tử gồm Android App, Web Admin và Server.",
+        },
+        {
+          title: "ChefMate - Smart Cooking Companion",
+          desc: "Phát triển trợ lý nấu ăn thông minh quản lý thực đơn và công thức nấu ăn.",
+        },
+      ],
+    },
     timeline: [
       {
         title: "Lập trình viên Mobile",
@@ -63,8 +82,8 @@ export const translations = {
           "Phát triển ứng dụng Android Native (Kotlin/Jetpack Compose).",
           "Xây dựng đa dạng sản phẩm (Plantie AI, CameraGPS).",
           "Tối ưu hóa kết nối API và quản lý trạng thái ứng dụng.",
-          "Làm việc trong quy trình Scrum/Agile chuyên nghiệp."
-        ]
+          "Làm việc trong quy trình Scrum/Agile chuyên nghiệp.",
+        ],
       },
       {
         title: "Lập trình viên Full-Stack (Tự do)",
@@ -75,8 +94,8 @@ export const translations = {
           "Phát triển Android Native (Jetpack Compose) và quản lý trạng thái phức tạp.",
           "Thiết kế Dashboard Admin bằng ReactJS, quản lý dữ liệu thời gian thực.",
           "Triển khai Backend (Node.js) trên Docker với quy trình CI/CD tự động.",
-          "Quản trị Home-server cá nhân, bảo mật qua Cloudflare Tunnel."
-        ]
+          "Quản trị Home-server cá nhân, bảo mật qua Cloudflare Tunnel.",
+        ],
       },
       {
         title: "Sinh viên Công nghệ thông tin",
@@ -87,16 +106,16 @@ export const translations = {
           "Làm chủ các ngôn ngữ nền tảng: C/C++, Java, Python, JavaScript.",
           "Nghiên cứu lý thuyết về quy trình và vòng đời phát triển phần mềm.",
           "Tự đào sâu phát triển Mobile/Web và kiến trúc hệ thống hiện đại.",
-          "Thực hành tối ưu UX và triển khai hệ thống vào dự án thực tế."
-        ]
-      }
+          "Thực hành tối ưu UX và triển khai hệ thống vào dự án thực tế.",
+        ],
+      },
     ],
     socials: [
       { name: "GitHub", desc: "@PhongDayNai" },
       { name: "Facebook", desc: "Phong" },
       { name: "TikTok", desc: "Sở thích & Đời sống" },
       { name: "Personal Server", desc: "Hệ thống Self-hosted" },
-    ]
+    ],
   },
   en: {
     nav: {
@@ -109,7 +128,8 @@ export const translations = {
       hello: "/ hello_world",
       firstName: "DUONG",
       lastName: "HUNG PHONG",
-      summary: "Multi-disciplinary Developer with over 1 year of hands-on experience in Android (Kotlin) and Full-stack development.",
+      summary:
+        "Multi-disciplinary Developer with over 1 year of hands-on experience in Android (Kotlin) and Full-stack development.",
       viewPortfolio: "View Portfolio",
       contactMe: "Contact Me",
     },
@@ -126,7 +146,8 @@ export const translations = {
       tag: "About Me",
       heading: "Building solutions",
       subHeading: "optimal & creative",
-      description: "I am a Full-stack developer passionate about creating high-performance mobile applications and backend systems. With a background from Thuy Loi University and practical experience at ChainZ, I always focus on user experience and code stability.",
+      description:
+        "I am a Full-stack developer passionate about creating high-performance mobile applications and backend systems. With a background from Thuy Loi University and practical experience at ChainZ, I always focus on user experience and code stability.",
       location: "Khuong Dinh, Thanh Xuan, Hanoi",
     },
     education: {
@@ -135,24 +156,41 @@ export const translations = {
       duration: "2022 - Present",
       gpaLabel: "Current GPA",
     },
-    projects: [
-      {
-        title: "ChillingStories - Backend & Infrastructure",
-        desc: "Developing story reading API system and database with automated CI/CD process, running on Docker."
-      },
-      {
-        title: "HTEM - High-Tech Electronic Menu",
-        desc: "Electronic menu system integrating Android (Jetpack Compose), ReactJS (Admin) and Node.js server."
-      },
-      {
-        title: "ChefMate - Smart Cooking Companion",
-        desc: "Smart cooking support platform with dual search system and private recipe management."
-      },
-      {
-        title: "Plantie AI - Plant Detection",
-        desc: "Android app using AI for plant recognition, disease diagnosis, and care consultation via Live Chat."
-      }
-    ],
+    projects: {
+      tabs: { professional: "Professional Work", personal: "Personal Lab" },
+      professional: [
+        {
+          title: "Plantie AI - Plant Detection",
+          desc: "Developed an AI-powered system for plant identification, disease diagnosis, and real-time care advice via AI Live Chat.",
+        },
+        {
+          title: "GPS Camera - Timestamp & Maps",
+          desc: "Optimized professional CameraX templates to embed real-time location, maps, and environmental metadata into photos/videos.",
+        },
+        {
+          title: "Muslim Pro+ - Lifestyle Companion",
+          desc: "Integrated Sensor and Maps APIs to build precise location-based prayer alerts and halal discovery features.",
+        },
+        {
+          title: "Nano Banana - Photo Editor",
+          desc: "Designed modern UI/UX and high-performance image filtering processing using Jetpack Compose.",
+        },
+      ],
+      personal: [
+        {
+          title: "ChillingStories - Infrastructure",
+          desc: "Operating self-hosted server infrastructure and automated CI/CD pipelines for a scalable story-reading API system.",
+        },
+        {
+          title: "HTEM - High-Tech Electronic Menu",
+          desc: "Built a smart electronic menu ecosystem including Android App, ReactJS Admin Dashboard, and Node.js Server.",
+        },
+        {
+          title: "ChefMate - Smart Cooking Companion",
+          desc: "Developed a full-stack smart cooking assistant for efficient meal planning and recipe management.",
+        },
+      ],
+    },
     timeline: [
       {
         title: "Mobile App Developer",
@@ -162,8 +200,8 @@ export const translations = {
           "Developing Android Native apps (Kotlin/Jetpack Compose).",
           "Building diverse products (Plantie AI, CameraGPS).",
           "Optimizing API integration and app state management.",
-          "Operating in professional Scrum/Agile workflows."
-        ]
+          "Operating in professional Scrum/Agile workflows.",
+        ],
       },
       {
         title: "Full-Stack Developer (Independent)",
@@ -174,8 +212,8 @@ export const translations = {
           "Developed Android Native (Jetpack Compose) with complex state management.",
           "Designed ReactJS Admin Dashboards for real-time data control.",
           "Deployed Node.js backends on Docker with automated CI/CD pipelines.",
-          "Managed personal Home-server secured via Cloudflare Tunnel."
-        ]
+          "Managed personal Home-server secured via Cloudflare Tunnel.",
+        ],
       },
       {
         title: "Information Technology Student",
@@ -186,15 +224,15 @@ export const translations = {
           "Core Languages: Proficient in C/C++, Java, Python, and JS.",
           "Theory: Studying software development lifecycles and methodologies.",
           "Self-Research: Deep-diving into Mobile/Web & system architecture.",
-          "Application: Implementing UX optimization and real-world deployment."
-        ]
-      }
+          "Application: Implementing UX optimization and real-world deployment.",
+        ],
+      },
     ],
     socials: [
       { name: "GitHub", desc: "@PhongDayNai" },
       { name: "Facebook", desc: "Phong" },
       { name: "TikTok", desc: "Hobby & Life" },
       { name: "Personal Server", desc: "Self-hosted Lab" },
-    ]
-  }
+    ],
+  },
 };
