@@ -13,6 +13,7 @@ const images = [
 
 export default function SpotlightPhoto() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isReady, setIsReady] = useState(false);
   
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -26,8 +27,21 @@ export default function SpotlightPhoto() {
     mouseY.set(e.clientY - top);
   };
 
+  useEffect(() => {
+        const promises = images.map((src) => {
+          return new Promise((resolve) => {
+            const img = new Image();
+            img.src = src;
+            img.onload = resolve;
+          });
+        });
+        Promise.all(promises).then(() => setIsReady(true));
+      }, []);
+
   const next = () => setCurrentIndex((prev) => (prev + 1) % images.length);
   const prev = () => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+
+  if (!isReady) return <div className="h-[500px] flex items-center justify-center text-blue-500 font-mono">Loading...</div>;
 
   return (
     <div 

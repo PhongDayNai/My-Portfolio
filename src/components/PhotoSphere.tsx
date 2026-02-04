@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -13,10 +13,24 @@ const images = [
 
 export default function PhotoSphere() {
   const [rotation, setRotation] = useState(0);
+  const [isReady, setIsReady] = useState(false);
   const angleStep = 360 / images.length;
+
+  useEffect(() => {
+      const promises = images.map((src) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.src = src;
+          img.onload = resolve;
+        });
+      });
+      Promise.all(promises).then(() => setIsReady(true));
+    }, []);
 
   const handleNext = () => setRotation((prev) => prev - angleStep);
   const handlePrev = () => setRotation((prev) => prev + angleStep);
+
+  if (!isReady) return <div className="h-[500px] flex items-center justify-center text-blue-500 font-mono">Loading...</div>;
 
   return (
     <div className="relative w-full max-w-5xl mx-auto h-[600px] flex flex-col items-center justify-center perspective-container overflow-hidden">
