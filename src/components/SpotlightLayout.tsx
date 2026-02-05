@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { motion, useSpring, useMotionValue, useTransform, useVelocity, AnimatePresence } from "framer-motion";
+import { useIsTouchDevice } from "@/hooks/useIsMobile";
 
 export default function SpotlightLayout({ children }: { children: React.ReactNode }) {
+  const isTouchDevice = useIsTouchDevice();
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -23,6 +25,8 @@ export default function SpotlightLayout({ children }: { children: React.ReactNod
   const scaleY = useTransform(velocityY, (v) => 1 + Math.abs(v) / 1500);
 
   useEffect(() => {
+    if (isTouchDevice) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       if (
         e.clientY <= 0 || 
@@ -67,6 +71,14 @@ export default function SpotlightLayout({ children }: { children: React.ReactNod
       window.removeEventListener("mouseenter", handleMouseEnter);
     };
   }, [mouseX, mouseY]);
+
+  if (isTouchDevice) {
+    return (
+      <div className="relative min-h-screen bg-[#101622]">
+        {children}
+      </div>
+    );
+  }
 
   return (
     <>
