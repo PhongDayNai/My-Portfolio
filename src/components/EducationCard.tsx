@@ -1,8 +1,8 @@
 "use client";
-import { GraduationCap } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
-import { translations } from '@/constants/translations';
-import { motion } from 'framer-motion';
+import { GraduationCap } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+import { translations } from "@/constants/translations";
+import { motion } from "framer-motion";
 
 export default function EducationCard() {
   const { lang } = useLanguage();
@@ -10,7 +10,7 @@ export default function EducationCard() {
   const sect = translations[lang].sections;
 
   return (
-    <motion.div 
+    <motion.div
       whileHover={{ y: -10 }}
       transition={{ type: "tween", duration: 0.15, ease: "easeOut" }}
       className="p-8 rounded-3xl border border-white/5 bg-[#1e293b]/30 flex items-center justify-between cursor-none"
@@ -22,9 +22,7 @@ export default function EducationCard() {
             {sect.education}
           </span>
         </div>
-        <h4 className="text-xl font-bold mb-1 text-white">
-          {edu.university}
-        </h4>
+        <h4 className="text-xl font-bold mb-1 text-white">{edu.university}</h4>
         <p className="text-slate-500 text-sm">
           {edu.degree} ({edu.duration})
         </p>
@@ -33,7 +31,9 @@ export default function EducationCard() {
         <p className="text-[10px] text-slate-500 font-bold uppercase mb-1">
           {sect.gpa}
         </p>
-        <div className="text-4xl font-black text-blue-500 tracking-tighter">3.17</div>
+        <div className="text-4xl font-black text-blue-500 tracking-tighter">
+          3.2
+        </div>
       </div>
     </motion.div>
   );

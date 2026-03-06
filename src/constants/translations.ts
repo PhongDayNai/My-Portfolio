@@ -102,7 +102,7 @@ export const translations = {
         org: "Đại học Thủy Lợi",
         date: "2022 - Hiện tại",
         desc: [
-          "GPA tích lũy: 3.17/4.0.",
+          "GPA tích lũy: 3.2/4.0.",
           "Làm chủ các ngôn ngữ nền tảng: C/C++, Java, Python, JavaScript.",
           "Nghiên cứu lý thuyết về quy trình và vòng đời phát triển phần mềm.",
           "Tự đào sâu phát triển Mobile/Web và kiến trúc hệ thống hiện đại.",
@@ -220,7 +220,7 @@ export const translations = {
         org: "Thuy Loi University",
         date: "2022 - Present",
         desc: [
-          "Academic: Maintaining a cumulative GPA of 3.17/4.0.",
+          "Academic: Maintaining a cumulative GPA of 3.2/4.0.",
           "Core Languages: Proficient in C/C++, Java, Python, and JS.",
           "Theory: Studying software development lifecycles and methodologies.",
           "Self-Research: Deep-diving into Mobile/Web & system architecture.",
