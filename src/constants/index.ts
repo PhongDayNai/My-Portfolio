@@ -132,7 +132,7 @@ export const TIMELINE_DATA = [
     date: "2022 - Hiện tại",
     status: "studying",
     description: [
-      "GPA: 3.17/4.0.",
+      "GPA:2/4.0.",
       "Tập trung nghiên cứu chuyên sâu về Android SDK và Kiến trúc hệ thống.",
     ],
     type: "education",
