@@ -1,16 +1,19 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
-import { motion, useSpring, useMotionValue, useTransform, useVelocity, AnimatePresence } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { motion, useSpring, useMotionValue, useTransform, useVelocity } from "framer-motion";
 import { useIsTouchDevice } from "@/hooks/useIsMobile";
 
 export default function SpotlightLayout({ children }: { children: React.ReactNode }) {
   const isTouchDevice = useIsTouchDevice();
-  const [isHovered, setIsHovered] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+
+  const spotlightRef = useRef<HTMLDivElement>(null);
+  const innerCursorRef = useRef<HTMLDivElement>(null);
+  const outerCursorRef = useRef<HTMLDivElement>(null);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
+  // Restore original spring configuration to keep the visible trailing/chasing animation
   const springConfig = { damping: 30, stiffness: 200 };
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
@@ -24,53 +27,126 @@ export default function SpotlightLayout({ children }: { children: React.ReactNod
   const scaleX = useTransform(velocityX, (v) => 1 + Math.abs(v) / 1500);
   const scaleY = useTransform(velocityY, (v) => 1 + Math.abs(v) / 1500);
 
+  // Storing states locally to prevent duplicate DOM write operations
+  const state = useRef({
+    isVisible: false,
+    isHovered: false,
+  });
+
   useEffect(() => {
     if (isTouchDevice) return;
 
+    const spotlight = spotlightRef.current;
+    const innerCursor = innerCursorRef.current;
+    const outerCursor = outerCursorRef.current;
+
+    if (!spotlight || !innerCursor || !outerCursor) return;
+
+    const setVisible = (visible: boolean) => {
+      if (state.current.isVisible === visible) return;
+      state.current.isVisible = visible;
+
+      spotlight.style.opacity = visible ? "1" : "0";
+      innerCursor.style.backgroundColor = visible ? "rgb(255, 255, 255)" : "rgb(0, 0, 0)";
+      outerCursor.style.borderColor = visible ? "rgba(255, 255, 255, 0.2)" : "rgba(255, 255, 255, 0)";
+    };
+
+    const setHovered = (hovered: boolean) => {
+      if (state.current.isHovered === hovered) return;
+      state.current.isHovered = hovered;
+
+      innerCursor.style.width = hovered ? "40px" : "10px";
+      innerCursor.style.height = hovered ? "40px" : "10px";
+      innerCursor.style.marginLeft = hovered ? "-20px" : "-5px";
+      innerCursor.style.marginTop = hovered ? "-20px" : "-5px";
+
+      outerCursor.style.width = hovered ? "0px" : "40px";
+      outerCursor.style.height = hovered ? "0px" : "40px";
+      outerCursor.style.marginLeft = hovered ? "0px" : "-20px";
+      outerCursor.style.marginTop = hovered ? "0px" : "-20px";
+    };
+
+    // Tracking variables for event throttling & target caching
+    const latestMouse = {
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+      target: null as HTMLElement | null,
+      isVisible: false,
+    };
+
+    let updateScheduled = false;
+    let lastTarget: HTMLElement | null = null;
+    let rafId: number | null = null;
+
+    const checkHover = (target: HTMLElement) => {
+      if (target === lastTarget) return;
+      lastTarget = target;
+
+      // Combined single query to prevent multiple DOM tree traversals
+      const isSelectable = !!target.closest("button, a, [role='button']");
+      setHovered(isSelectable);
+    };
+
+    const updateMousePosition = () => {
+      updateScheduled = false;
+      rafId = null;
+
+      const { x, y, target, isVisible } = latestMouse;
+
+      setVisible(isVisible);
+
+      if (isVisible) {
+        mouseX.set(x);
+        mouseY.set(y);
+
+        if (target) {
+          checkHover(target);
+        }
+      }
+    };
+
     const handleMouseMove = (e: MouseEvent) => {
-      if (
-        e.clientY <= 0 || 
-        e.clientX <= 0 || 
-        e.clientX >= window.innerWidth || 
-        e.clientY >= window.innerHeight
-      ) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
+      const x = e.clientX;
+      const y = e.clientY;
 
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
+      const isVisible = !(y <= 0 || x <= 0 || x >= window.innerWidth || y >= window.innerHeight);
 
-      const target = e.target as HTMLElement;
-      const isSelectable = 
-        target.tagName === 'BUTTON' || 
-        target.tagName === 'A' || 
-        target.closest('button') || 
-        target.closest('a') ||
-        target.getAttribute('role') === 'button';
-      
-      setIsHovered(!!isSelectable);
-    };
+      latestMouse.x = x;
+      latestMouse.y = y;
+      latestMouse.target = e.target as HTMLElement;
+      latestMouse.isVisible = isVisible;
 
-    const handleMouseOut = (e: MouseEvent) => {
-      if (!e.relatedTarget || (e.relatedTarget as Node).nodeName === "HTML") {
-        setIsVisible(false);
+      if (!updateScheduled) {
+        updateScheduled = true;
+        rafId = requestAnimationFrame(updateMousePosition);
       }
     };
 
-    const handleMouseEnter = () => setIsVisible(true);
+    const handleMouseLeave = () => {
+      latestMouse.isVisible = false;
+      latestMouse.target = null;
+
+      if (!updateScheduled) {
+        updateScheduled = true;
+        rafId = requestAnimationFrame(updateMousePosition);
+      }
+    };
 
     window.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseout", handleMouseOut);
-    window.addEventListener("mouseenter", handleMouseEnter);
+    document.addEventListener("mouseleave", handleMouseLeave);
+
+    // Initial positions at center of screen to prevent jumps
+    mouseX.set(window.innerWidth / 2);
+    mouseY.set(window.innerHeight / 2);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseout", handleMouseOut);
-      window.removeEventListener("mouseenter", handleMouseEnter);
+      document.removeEventListener("mouseleave", handleMouseLeave);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
     };
-  }, [mouseX, mouseY]);
+  }, [isTouchDevice, mouseX, mouseY]);
 
   if (isTouchDevice) {
     return (
@@ -82,65 +158,55 @@ export default function SpotlightLayout({ children }: { children: React.ReactNod
 
   return (
     <>
-      <AnimatePresence>
-        {isVisible && (
-          <>
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="absolute hidden md:block"
-                style={{
-                  left: smoothX,
-                  top: smoothY,
-                  x: "-50%",
-                  y: "-50%",
-                  scaleX,
-                  scaleY,
-                  width: 150,
-                  height: 150,
-                  background: "radial-gradient(circle, rgba(37, 99, 235, 0.4) 0%, transparent 80%)",
-                  filter: "blur(15px)",
-                }}
-              />
-            </div>
+      {/* Spotlight layer */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <motion.div
+          ref={spotlightRef}
+          className="absolute hidden md:block transition-opacity duration-200 ease-out opacity-0"
+          style={{
+            left: smoothX,
+            top: smoothY,
+            x: "-50%",
+            y: "-50%",
+            scaleX,
+            scaleY,
+            width: 150,
+            height: 150,
+            background: "radial-gradient(circle, rgba(37, 99, 235, 0.4) 0%, transparent 80%)",
+            filter: "blur(15px)",
+            willChange: "transform",
+          }}
+        />
+      </div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0 }}
-              transition={{ duration: 0.15 }}
-              className="fixed top-0 left-0 pointer-events-none z-[9999] bg-white mix-blend-difference rounded-full"
-              style={{
-                left: cursorX,
-                top: cursorY,
-                x: "-50%",
-                y: "-50%",
-                width: isHovered ? 40 : 10,
-                height: isHovered ? 40 : 10,
-              }}
-            />
-            
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0 }}
-              transition={{ duration: 0.15 }}
-              className="fixed top-0 left-0 pointer-events-none z-[9998] border border-white/20 rounded-full"
-              style={{
-                left: cursorX,
-                top: cursorY,
-                x: "-50%",
-                y: "-50%",
-                width: isHovered ? 0 : 40,
-                height: isHovered ? 0 : 40,
-              }}
-            />
-          </>
-        )}
-      </AnimatePresence>
+      {/* Inner solid cursor with mix-blend-difference */}
+      <motion.div
+        ref={innerCursorRef}
+        className="fixed top-0 left-0 rounded-full bg-black mix-blend-difference pointer-events-none transition-[width,height,margin,background-color] duration-150 ease-out z-[9999]"
+        style={{
+          left: cursorX,
+          top: cursorY,
+          width: "10px",
+          height: "10px",
+          marginLeft: "-5px",
+          marginTop: "-5px",
+          willChange: "transform",
+        }}
+      />
+      {/* Outer border cursor */}
+      <motion.div
+        ref={outerCursorRef}
+        className="fixed top-0 left-0 rounded-full border border-transparent pointer-events-none transition-[width,height,margin,border-color] duration-150 ease-out z-[9998]"
+        style={{
+          left: cursorX,
+          top: cursorY,
+          width: "40px",
+          height: "40px",
+          marginLeft: "-20px",
+          marginTop: "-20px",
+          willChange: "transform",
+        }}
+      />
 
       <div className="relative z-10 min-h-screen">
         {children}
