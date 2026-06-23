@@ -1,6 +1,16 @@
 import { Github, Facebook, Globe, Video } from "lucide-react";
 import { getExperienceVi } from "./translations";
 
+export interface SubRepository {
+  title: string;
+  description: {
+    vi: string;
+    en: string;
+  };
+  tech: string[];
+  link: string;
+}
+
 export interface Project {
   title: string;
   description: {
@@ -12,6 +22,7 @@ export interface Project {
   image?: string;
   category: "work" | "personal";
   featured?: boolean;
+  repositories?: SubRepository[];
 }
 
 export const PERSONAL_INFO = {
@@ -83,6 +94,17 @@ export const PROJECTS: Project[] = [
   },
 
   {
+    title: "HTEM - High-Tech Electronic Menu",
+    description: {
+      vi: "Xây dựng hệ sinh thái menu điện tử gồm Android App, Web Admin và Server.",
+      en: "Built a smart electronic menu ecosystem including Android App, ReactJS Admin Dashboard, and Node.js Server."
+    },
+    tech: ["Jetpack Compose", "ReactJS", "Node.js"],
+    link: "https://github.com/PhongDayNai/HTEM_Mobile_App_Client",
+    image: "/images/htem.png",
+    category: "personal",
+  },
+  {
     title: "ChillingStories - Infrastructure",
     description: {
       vi: "Vận hành hạ tầng Server và quy trình CI/CD tự động cho hệ thống API.",
@@ -103,17 +125,44 @@ export const PROJECTS: Project[] = [
     link: "https://github.com/PhongDayNai/ChefMate_Client",
     image: "/images/chefmate.png",
     category: "personal",
-  },
-  {
-    title: "HTEM - High-Tech Electronic Menu",
-    description: {
-      vi: "Xây dựng hệ sinh thái menu điện tử gồm Android App, Web Admin và Server.",
-      en: "Built a smart electronic menu ecosystem including Android App, ReactJS Admin Dashboard, and Node.js Server."
-    },
-    tech: ["Jetpack Compose", "ReactJS", "Node.js"],
-    link: "https://github.com/PhongDayNai/HTEM_Mobile_App_Client",
-    image: "/images/htem.png",
-    category: "personal",
+    repositories: [
+      {
+        title: "ChefMate Server (Backend API)",
+        description: {
+          vi: "Hệ thống Backend API viết bằng Node.js & Express, quản lý dữ liệu người dùng, thực đơn và tích hợp PostgreSQL.",
+          en: "Backend API system built with Node.js & Express, managing user data, recipes, and PostgreSQL database."
+        },
+        tech: ["Node.js", "Express", "PostgreSQL", "Sequelize"],
+        link: "https://github.com/PhongDayNai/ChefMate_Server"
+      },
+      {
+        title: "ChefMate Mobile App (Android Native)",
+        description: {
+          vi: "Ứng dụng Android native client viết bằng Kotlin và Jetpack Compose, tích hợp quản lý trạng thái và tối ưu hóa trải nghiệm nấu ăn.",
+          en: "Android native client application built with Kotlin and Jetpack Compose, featuring state management and cooking UX optimization."
+        },
+        tech: ["Kotlin", "Jetpack Compose", "Retrofit", "Coroutines"],
+        link: "https://github.com/PhongDayNai/ChefMate_Client"
+      },
+      {
+        title: "ChefMate Web Client (Landing Page)",
+        description: {
+          vi: "Trang giới thiệu và tìm kiếm công thức nấu ăn nhanh chóng trên nền tảng Web cho người dùng.",
+          en: "Web application for recipe discovery, user engagement, and cooking community integration."
+        },
+        tech: ["Next.js", "React", "TailwindCSS"],
+        link: "https://github.com/PhongDayNai/Chefmate_Web_Client"
+      },
+      {
+        title: "ChefMate Admin Web Dashboard",
+        description: {
+          vi: "Trang web quản trị nội dung dành cho Admin để quản lý danh mục thực đơn, công thức nấu ăn và báo cáo hệ thống.",
+          en: "Admin dashboard website for managing culinary content, user reports, and system analytics."
+        },
+        tech: ["React", "Vite", "TailwindCSS", "Recharts"],
+        link: "https://github.com/PhongDayNai/ChefMate_Admin_Web"
+      }
+    ]
   },
 ];
 

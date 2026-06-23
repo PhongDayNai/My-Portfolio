@@ -91,7 +91,7 @@ export default function ProjectSection() {
   };
 
   return (
-    <motion.div layout className="space-y-10 overflow-hidden">
+    <motion.div layout className="space-y-10">
       <div className="flex justify-center">
         <div className="flex p-1.5 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl">
           {(["personal", "professional"] as const).map((tab) => (
@@ -134,12 +134,18 @@ export default function ProjectSection() {
             {displayProjects.map((project, idx) => {
               const isFeature = !!project.featured;
               return (
-                <ProjectCard
+                <div
                   key={project.title}
-                  project={project}
-                  idx={idx}
-                  size={isFeature ? "special" : "normal"}
-                />
+                  className={`relative ${
+                    isFeature ? "md:col-span-2 md:row-span-1" : "col-span-1"
+                  }`}
+                >
+                  <ProjectCard
+                    project={project}
+                    idx={idx}
+                    size={isFeature ? "special" : "normal"}
+                  />
+                </div>
               );
             })}
           </motion.div>
