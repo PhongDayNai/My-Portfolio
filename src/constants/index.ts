@@ -11,6 +11,7 @@ export interface Project {
   link: string;
   image?: string;
   category: "work" | "personal";
+  featured?: boolean;
 }
 
 export const PERSONAL_INFO = {
@@ -29,7 +30,7 @@ export const PROJECTS: Project[] = [
     title: "Plantie AI - Plant Detection",
     description: {
       vi: "Hệ thống AI nhận diện thực vật và tư vấn chăm sóc qua Live Chat AI.",
-      en: "Developed an AI-powered system for plant identification, disease diagnosis, and real-time care advice via AI Live Chat.",
+      en: "Developed an AI-powered system for plant identification, disease diagnosis, and real-time care advice via AI Live Chat."
     },
     tech: ["Kotlin", "Jetpack Compose", "MVVM", "AI Integration"],
     link: "https://play.google.com/store/apps/details?id=com.plantidentification.chainz",
@@ -40,7 +41,7 @@ export const PROJECTS: Project[] = [
     title: "GPS Camera - Timestamp & Maps",
     description: {
       vi: "Tối ưu CameraX templates nhúng dữ liệu vị trí và môi trường thời gian thực.",
-      en: "Optimized professional CameraX templates to embed real-time location, maps, and environmental metadata into photos/videos.",
+      en: "Optimized professional CameraX templates to embed real-time location, maps, and environmental metadata into photos/videos."
     },
     tech: ["CameraX", "Google Maps API", "Weather API", "Kotlin"],
     link: "https://play.google.com/store/apps/details?id=com.lawmatic.cameragps",
@@ -50,8 +51,8 @@ export const PROJECTS: Project[] = [
   {
     title: "Muslim Pro+ - Lifestyle Companion",
     description: {
-      vi: "Tích hợp Sensor và Maps API xây dựng các tính năng định vị chính xác.",
-      en: "Integrated Sensor and Maps APIs to build precise location-based prayer alerts and halal discovery features.",
+      vi: "Tích hợp Sensor và Maps API xây dựng các tính năng định vị chính xác (Chưa phát hành).",
+      en: "Integrated Sensor and Maps APIs to build precise location-based prayer alerts and halal discovery features (Unreleased)."
     },
     tech: ["Room", "Sensor API", "Google Maps API", "Kotlin"],
     link: "#",
@@ -59,47 +60,59 @@ export const PROJECTS: Project[] = [
     category: "work",
   },
   {
-    title: "Nano Banana - Photo Editor",
+    title: "AI Studio - AI-art Generator",
     description: {
-      vi: "Thiết kế UI/UX và bộ lọc xử lý ảnh hiệu suất cao bằng Jetpack Compose.",
-      en: "Designed modern UI/UX and high-performance image filtering processing using Jetpack Compose.",
+      vi: "Thiết kế UI/UX và tích hợp mô hình phát sinh ảnh nghệ thuật hiệu suất cao bằng Jetpack Compose.",
+      en: "Designed modern UI/UX and integrated high-performance AI-art generation models using Jetpack Compose."
     },
-    tech: ["Jetpack Compose", "Image Processing", "Kotlin"],
-    link: "#",
-    image: "/images/nano-banana.png",
+    tech: ["Jetpack Compose", "AI Integration", "Kotlin"],
+    link: "https://play.google.com/store/apps/details?id=com.chainz.bananastudio",
+    image: "/images/ai-studio.png",
     category: "work",
   },
   {
+    title: "AmiChat - AI Creative Buddy",
+    description: {
+      vi: "Trợ lý AI sáng tạo tích hợp các mô hình ngôn ngữ lớn hỗ trợ trò chuyện và giải đáp.",
+      en: "Creative AI companion integrated with LLMs to support intelligent conversation and assistance."
+    },
+    tech: ["LLM Integration", "Kotlin", "Jetpack Compose"],
+    link: "https://play.google.com/store/apps/details?id=com.lawmatic.amichat",
+    image: "/images/amichat.png",
+    category: "work",
+  },
+
+  {
     title: "ChillingStories - Infrastructure",
     description: {
-      vi: "Vận hành hạ tầng Server và quy trình CI/CD tự động cho hệ thống API đọc truyện.",
-      en: "Operating self-hosted server infrastructure and automated CI/CD pipelines for a scalable story-reading API system.",
+      vi: "Vận hành hạ tầng Server và quy trình CI/CD tự động cho hệ thống API.",
+      en: "Operating self-hosted server infrastructure and automated CI/CD pipelines for a scalable story-reading API system."
     },
     tech: ["Node.js", "Express", "MySQL", "Docker", "GitHub Actions"],
     link: "https://github.com/PhongDayNai/ChillingStories_Server",
     image: "/images/chilling-stories.png",
+    category: "personal"
+  },
+  {
+    title: "ChefMate - Smart Cooking Companion",
+    description: {
+      vi: "Phát triển trợ lý nấu ăn thông minh quản lý thực đơn và công thức nấu ăn.",
+      en: "Developed a full-stack smart cooking assistant for efficient meal planning and recipe management."
+    },
+    tech: ["Jetpack Compose", "ReactJS", "NextJS", "Node.js", "PostgreSQL"],
+    link: "https://github.com/PhongDayNai/ChefMate_Client",
+    image: "/images/chefmate.png",
     category: "personal",
   },
   {
     title: "HTEM - High-Tech Electronic Menu",
     description: {
       vi: "Xây dựng hệ sinh thái menu điện tử gồm Android App, Web Admin và Server.",
-      en: "Built a smart electronic menu ecosystem including Android App, ReactJS Admin Dashboard, and Node.js Server.",
+      en: "Built a smart electronic menu ecosystem including Android App, ReactJS Admin Dashboard, and Node.js Server."
     },
-    tech: ["Jetpack Compose", "ReactJS", "Node.js", "Socket.io"],
+    tech: ["Jetpack Compose", "ReactJS", "Node.js"],
     link: "https://github.com/PhongDayNai/HTEM_Mobile_App_Client",
     image: "/images/htem.png",
-    category: "personal",
-  },
-  {
-    title: "ChefMate - Smart Cooking Companion",
-    description: {
-      vi: "Phát triển trợ lý nấu ăn thông minh quản lý thực đơn và công thức nấu ăn.",
-      en: "Developed a full-stack smart cooking assistant for efficient meal planning and recipe management.",
-    },
-    tech: ["Jetpack Compose", "ReactJS", "Node.js", "PostgreSQL"],
-    link: "https://github.com/PhongDayNai/ChefMate_Client",
-    image: "/images/chefmate.png",
     category: "personal",
   },
 ];

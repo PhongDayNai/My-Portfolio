@@ -26,7 +26,7 @@ export default function ProjectSection() {
       activeTab === "professional"
         ? p.category === "work"
         : p.category === "personal",
-    );
+    ).reverse();
 
     const result: any[][] = [];
     let currentPageItems: any[] = [];
@@ -34,7 +34,7 @@ export default function ProjectSection() {
     let rowsInPage = 0;
 
     list.forEach((project) => {
-      const isFeature = project.title.includes("ChillingStories");
+      const isFeature = !!project.featured;
       const weight = isFeature ? 2 : 1;
 
       if (currentSlotsInRow + weight > 3) {
@@ -131,19 +131,13 @@ export default function ProjectSection() {
             transition={{ duration: 0.4, ease: "easeInOut" }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 grid-flow-row"
           >
-            {displayProjects.map((project) => {
-              const isFeature = project.title.includes("ChillingStories");
-              const tabKey =
-                activeTab === "professional" ? "professional" : "personal";
-              const globalIdx = translations[lang].projects[tabKey].findIndex(
-                (p) => p.title === project.title,
-              );
-
+            {displayProjects.map((project, idx) => {
+              const isFeature = !!project.featured;
               return (
                 <ProjectCard
                   key={project.title}
                   project={project}
-                  idx={globalIdx}
+                  idx={idx}
                   size={isFeature ? "special" : "normal"}
                 />
               );
