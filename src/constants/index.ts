@@ -24,6 +24,7 @@ export interface Project {
   featured?: boolean;
   repositories?: SubRepository[];
   website?: string;
+  company?: string;
 }
 
 export const PERSONAL_INFO = {
@@ -47,6 +48,7 @@ export const PROJECTS: Project[] = [
     tech: ["Kotlin", "Jetpack Compose", "MVVM", "AI Integration"],
     link: "https://play.google.com/store/apps/details?id=com.plantidentification.chainz",
     category: "work",
+    company: "ChainZ",
   },
   {
     title: "GPS Camera - Timestamp & Maps",
@@ -57,6 +59,7 @@ export const PROJECTS: Project[] = [
     tech: ["CameraX", "Google Maps API", "Weather API", "Kotlin"],
     link: "https://play.google.com/store/apps/details?id=com.lawmatic.cameragps",
     category: "work",
+    company: "ChainZ",
   },
   {
     title: "Muslim Pro+ - Lifestyle Companion",
@@ -67,6 +70,7 @@ export const PROJECTS: Project[] = [
     tech: ["Room", "Sensor API", "Google Maps API", "Kotlin"],
     link: "#",
     category: "work",
+    company: "ChainZ",
   },
   {
     title: "AI Studio - AI-art Generator",
@@ -77,6 +81,7 @@ export const PROJECTS: Project[] = [
     tech: ["Jetpack Compose", "AI Integration", "Kotlin"],
     link: "https://play.google.com/store/apps/details?id=com.chainz.bananastudio",
     category: "work",
+    company: "ChainZ",
   },
   {
     title: "AmiChat - AI Creative Buddy",
@@ -87,6 +92,7 @@ export const PROJECTS: Project[] = [
     tech: ["LLM Integration", "Kotlin", "Jetpack Compose"],
     link: "https://play.google.com/store/apps/details?id=com.lawmatic.amichat",
     category: "work",
+    company: "ChainZ",
   },
 
   {

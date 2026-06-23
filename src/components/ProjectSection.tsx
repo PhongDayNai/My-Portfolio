@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import ProjectCard from "./ProjectCard";
@@ -14,20 +14,38 @@ export default function ProjectSection() {
     "personal",
   );
 
-  const [profPage, setProfPage] = useState(0);
-  const [persPage, setPersPage] = useState(0);
+  const [selectedCompany, setSelectedCompany] = useState<string>("ALL");
+  const [page, setPage] = useState(0);
 
-  const currentPage = activeTab === "professional" ? profPage : persPage;
-  const setCurrentPage =
-    activeTab === "professional" ? setProfPage : setPersPage;
+  // Reset selected company and page when activeTab changes
+  useEffect(() => {
+    setSelectedCompany("ALL");
+    setPage(0);
+  }, [activeTab]);
+
+  // Reset page when selectedCompany changes
+  useEffect(() => {
+    setPage(0);
+  }, [selectedCompany]);
+
+  const companies = useMemo(() => {
+    const allCompanies = PROJECTS
+      .filter((p) => p.category === "work" && p.company)
+      .map((p) => p.company as string);
+    return Array.from(new Set(allCompanies));
+  }, []);
 
   const list = useMemo(() => {
-    return PROJECTS.filter((p) =>
-      activeTab === "professional"
-        ? p.category === "work"
-        : p.category === "personal",
-    ).reverse();
-  }, [activeTab]);
+    return PROJECTS.filter((p) => {
+      if (activeTab === "professional") {
+        if (p.category !== "work") return false;
+        if (selectedCompany !== "ALL" && p.company !== selectedCompany) return false;
+        return true;
+      } else {
+        return p.category === "personal";
+      }
+    }).reverse();
+  }, [activeTab, selectedCompany]);
 
   const pages = useMemo(() => {
     const result: any[][] = [];
@@ -37,14 +55,14 @@ export default function ProjectSection() {
     return result;
   }, [list]);
 
-  const displayProjects = pages[currentPage] || [];
+  const displayProjects = pages[page] || [];
 
   const handlePrev = () => {
-    if (currentPage > 0) setCurrentPage(currentPage - 1);
+    if (page > 0) setPage(page - 1);
   };
 
   const handleNext = () => {
-    if (currentPage < pages.length - 1) setCurrentPage(currentPage + 1);
+    if (page < pages.length - 1) setPage(page + 1);
   };
 
   const slideVariants = {
@@ -72,16 +90,13 @@ export default function ProjectSection() {
 
   return (
     <motion.div layout className="space-y-10">
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center gap-6">
+        {/* Main Tab Selector */}
         <div className="flex p-1.5 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl">
           {(["personal", "professional"] as const).map((tab) => (
             <button
               key={tab}
-              onClick={() => {
-                setActiveTab(tab);
-                setProfPage(0);
-                setPersPage(0);
-              }}
+              onClick={() => setActiveTab(tab)}
               className="relative px-8 py-2.5 text-sm font-bold uppercase tracking-wider transition-all"
             >
               {activeTab === tab && (
@@ -99,12 +114,69 @@ export default function ProjectSection() {
             </button>
           ))}
         </div>
+
+        {/* Company Sub-Tab Selector */}
+        <AnimatePresence>
+          {activeTab === "professional" && companies.length > 1 && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="flex justify-center"
+            >
+              <div className="flex flex-wrap p-1 bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-xl shadow-xl gap-1">
+                <button
+                  onClick={() => setSelectedCompany("ALL")}
+                  className="relative px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all"
+                >
+                  {selectedCompany === "ALL" && (
+                    <motion.div
+                      layoutId="activeCompanyIndicator"
+                      className="absolute inset-0 bg-blue-600 rounded-lg shadow-[0_0_15px_rgba(37,99,235,0.3)]"
+                      transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
+                    />
+                  )}
+                  <span
+                    className={`relative z-10 ${
+                      selectedCompany === "ALL" ? "text-white" : "text-slate-500 hover:text-slate-300"
+                    }`}
+                  >
+                    {lang === "vi" ? "Tất cả" : "All"}
+                  </span>
+                </button>
+                {companies.map((company) => (
+                  <button
+                    key={company}
+                    onClick={() => setSelectedCompany(company)}
+                    className="relative px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all"
+                  >
+                    {selectedCompany === company && (
+                      <motion.div
+                        layoutId="activeCompanyIndicator"
+                        className="absolute inset-0 bg-blue-600 rounded-lg shadow-[0_0_15px_rgba(37,99,235,0.3)]"
+                        transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
+                      />
+                    )}
+                    <span
+                      className={`relative z-10 ${
+                        selectedCompany === company ? "text-white" : "text-slate-500 hover:text-slate-300"
+                      }`}
+                    >
+                      {company}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="relative min-h-[400px]">
         <AnimatePresence mode="wait">
           <motion.div
-            key={`${activeTab}-${currentPage}`}
+            key={`${activeTab}-${selectedCompany}-${page}`}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
@@ -120,7 +192,7 @@ export default function ProjectSection() {
                 />
               </div>
             ))}
-            {currentPage < pages.length - 1 && (
+            {page < pages.length - 1 && (
               <div className="col-span-1">
                 <div
                   role="button"
@@ -136,7 +208,7 @@ export default function ProjectSection() {
                         {lang === "vi" ? "Trang tiếp theo" : "Next Page"}
                       </h4>
                       <p className="text-slate-500 text-xs">
-                        {lang === "vi" ? `Xem thêm dự án (Trang ${currentPage + 2}/${pages.length})` : `View more projects (Page ${currentPage + 2}/${pages.length})`}
+                        {lang === "vi" ? `Xem thêm dự án (Trang ${page + 2}/${pages.length})` : `View more projects (Page ${page + 2}/${pages.length})`}
                       </p>
                     </div>
                   </div>
@@ -151,9 +223,9 @@ export default function ProjectSection() {
         <div className="flex items-center justify-center gap-6 mt-6">
           <button
             onClick={handlePrev}
-            disabled={currentPage === 0}
+            disabled={page === 0}
             className={`p-2 rounded-full border border-white/10 transition-all ${
-              currentPage === 0
+              page === 0
                 ? "opacity-20 cursor-not-allowed"
                 : "hover:bg-blue-600/20 hover:border-blue-500/50 text-white"
             }`}
@@ -165,9 +237,9 @@ export default function ProjectSection() {
             {pages.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setCurrentPage(i)}
+                onClick={() => setPage(i)}
                 className={`h-2 rounded-full transition-all duration-300 ${
-                  currentPage === i ? "w-10 bg-blue-600" : "w-2 bg-slate-700"
+                  page === i ? "w-10 bg-blue-600" : "w-2 bg-slate-700"
                 }`}
               />
             ))}
@@ -175,9 +247,9 @@ export default function ProjectSection() {
 
           <button
             onClick={handleNext}
-            disabled={currentPage === pages.length - 1}
+            disabled={page === pages.length - 1}
             className={`p-2 rounded-full border border-white/10 transition-all ${
-              currentPage === pages.length - 1
+              page === pages.length - 1
                 ? "opacity-20 cursor-not-allowed"
                 : "hover:bg-blue-600/20 hover:border-blue-500/50 text-white"
             }`}
