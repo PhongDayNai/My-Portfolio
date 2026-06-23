@@ -20,8 +20,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="vi" className="scroll-smooth">
-      <body className={`${beVietnam.className} antialiased bg-[#101622] text-slate-200`}>
+    <html lang="vi" className="scroll-smooth" suppressHydrationWarning>
+      <body className={`${beVietnam.className} antialiased bg-[#101622] text-slate-200`} suppressHydrationWarning>
         <ClientProviders>
           {children}
         </ClientProviders>
