@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import ProjectCard from "./ProjectCard";
 import { useLanguage } from "@/context/LanguageContext";
 import { translations } from "@/constants/translations";
@@ -21,41 +21,21 @@ export default function ProjectSection() {
   const setCurrentPage =
     activeTab === "professional" ? setProfPage : setPersPage;
 
-  const pages = useMemo(() => {
-    const list = PROJECTS.filter((p) =>
+  const list = useMemo(() => {
+    return PROJECTS.filter((p) =>
       activeTab === "professional"
         ? p.category === "work"
         : p.category === "personal",
     ).reverse();
-
-    const result: any[][] = [];
-    let currentPageItems: any[] = [];
-    let currentSlotsInRow = 0;
-    let rowsInPage = 0;
-
-    list.forEach((project) => {
-      const isFeature = !!project.featured;
-      const weight = isFeature ? 2 : 1;
-
-      if (currentSlotsInRow + weight > 3) {
-        rowsInPage++;
-        currentSlotsInRow = 0;
-      }
-
-      if (rowsInPage >= 2) {
-        result.push(currentPageItems);
-        currentPageItems = [project];
-        currentSlotsInRow = weight;
-        rowsInPage = 0;
-      } else {
-        currentPageItems.push(project);
-        currentSlotsInRow += weight;
-      }
-    });
-
-    if (currentPageItems.length > 0) result.push(currentPageItems);
-    return result;
   }, [activeTab]);
+
+  const pages = useMemo(() => {
+    const result: any[][] = [];
+    for (let i = 0; i < list.length; i += 5) {
+      result.push(list.slice(i, i + 5));
+    }
+    return result;
+  }, [list]);
 
   const displayProjects = pages[currentPage] || [];
 
@@ -131,23 +111,38 @@ export default function ProjectSection() {
             transition={{ duration: 0.4, ease: "easeInOut" }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 grid-flow-row"
           >
-            {displayProjects.map((project, idx) => {
-              const isFeature = !!project.featured;
-              return (
+            {displayProjects.map((project, idx) => (
+              <div key={project.title} className="col-span-1">
+                <ProjectCard
+                  project={project}
+                  idx={idx}
+                  size="normal"
+                />
+              </div>
+            ))}
+            {currentPage < pages.length - 1 && (
+              <div className="col-span-1">
                 <div
-                  key={project.title}
-                  className={`relative ${
-                    isFeature ? "md:col-span-2 md:row-span-1" : "col-span-1"
-                  }`}
+                  role="button"
+                  onClick={handleNext}
+                  className="group overflow-hidden rounded-3xl border border-white/5 bg-[#1e293b]/20 hover:bg-[#1e293b]/40 hover:border-blue-500/20 transition-all shadow-xl cursor-none flex flex-col justify-center items-center h-full p-8 text-center min-h-[220px]"
                 >
-                  <ProjectCard
-                    project={project}
-                    idx={idx}
-                    size={isFeature ? "special" : "normal"}
-                  />
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="p-4 bg-white/5 rounded-full border border-white/5 group-hover:bg-blue-600/20 group-hover:border-blue-500/30 transition-all duration-300">
+                      <ArrowRight size={24} className="text-slate-400 group-hover:text-blue-400 transition-colors" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white text-base uppercase tracking-wider mb-1">
+                        {lang === "vi" ? "Trang tiếp theo" : "Next Page"}
+                      </h4>
+                      <p className="text-slate-500 text-xs">
+                        {lang === "vi" ? `Xem thêm dự án (Trang ${currentPage + 2}/${pages.length})` : `View more projects (Page ${currentPage + 2}/${pages.length})`}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              );
-            })}
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>

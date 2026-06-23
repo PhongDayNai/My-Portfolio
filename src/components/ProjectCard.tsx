@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Github, Layers, X, Play } from "lucide-react";
+import { Github, Layers, X, Play, Globe } from "lucide-react";
 import { Project } from "@/constants";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
@@ -110,14 +110,27 @@ export default function ProjectCard({
 
   // Content for the collapsed (standard) card
   const collapsedCardContent = (
-    <div className="relative z-10 flex flex-col h-full justify-between">
+    <div className="relative z-0 flex flex-col h-full justify-between">
       <div>
         <div className="flex justify-between items-start mb-4">
           <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">
             {isSpecial ? t.featuredProject : t.project}
           </span>
 
-          <div className="flex gap-3 items-center">
+          <div className="flex gap-3 items-center relative z-20">
+            {project.website && (
+              <a
+                href={project.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                data-cursor-color="rgb(6, 182, 212)"
+                className="text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-500/30 border border-transparent transition-all duration-200 p-1.5 rounded-full cursor-none shadow-sm"
+                title="Website"
+              >
+                <Globe size={18} />
+              </a>
+            )}
             {project.repositories ? (
               <span className="text-slate-400 group-hover:text-blue-400 transition-colors">
                 <Layers size={18} />
@@ -143,8 +156,8 @@ export default function ProjectCard({
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-2 mt-auto">
-        {project.tech.map((t) => (
+      <div className="flex flex-wrap gap-2 mt-auto max-h-[60px] overflow-hidden">
+        {project.tech.slice(0, 6).map((t) => (
           <span
             key={t}
             className="px-3 py-1 bg-white/5 rounded-full text-[10px] text-slate-300 font-mono border border-white/5"
@@ -152,6 +165,11 @@ export default function ProjectCard({
             {t}
           </span>
         ))}
+        {project.tech.length > 6 && (
+          <span className="px-3 py-1 bg-white/5 rounded-full text-[10px] text-slate-500 font-mono border border-white/5 border-dashed" title={project.tech.slice(6).join(', ')}>
+            +{project.tech.length - 6}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -165,15 +183,30 @@ export default function ProjectCard({
             {isSpecial ? t.featuredProject : t.project}
           </span>
 
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsExpanded(false);
-            }}
-            className="close-btn text-slate-400 hover:text-white transition-colors p-1 rounded-full hover:bg-white/5 cursor-none"
-          >
-            <X size={18} />
-          </button>
+          <div className="flex items-center gap-2">
+            {project.website && (
+              <a
+                href={project.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                data-cursor-color="rgb(6, 182, 212)"
+                className="text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-500/30 border border-transparent transition-all duration-200 p-1.5 rounded-full cursor-none shadow-sm"
+                title="Website"
+              >
+                <Globe size={18} />
+              </a>
+            )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsExpanded(false);
+              }}
+              className="close-btn text-slate-400 hover:text-white transition-colors p-1 rounded-full hover:bg-white/5 cursor-none"
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         <h3 className="font-bold mb-3 text-xl md:text-2xl text-white uppercase tracking-tighter leading-tight">
@@ -197,46 +230,57 @@ export default function ProjectCard({
 
         {/* Sub-repositories list */}
         {project.repositories && (
-          <div className="space-y-3">
+          <div className="space-y-4">
             <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
               {lang === "vi" ? "Các kho mã nguồn (Repositories):" : "Sub-Repositories:"}
             </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {project.repositories.map((repo) => (
-                <a
+                <div
                   key={repo.link}
-                  href={repo.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="sub-repo-link flex flex-col p-4 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-blue-500/20 rounded-2xl transition-all cursor-none group/repo justify-between min-h-[120px]"
+                  role="button"
+                  onClick={() => window.open(repo.link, "_blank", "noopener,noreferrer")}
+                  className="sub-repo-link relative flex flex-col p-6 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-blue-500/20 rounded-2xl transition-all cursor-none group/repo justify-between min-h-[160px]"
                 >
-                  <div>
-                    <div className="flex justify-between items-start mb-1.5">
-                      <h5 className="font-bold text-xs text-white group-hover/repo:text-blue-400 transition-colors line-clamp-1 pr-2">
-                        {repo.title}
-                      </h5>
-                      <Github size={14} className="text-slate-400 group-hover/repo:text-white transition-colors shrink-0" />
+                  <div className="relative z-0 flex flex-col h-full justify-between">
+                    <div>
+                      <div className="flex justify-between items-start mb-2">
+                        <h5 className="font-bold text-sm text-white group-hover/repo:text-blue-400 transition-colors line-clamp-2 pr-2">
+                          {repo.title}
+                        </h5>
+                        <div className="flex items-center gap-2 relative z-20 shrink-0">
+                          {repo.website && (
+                            <a
+                              href={repo.website}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              data-cursor-color="rgb(6, 182, 212)"
+                              className="text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-500/30 border border-transparent transition-all duration-200 p-1.5 rounded cursor-none"
+                              title="Website"
+                            >
+                              <Globe size={14} />
+                            </a>
+                          )}
+                          <Github size={16} className="text-slate-400 group-hover/repo:text-white transition-colors" />
+                        </div>
+                      </div>
+                      <p className="text-slate-400 text-xs mb-4 leading-relaxed">
+                        {repo.description[lang]}
+                      </p>
                     </div>
-                    <p className="text-slate-400 text-[11px] mb-3 leading-normal line-clamp-2">
-                      {repo.description[lang]}
-                    </p>
+                    <div className="flex flex-wrap gap-1.5 mt-auto relative z-20">
+                      {repo.tech.map((t) => (
+                        <span
+                          key={t}
+                          className="px-2 py-0.5 bg-white/5 rounded-full text-[9px] text-slate-300 font-mono border border-white/5"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-1 mt-auto">
-                    {repo.tech.slice(0, 3).map((t) => (
-                      <span
-                        key={t}
-                        className="px-1.5 py-0.5 bg-white/5 rounded-full text-[8px] text-slate-300 font-mono border border-white/5"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                    {repo.tech.length > 3 && (
-                      <span className="px-1 py-0.5 rounded-full text-[8px] text-slate-500 font-mono">
-                        +{repo.tech.length - 3}
-                      </span>
-                    )}
-                  </div>
-                </a>
+                </div>
               ))}
             </div>
           </div>
@@ -300,20 +344,19 @@ export default function ProjectCard({
 
   // Standard non-expandable project card linking directly to Play Store or GitHub
   return (
-    <motion.a
-      href={project.link}
-      target="_blank"
-      rel="noopener noreferrer"
+    <motion.div
+      role="button"
+      onClick={() => window.open(project.link, "_blank", "noopener,noreferrer")}
       whileHover={{ y: -10 }}
       transition={{
         type: "tween",
         duration: 0.15,
         ease: "easeOut",
       }}
-      className={collapsedCardClasses}
+      className={`${collapsedCardClasses} relative`}
     >
       {collapsedCardContent}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none" />
-    </motion.a>
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-0" />
+    </motion.div>
   );
 }
