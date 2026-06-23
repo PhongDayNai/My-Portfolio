@@ -2,6 +2,7 @@ import "./globals.css";
 import { Be_Vietnam_Pro } from "next/font/google";
 import { Metadata } from "next";
 import ClientProviders from "@/components/ClientProviders";
+import { getExperienceEn } from "@/constants/translations";
 
 const beVietnam = Be_Vietnam_Pro({
   subsets: ["vietnamese"],
@@ -9,14 +10,16 @@ const beVietnam = Be_Vietnam_Pro({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Hung Phong Duong | Portfolio",
-  description: "Full-Stack Developer Portfolio - Multi-disciplinary Developer with 1+ years of experience.",
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Hung Phong Duong | Portfolio",
+    description: `Full-Stack Developer Portfolio - Multi-disciplinary Developer with ${getExperienceEn()}.`,
+    icons: {
+      icon: "/favicon.ico",
+      apple: "/apple-touch-icon.png",
+    },
+  };
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -1,3 +1,44 @@
+const getExperience = () => {
+  const startYear = 2024;
+  const startMonth = 5; // June (0-indexed)
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+
+  const diffMonths = (currentYear - startYear) * 12 + (currentMonth - startMonth);
+  const x = Math.floor(diffMonths / 12);
+  const m = diffMonths % 12;
+
+  return { x, m };
+};
+
+export const getExperienceVi = () => {
+  const { x, m } = getExperience();
+  if (m < 4) {
+    return `hơn ${x} năm kinh nghiệm thực chiến`;
+  } else if (m < 8) {
+    return `${x} năm rưỡi kinh nghiệm thực chiến`;
+  } else if (m < 11) {
+    return `gần ${x + 1} năm kinh nghiệm thực chiến`;
+  } else {
+    return `${x + 1} năm kinh nghiệm thực chiến`;
+  }
+};
+
+export const getExperienceEn = () => {
+  const { x, m } = getExperience();
+  const yearsStr = (num: number) => (num === 1 ? "year" : "years");
+  if (m < 4) {
+    return `over ${x} ${yearsStr(x)} of hands-on experience`;
+  } else if (m < 8) {
+    return `${x} and a half ${yearsStr(x)} of hands-on experience`;
+  } else if (m < 11) {
+    return `nearly ${x + 1} ${yearsStr(x + 1)} of hands-on experience`;
+  } else {
+    return `${x + 1} ${yearsStr(x + 1)} of hands-on experience`;
+  }
+};
+
 export const translations = {
   vi: {
     nav: {
@@ -10,8 +51,9 @@ export const translations = {
       hello: "/ hello_world",
       firstName: "DƯƠNG",
       lastName: "HÙNG PHONG",
-      summary:
-        "Multi-disciplinary Developer với hơn 1 năm kinh nghiệm thực chiến trong phát triển Android (Kotlin) và Full-stack.",
+      get summary() {
+        return `Multi-disciplinary Developer với ${getExperienceVi()} trong phát triển Android (Kotlin) và Full-stack.`;
+      },
       viewPortfolio: "Xem Portfolio",
       contactMe: "Liên hệ",
     },
@@ -128,8 +170,9 @@ export const translations = {
       hello: "/ hello_world",
       firstName: "DUONG",
       lastName: "HUNG PHONG",
-      summary:
-        "Multi-disciplinary Developer with over 1 year of hands-on experience in Android (Kotlin) and Full-stack development.",
+      get summary() {
+        return `Multi-disciplinary Developer with ${getExperienceEn()} in Android (Kotlin) and Full-stack development.`;
+      },
       viewPortfolio: "View Portfolio",
       contactMe: "Contact Me",
     },

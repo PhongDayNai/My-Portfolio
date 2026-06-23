@@ -1,4 +1,5 @@
 import { Github, Facebook, Globe, Video } from "lucide-react";
+import { getExperienceVi } from "./translations";
 
 export interface Project {
   title: string;
@@ -15,8 +16,9 @@ export const PERSONAL_INFO = {
   email: "dhphong266@gmail.com",
   location: "Khương Đình, Thanh Xuân, Hà Nội",
   github: "https://github.com/PhongDayNai",
-  summary:
-    "Multi-disciplinary Developer với hơn 1 năm kinh nghiệm thực chiến trong phát triển Android (Kotlin) và Full-stack.",
+  get summary() {
+    return `Multi-disciplinary Developer với ${getExperienceVi()} trong phát triển Android (Kotlin) và Full-stack.`;
+  },
 };
 
 export const PROJECTS: Project[] = [
