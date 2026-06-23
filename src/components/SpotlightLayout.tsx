@@ -40,8 +40,8 @@ export default function SpotlightLayout({ children }: { children: React.ReactNod
       innerCursor.style.width = hovered ? "40px" : "10px";
       innerCursor.style.height = hovered ? "40px" : "10px";
 
-      outerCursor.style.width = hovered ? "0px" : "40px";
-      outerCursor.style.height = hovered ? "0px" : "40px";
+      outerCursor.style.width = hovered ? "0px" : "50px";
+      outerCursor.style.height = hovered ? "0px" : "50px";
     };
 
     // Tracking variables for position, velocity, and angle (using Spring Physics)
@@ -70,8 +70,16 @@ export default function SpotlightLayout({ children }: { children: React.ReactNod
       if (target === lastTarget) return;
       lastTarget = target;
 
-      const isSelectable = !!target.closest("button, a, [role='button']");
+      const selectableEl = target.closest("button, a, [role='button']");
+      const isSelectable = !!selectableEl;
       setHovered(isSelectable);
+
+      if (isSelectable) {
+        const customColor = selectableEl.getAttribute("data-cursor-color");
+        innerCursor.style.backgroundColor = customColor || "rgb(255, 255, 255)";
+      } else {
+        innerCursor.style.backgroundColor = "rgb(255, 255, 255)";
+      }
     };
 
     const tick = () => {
@@ -231,8 +239,8 @@ export default function SpotlightLayout({ children }: { children: React.ReactNod
         ref={outerCursorRef}
         className="fixed top-0 left-0 rounded-full border border-transparent pointer-events-none transition-[width,height,border-color] duration-150 ease-out z-[9998]"
         style={{
-          width: "40px",
-          height: "40px",
+          width: "50px",
+          height: "50px",
           willChange: "transform",
         }}
       />
