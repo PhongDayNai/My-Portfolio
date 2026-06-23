@@ -119,7 +119,7 @@ export const translations = {
       {
         title: "Lập trình viên Mobile",
         org: "ChainZ",
-        date: "12/2025 - Hiện tại",
+        date: "12/2024 - 06/2026",
         desc: [
           "Phát triển ứng dụng Android Native (Kotlin/Jetpack Compose).",
           "Xây dựng đa dạng sản phẩm (Plantie AI, CameraGPS).",
@@ -238,7 +238,7 @@ export const translations = {
       {
         title: "Mobile App Developer",
         org: "ChainZ",
-        date: "12/2025 - Present",
+        date: "12/2024 - 06/2026",
         desc: [
           "Developing Android Native apps (Kotlin/Jetpack Compose).",
           "Building diverse products (Plantie AI, CameraGPS).",

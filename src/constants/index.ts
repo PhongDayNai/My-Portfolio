@@ -91,7 +91,7 @@ export const WORK_EXPERIENCE = [
   {
     company: "CHAINZ JS COMPANY",
     role: "Android Developer",
-    duration: "12/2024 - Hiện tại",
+    duration: "12/2024 - 06/2026",
     tasks: [
       "Phát triển hệ thống nhận diện thực vật Plantie AI.",
       "Xây dựng công cụ GPS Camera tích hợp dữ liệu môi trường thời gian thực.",
@@ -105,7 +105,7 @@ export const TIMELINE_DATA = [
     id: 1,
     title: "Mobile App Developer",
     organization: "ChainZ",
-    date: "12/2025 - Hiện tại",
+    date: "12/2024 - 06/2026",
     status: "active",
     description: [
       "Phát triển các giải pháp di động trên nền tảng Flutter và Android Native.",
