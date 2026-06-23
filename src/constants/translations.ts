@@ -82,38 +82,6 @@ export const translations = {
     },
     projects: {
       tabs: { professional: "Dự án Công ty", personal: "Dự án Cá nhân" },
-      professional: [
-        {
-          title: "Plantie AI - Plant Detection",
-          desc: "Hệ thống AI nhận diện thực vật và tư vấn chăm sóc qua Live Chat AI.",
-        },
-        {
-          title: "GPS Camera - Timestamp & Maps",
-          desc: "Tối ưu CameraX templates nhúng dữ liệu vị trí và môi trường thời gian thực.",
-        },
-        {
-          title: "Muslim Pro+ - Lifestyle Companion",
-          desc: "Tích hợp Sensor và Maps API xây dựng các tính năng định vị chính xác.",
-        },
-        {
-          title: "Nano Banana - Photo Editor",
-          desc: "Thiết kế UI/UX và bộ lọc xử lý ảnh hiệu suất cao bằng Jetpack Compose.",
-        },
-      ],
-      personal: [
-        {
-          title: "ChillingStories - Infrastructure",
-          desc: "Vận hành hạ tầng Server và quy trình CI/CD tự động cho hệ thống API.",
-        },
-        {
-          title: "HTEM - High-Tech Electronic Menu",
-          desc: "Xây dựng hệ sinh thái menu điện tử gồm Android App, Web Admin và Server.",
-        },
-        {
-          title: "ChefMate - Smart Cooking Companion",
-          desc: "Phát triển trợ lý nấu ăn thông minh quản lý thực đơn và công thức nấu ăn.",
-        },
-      ],
     },
     timeline: [
       {
@@ -201,38 +169,6 @@ export const translations = {
     },
     projects: {
       tabs: { professional: "Professional Work", personal: "Personal Lab" },
-      professional: [
-        {
-          title: "Plantie AI - Plant Detection",
-          desc: "Developed an AI-powered system for plant identification, disease diagnosis, and real-time care advice via AI Live Chat.",
-        },
-        {
-          title: "GPS Camera - Timestamp & Maps",
-          desc: "Optimized professional CameraX templates to embed real-time location, maps, and environmental metadata into photos/videos.",
-        },
-        {
-          title: "Muslim Pro+ - Lifestyle Companion",
-          desc: "Integrated Sensor and Maps APIs to build precise location-based prayer alerts and halal discovery features.",
-        },
-        {
-          title: "Nano Banana - Photo Editor",
-          desc: "Designed modern UI/UX and high-performance image filtering processing using Jetpack Compose.",
-        },
-      ],
-      personal: [
-        {
-          title: "ChillingStories - Infrastructure",
-          desc: "Operating self-hosted server infrastructure and automated CI/CD pipelines for a scalable story-reading API system.",
-        },
-        {
-          title: "HTEM - High-Tech Electronic Menu",
-          desc: "Built a smart electronic menu ecosystem including Android App, ReactJS Admin Dashboard, and Node.js Server.",
-        },
-        {
-          title: "ChefMate - Smart Cooking Companion",
-          desc: "Developed a full-stack smart cooking assistant for efficient meal planning and recipe management.",
-        },
-      ],
     },
     timeline: [
       {

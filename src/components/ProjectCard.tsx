@@ -31,14 +31,6 @@ export default function ProjectCard({
 
   const t = translations[lang].sections;
 
-  const allProjects = [
-    ...translations[lang].projects.professional,
-
-    ...translations[lang].projects.personal,
-  ];
-
-  const projectTranslation = allProjects.find((p) => p.title === project.title);
-
   return (
     <motion.a
       href={project.link}
@@ -74,11 +66,11 @@ export default function ProjectCard({
         <h3
           className={`font-bold mb-3 ${isSpecial ? "text-3xl" : "text-xl"} text-white uppercase tracking-tighter`}
         >
-          {projectTranslation?.title || project.title}
+          {project.title}
         </h3>
 
         <p className="text-slate-400 text-sm mb-6 flex-1 leading-relaxed">
-          {projectTranslation?.desc || project.description}
+          {project.description[lang]}
         </p>
 
         <div className="flex flex-wrap gap-2 mt-auto">

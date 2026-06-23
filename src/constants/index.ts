@@ -3,7 +3,10 @@ import { getExperienceVi } from "./translations";
 
 export interface Project {
   title: string;
-  description: string;
+  description: {
+    vi: string;
+    en: string;
+  };
   tech: string[];
   link: string;
   image?: string;
@@ -24,8 +27,10 @@ export const PERSONAL_INFO = {
 export const PROJECTS: Project[] = [
   {
     title: "Plantie AI - Plant Detection",
-    description:
-      "Hệ thống AI nhận diện thực vật và tư vấn chăm sóc qua Live Chat.",
+    description: {
+      vi: "Hệ thống AI nhận diện thực vật và tư vấn chăm sóc qua Live Chat AI.",
+      en: "Developed an AI-powered system for plant identification, disease diagnosis, and real-time care advice via AI Live Chat.",
+    },
     tech: ["Kotlin", "Jetpack Compose", "MVVM", "AI Integration"],
     link: "https://play.google.com/store/apps/details?id=com.plantidentification.chainz",
     image: "/images/plantie.png",
@@ -33,8 +38,10 @@ export const PROJECTS: Project[] = [
   },
   {
     title: "GPS Camera - Timestamp & Maps",
-    description:
-      "Công cụ chụp ảnh nhúng dữ liệu vị trí và môi trường thời gian thực.",
+    description: {
+      vi: "Tối ưu CameraX templates nhúng dữ liệu vị trí và môi trường thời gian thực.",
+      en: "Optimized professional CameraX templates to embed real-time location, maps, and environmental metadata into photos/videos.",
+    },
     tech: ["CameraX", "Google Maps API", "Weather API", "Kotlin"],
     link: "https://play.google.com/store/apps/details?id=com.lawmatic.cameragps",
     image: "/images/cameragps.png",
@@ -42,8 +49,10 @@ export const PROJECTS: Project[] = [
   },
   {
     title: "Muslim Pro+ - Lifestyle Companion",
-    description:
-      "Ứng dụng hỗ trợ cộng đồng Hồi giáo với định vị và cảm biến chính xác.",
+    description: {
+      vi: "Tích hợp Sensor và Maps API xây dựng các tính năng định vị chính xác.",
+      en: "Integrated Sensor and Maps APIs to build precise location-based prayer alerts and halal discovery features.",
+    },
     tech: ["Room", "Sensor API", "Google Maps API", "Kotlin"],
     link: "#",
     image: "/images/muslim-pro.png",
@@ -51,8 +60,10 @@ export const PROJECTS: Project[] = [
   },
   {
     title: "Nano Banana - Photo Editor",
-    description:
-      "Trình chỉnh sửa ảnh hiệu suất cao với giao diện tối ưu bằng Jetpack Compose.",
+    description: {
+      vi: "Thiết kế UI/UX và bộ lọc xử lý ảnh hiệu suất cao bằng Jetpack Compose.",
+      en: "Designed modern UI/UX and high-performance image filtering processing using Jetpack Compose.",
+    },
     tech: ["Jetpack Compose", "Image Processing", "Kotlin"],
     link: "#",
     image: "/images/nano-banana.png",
@@ -60,8 +71,10 @@ export const PROJECTS: Project[] = [
   },
   {
     title: "ChillingStories - Infrastructure",
-    description:
-      "Vận hành hạ tầng Server và quy trình CI/CD tự động cho hệ thống API đọc truyện.",
+    description: {
+      vi: "Vận hành hạ tầng Server và quy trình CI/CD tự động cho hệ thống API đọc truyện.",
+      en: "Operating self-hosted server infrastructure and automated CI/CD pipelines for a scalable story-reading API system.",
+    },
     tech: ["Node.js", "Express", "MySQL", "Docker", "GitHub Actions"],
     link: "https://github.com/PhongDayNai/ChillingStories_Server",
     image: "/images/chilling-stories.png",
@@ -69,8 +82,10 @@ export const PROJECTS: Project[] = [
   },
   {
     title: "HTEM - High-Tech Electronic Menu",
-    description:
-      "Hệ sinh thái menu điện tử tích hợp Mobile App, Web Admin và Backend.",
+    description: {
+      vi: "Xây dựng hệ sinh thái menu điện tử gồm Android App, Web Admin và Server.",
+      en: "Built a smart electronic menu ecosystem including Android App, ReactJS Admin Dashboard, and Node.js Server.",
+    },
     tech: ["Jetpack Compose", "ReactJS", "Node.js", "Socket.io"],
     link: "https://github.com/PhongDayNai/HTEM_Mobile_App_Client",
     image: "/images/htem.png",
@@ -78,8 +93,10 @@ export const PROJECTS: Project[] = [
   },
   {
     title: "ChefMate - Smart Cooking Companion",
-    description:
-      "Nền tảng hỗ trợ nấu ăn thông minh với quản lý công thức và tìm kiếm kép.",
+    description: {
+      vi: "Phát triển trợ lý nấu ăn thông minh quản lý thực đơn và công thức nấu ăn.",
+      en: "Developed a full-stack smart cooking assistant for efficient meal planning and recipe management.",
+    },
     tech: ["Jetpack Compose", "ReactJS", "Node.js", "PostgreSQL"],
     link: "https://github.com/PhongDayNai/ChefMate_Client",
     image: "/images/chefmate.png",
