@@ -27,9 +27,9 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
   const t = (dictionary: any) => dictionary[lang] || dictionary['en'];
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang: changeLang, t }}>
+    <LanguageContext value={{ lang, setLang: changeLang, t }}>
       {children}
-    </LanguageContext.Provider>
+    </LanguageContext>
   );
 };
 
