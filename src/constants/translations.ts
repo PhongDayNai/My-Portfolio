@@ -71,12 +71,12 @@ export const translations = {
       heading: "Xây dựng giải pháp",
       subHeading: "tối ưu & sáng tạo",
       description:
-        "Tôi là một nhà phát triển Full-stack đam mê việc tạo ra các ứng dụng di động và hệ thống backend hiệu suất cao. Với nền tảng từ Đại học Thủy Lợi và kinh nghiệm thực chiến tại ChainZ, tôi luôn chú trọng vào trải nghiệm người dùng và tính ổn định của mã nguồn.",
+        "Tôi là một nhà phát triển Full-Stack chuyên xây dựng các ứng dụng di động mượt mà, giao diện web hiện đại và hệ thống backend tối ưu. Tập trung vào thực hành và trải nghiệm thực tế, tôi tự tay triển khai toàn trình từ lập trình đến tự vận hành (self-host) hệ thống hạ tầng và các mô hình AI (Local AI Models). Tôi luôn chú trọng vào chất lượng mã nguồn, trải nghiệm người dùng và hiệu năng vận hành.",
       location: "Khương Đình, Thanh Xuân, Hà Nội",
     },
     education: {
       university: "Đại học Thủy Lợi",
-      degree: "Kỹ sư Công nghệ thông tin",
+      degree: "Cử nhân Công nghệ thông tin",
       duration: "2022 - Hiện tại",
       gpaLabel: "GPA Hiện tại",
     },
@@ -87,7 +87,7 @@ export const translations = {
       { name: "GitHub", desc: "@PhongDayNai" },
       { name: "Facebook", desc: "Phong" },
       { name: "TikTok", desc: "Sở thích & Đời sống" },
-      { name: "Personal Server", desc: "Hệ thống Self-hosted" },
+      { name: "HomeLab", desc: "Hệ thống Self-hosted" },
     ],
   },
   en: {
@@ -121,12 +121,12 @@ export const translations = {
       heading: "Building solutions",
       subHeading: "optimal & creative",
       description:
-        "I am a Full-stack developer passionate about creating high-performance mobile applications and backend systems. With a background from Thuy Loi University and practical experience at ChainZ, I always focus on user experience and code stability.",
+        "I am a Full-Stack developer specializing in building seamless mobile applications, modern web interfaces, and optimized backend systems. Driven by hands-on experience, I personally deploy and manage end-to-end solutions, from codebase to self-hosting infrastructure and local AI models. I always prioritize code quality, user experience, and overall system performance.",
       location: "Khuong Dinh, Thanh Xuan, Hanoi",
     },
     education: {
       university: "Thuy Loi University",
-      degree: "Bachelor of IT",
+      degree: "Bachelor of Information Technology",
       duration: "2022 - Present",
       gpaLabel: "Current GPA",
     },
@@ -137,7 +137,7 @@ export const translations = {
       { name: "GitHub", desc: "@PhongDayNai" },
       { name: "Facebook", desc: "Phong" },
       { name: "TikTok", desc: "Hobby & Life" },
-      { name: "Personal Server", desc: "Self-hosted Lab" },
+      { name: "HomeLab", desc: "Self-hosted Lab" },
     ],
   },
 };

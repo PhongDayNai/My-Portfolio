@@ -3,13 +3,14 @@ import { motion } from "framer-motion";
 import { User, MapPin, Mail, Phone } from "lucide-react";
 import { useLanguage } from '@/context/LanguageContext';
 import { translations } from '@/constants/translations';
+import { PERSONAL_INFO } from "@/constants";
 
 export default function ProfileCard() {
   const { lang } = useLanguage();
   const text = translations[lang].profile;
 
-  const email = "dhphong266@gmail.com";
-  const phoneNumber = "0855576569";
+  const email = PERSONAL_INFO.email;
+  const phoneNumber = PERSONAL_INFO.phone;
   const address = text.location;
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 

@@ -1,5 +1,26 @@
-import { Github, Facebook, Globe, Video } from "lucide-react";
+import { Github, Facebook, Server } from "lucide-react";
 import { getExperienceVi } from "./translations";
+import React from "react";
+
+const TiktokIcon = (props: any) =>
+  React.createElement(
+    "svg",
+    {
+      role: "img",
+      viewBox: "1.5 1.5 21 21",
+      width: props.size || 24,
+      height: props.size || 24,
+      className: props.className,
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      strokeLinecap: "round",
+      strokeLinejoin: "round",
+    },
+    React.createElement("path", {
+      d: "M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5",
+    })
+  );
 
 export interface SubRepository {
   title: string;
@@ -31,6 +52,7 @@ export const PERSONAL_INFO = {
   name: "DƯƠNG HÙNG PHONG",
   role: "Full-Stack Developer",
   email: "dhphong266@gmail.com",
+  phone: "0855576569",
   location: "Khương Đình, Thanh Xuân, Hà Nội",
   github: "https://github.com/PhongDayNai",
   get summary() {
@@ -387,14 +409,14 @@ export const SOCIALS = [
   },
   {
     name: "TikTok",
-    icon: Video,
+    icon: TiktokIcon,
     link: "https://www.tiktok.com/@phongdaynai",
     color: "hover:bg-pink-600/20",
     desc: "Hobby & Life",
   },
   {
-    name: "Personal Server",
-    icon: Globe,
+    name: "HomeLab",
+    icon: Server,
     link: "https://portfolio.phongdaynai.id.vn",
     color: "hover:bg-orange-500/20",
     desc: "Self-hosted Lab",
