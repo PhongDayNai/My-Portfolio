@@ -9,6 +9,7 @@ export interface SubRepository {
   };
   tech: string[];
   link: string;
+  website?: string;
 }
 
 export interface Project {
@@ -19,10 +20,10 @@ export interface Project {
   };
   tech: string[];
   link: string;
-  image?: string;
   category: "work" | "personal";
   featured?: boolean;
   repositories?: SubRepository[];
+  website?: string;
 }
 
 export const PERSONAL_INFO = {
@@ -40,12 +41,11 @@ export const PROJECTS: Project[] = [
   {
     title: "Plantie AI - Plant Detection",
     description: {
-      vi: "Hệ thống AI nhận diện thực vật và tư vấn chăm sóc qua Live Chat AI.",
-      en: "Developed an AI-powered system for plant identification, disease diagnosis, and real-time care advice via AI Live Chat."
+      vi: "Hệ thống trí tuệ nhân tạo (AI) nhận diện thực vật thông qua hình ảnh và hỗ trợ tư vấn chăm sóc trực tuyến thời gian thực qua Live Chat AI.",
+      en: "An AI-powered system that identifies plant species via photo analysis and provides real-time care guidance through an interactive AI Live Chat."
     },
     tech: ["Kotlin", "Jetpack Compose", "MVVM", "AI Integration"],
     link: "https://play.google.com/store/apps/details?id=com.plantidentification.chainz",
-    image: "/images/plantie.png",
     category: "work",
   },
   {
@@ -56,18 +56,16 @@ export const PROJECTS: Project[] = [
     },
     tech: ["CameraX", "Google Maps API", "Weather API", "Kotlin"],
     link: "https://play.google.com/store/apps/details?id=com.lawmatic.cameragps",
-    image: "/images/cameragps.png",
     category: "work",
   },
   {
     title: "Muslim Pro+ - Lifestyle Companion",
     description: {
-      vi: "Tích hợp Sensor và Maps API xây dựng các tính năng định vị chính xác (Chưa phát hành).",
-      en: "Integrated Sensor and Maps APIs to build precise location-based prayer alerts and halal discovery features (Unreleased)."
+      vi: "Ứng dụng hỗ trợ phong cách sống Hồi giáo tích hợp nhắc nhở giờ cầu nguyện tự động, la bàn định hướng Qibla và đọc kinh Quran (Chưa phát hành).",
+      en: "An Islamic lifestyle companion app featuring automated prayer time alerts, Qibla compass orientation, and digital Quran integration (Unreleased)."
     },
     tech: ["Room", "Sensor API", "Google Maps API", "Kotlin"],
     link: "#",
-    image: "/images/muslim-pro.png",
     category: "work",
   },
   {
@@ -78,61 +76,85 @@ export const PROJECTS: Project[] = [
     },
     tech: ["Jetpack Compose", "AI Integration", "Kotlin"],
     link: "https://play.google.com/store/apps/details?id=com.chainz.bananastudio",
-    image: "/images/ai-studio.png",
     category: "work",
   },
   {
     title: "AmiChat - AI Creative Buddy",
     description: {
-      vi: "Trợ lý AI sáng tạo tích hợp các mô hình ngôn ngữ lớn hỗ trợ trò chuyện và giải đáp.",
-      en: "Creative AI companion integrated with LLMs to support intelligent conversation and assistance."
+      vi: "Người bạn đồng hành AI sáng tạo và thân thiện, tích hợp các mô hình ngôn ngữ lớn (LLM) để tối ưu hóa trải nghiệm trò chuyện và giải đáp thông tin thông minh.",
+      en: "A friendly and creative AI companion integrated with large language models (LLMs) to deliver seamless conversations and intelligent assistance."
     },
     tech: ["LLM Integration", "Kotlin", "Jetpack Compose"],
     link: "https://play.google.com/store/apps/details?id=com.lawmatic.amichat",
-    image: "/images/amichat.png",
     category: "work",
   },
 
   {
     title: "HTEM - High-Tech Electronic Menu",
     description: {
-      vi: "Xây dựng hệ sinh thái menu điện tử gồm Android App, Web Admin và Server.",
-      en: "Built a smart electronic menu ecosystem including Android App, ReactJS Admin Dashboard, and Node.js Server."
+      vi: "Hệ sinh thái thực đơn điện tử thông minh tích hợp giải pháp gọi món thời gian thực, quản lý bàn ăn và tối ưu hóa vận hành nhà hàng.",
+      en: "A smart electronic menu ecosystem integrating real-time ordering, table management, and restaurant operation optimization."
     },
-    tech: ["Jetpack Compose", "ReactJS", "Node.js"],
-    link: "https://github.com/PhongDayNai/HTEM_Mobile_App_Client",
-    image: "/images/htem.png",
+    tech: ["Kotlin", "Jetpack Compose", "React", "Node.js", "MySQL", "Socket.io"],
+    link: "",
     category: "personal",
+    repositories: [
+      {
+        title: "HTEM Server (Backend API)",
+        description: {
+          vi: "Hệ thống API backend viết bằng Node.js & Express kết hợp Socket.io để xử lý các yêu cầu gọi món thời gian thực và quản lý trạng thái bàn ăn.",
+          en: "Backend API built with Node.js & Express, utilizing Socket.io for real-time order processing and table status sync."
+        },
+        tech: ["Node.js", "Express", "MySQL", "Socket.io", "Sequelize"],
+        link: "https://github.com/PhongDayNai/HTEM_Server"
+      },
+      {
+        title: "HTEM Mobile App (Android Client)",
+        description: {
+          vi: "Ứng dụng gọi món tại bàn chạy native trên thiết bị Android dành cho khách hàng, tích hợp cập nhật trạng thái đơn hàng thời gian thực.",
+          en: "Native Android application for customer table ordering, featuring real-time order status updates."
+        },
+        tech: ["Kotlin", "Jetpack Compose", "Retrofit", "Socket.io-client", "Coroutines"],
+        link: "https://github.com/PhongDayNai/HTEM_Mobile_App_Client"
+      },
+      {
+        title: "HTEM Admin Web Dashboard",
+        description: {
+          vi: "Trang quản trị vận hành nhà hàng dành cho Admin và Nhân viên để tiếp nhận đơn hàng, quản lý doanh thu, thực đơn và sơ đồ bàn ăn.",
+          en: "Administrative web dashboard for restaurant management, order fulfillment, menu configuration, and table layouts."
+        },
+        tech: ["React", "Vite", "TailwindCSS", "Recharts"],
+        link: "https://github.com/PhongDayNai/HTEM_Admin_Web"
+      }
+    ]
   },
   {
-    title: "ChillingStories - Infrastructure",
+    title: "ChillingStories - Scalable Backend Engine",
     description: {
-      vi: "Vận hành hạ tầng Server và quy trình CI/CD tự động cho hệ thống API.",
-      en: "Operating self-hosted server infrastructure and automated CI/CD pipelines for a scalable story-reading API system."
+      vi: "Thiết kế và tối ưu hóa hệ thống backend hiệu năng cao cho ứng dụng đọc truyện, tích hợp hạ tầng tự động hóa CI/CD và ảo hóa Docker.",
+      en: "Designed and optimized a high-performance backend system for a story-reading platform, implementing automated CI/CD pipelines and Docker virtualization."
     },
     tech: ["Node.js", "Express", "MySQL", "Docker", "GitHub Actions"],
     link: "https://github.com/PhongDayNai/ChillingStories_Server",
-    image: "/images/chilling-stories.png",
     category: "personal"
   },
   {
     title: "ChefMate - Smart Cooking Companion",
     description: {
-      vi: "Phát triển trợ lý nấu ăn thông minh quản lý thực đơn và công thức nấu ăn.",
-      en: "Developed a full-stack smart cooking assistant for efficient meal planning and recipe management."
+      vi: "Hệ thống trợ lý nấu ăn thông minh quản lý thực phẩm trong tủ lạnh, theo dõi lịch sử ăn uống để đề xuất món ăn cá nhân hóa và nhắc nhở ngày hết hạn của nguyên liệu.",
+      en: "A smart cooking assistant ecosystem that manages refrigerator inventory, tracks dietary history for personalized recipe recommendations, and alerts users of expiring ingredients."
     },
-    tech: ["Jetpack Compose", "ReactJS", "NextJS", "Node.js", "PostgreSQL"],
-    link: "https://github.com/PhongDayNai/ChefMate_Client",
-    image: "/images/chefmate.png",
+    tech: ["Kotlin", "Jetpack Compose", "Next.js", "Node.js", "MySQL", "Docker", "llama.cpp"],
+    link: "",
     category: "personal",
     repositories: [
       {
         title: "ChefMate Server (Backend API)",
         description: {
-          vi: "Hệ thống Backend API viết bằng Node.js & Express, quản lý dữ liệu người dùng, thực đơn và tích hợp PostgreSQL.",
-          en: "Backend API system built with Node.js & Express, managing user data, recipes, and PostgreSQL database."
+          vi: "Hệ thống Backend API viết bằng Node.js & Express, quản lý dữ liệu người dùng, thực đơn, tích hợp MySQL và hỗ trợ AI chat session.",
+          en: "Backend API system built with Node.js & Express, managing user data, recipes, MySQL database, and AI chat session integration."
         },
-        tech: ["Node.js", "Express", "PostgreSQL", "Sequelize"],
+        tech: ["Node.js", "Express", "MySQL", "Docker", "JWT"],
         link: "https://github.com/PhongDayNai/ChefMate_Server"
       },
       {
@@ -141,16 +163,16 @@ export const PROJECTS: Project[] = [
           vi: "Ứng dụng Android native client viết bằng Kotlin và Jetpack Compose, tích hợp quản lý trạng thái và tối ưu hóa trải nghiệm nấu ăn.",
           en: "Android native client application built with Kotlin and Jetpack Compose, featuring state management and cooking UX optimization."
         },
-        tech: ["Kotlin", "Jetpack Compose", "Retrofit", "Coroutines"],
+        tech: ["Kotlin", "Jetpack Compose", "Room DB", "OkHttp", "Gson", "DataStore"],
         link: "https://github.com/PhongDayNai/ChefMate_Client"
       },
       {
-        title: "ChefMate Web Client (Landing Page)",
+        title: "ChefMate Web App",
         description: {
-          vi: "Trang giới thiệu và tìm kiếm công thức nấu ăn nhanh chóng trên nền tảng Web cho người dùng.",
-          en: "Web application for recipe discovery, user engagement, and cooking community integration."
+          vi: "Ứng dụng web đa nền tảng cho phép người dùng tìm kiếm công thức, lên kế hoạch bữa ăn và quản lý thực đơn đầy đủ tính năng thay thế cho phiên bản di động.",
+          en: "A comprehensive web application that serves as a fully functional alternative to the mobile app for recipe discovery and meal planning."
         },
-        tech: ["Next.js", "React", "TailwindCSS"],
+        tech: ["Next.js", "React", "TypeScript", "TailwindCSS", "Docker"],
         link: "https://github.com/PhongDayNai/Chefmate_Web_Client"
       },
       {
@@ -161,6 +183,88 @@ export const PROJECTS: Project[] = [
         },
         tech: ["React", "Vite", "TailwindCSS", "Recharts"],
         link: "https://github.com/PhongDayNai/ChefMate_Admin_Web"
+      }
+    ]
+  },
+  {
+    title: "Vi Vu Bình Điền - Huế Travel Portal",
+    description: {
+      vi: "Cổng thông tin du lịch trực quan giới thiệu danh lam thắng cảnh, ẩm thực địa phương, văn hóa bản địa cùng tích hợp bản đồ số và kênh phản hồi tại xã Bình Điền, Huế.",
+      en: "An interactive tourism web portal promoting Bình Điền (Huế), showcasing scenic landscapes, local cuisine, culture, digital maps, and feedback channels."
+    },
+    tech: ["Next.js", "React", "TypeScript", "TailwindCSS", "Framer Motion", "Docker"],
+    link: "https://github.com/PhongDayNai/hue-heritage-expo",
+    category: "personal",
+    website: "https://binhdien.phongdaynai.id.vn",
+  },
+  {
+    title: "Agent Chat UI - Desktop Client",
+    description: {
+      vi: "Ứng dụng chat client chạy trên desktop viết bằng PyQt6 cho các API tương thích OpenAI, hỗ trợ 3 chế độ hoạt động (Chat, Character, Agent) và tích hợp terminal agent chạy lệnh local.",
+      en: "A PyQt6 desktop chat client for OpenAI-compatible APIs, featuring Chat, Character, and Agent modes with local terminal execution support for coding tasks."
+    },
+    tech: ["Python", "PyQt6", "OpenAI API", "Local LLMs", "Keyring"],
+    link: "https://github.com/PhongDayNai/Agent-Chat-UI",
+    category: "personal",
+    website: "https://github.com/PhongDayNai/Agent-Chat-UI/releases",
+  },
+  {
+    title: "My Portfolio - Personal Website",
+    description: {
+      vi: "Trang web portfolio cá nhân thiết kế theo phong cách hiện đại với hiệu ứng con trỏ chuột tương tác vật lý, spotlight chuyển động và giao diện tối ưu hóa trải nghiệm.",
+      en: "A modern, highly interactive personal portfolio website featuring custom physics-based cursor, dynamic spotlight layouts, and responsive design."
+    },
+    tech: ["Next.js", "React", "TypeScript", "TailwindCSS", "Framer Motion"],
+    link: "https://github.com/PhongDayNai/My-Portfolio",
+    category: "personal",
+    website: "https://portfolio.phongdaynai.id.vn",
+  },
+  {
+    title: "PawFeed - Smart Pet Feeder Ecosystem",
+    description: {
+      vi: "Hệ sinh thái cho thú cưng ăn tự động từ xa tích hợp AI thông minh với bộ nhớ dài hạn (memory) và cơ chế xây dựng ngữ cảnh (context builder), hỗ trợ gọi hàm (function calling) để tính toán khẩu phần ăn và điều khiển thiết bị.",
+      en: "An AI-powered smart pet feeder ecosystem featuring long-term memory, context builder, and function calling capability for automated portion calculations and device control."
+    },
+    tech: ["Kotlin", "Jetpack Compose", "React", "Next.js", "Node.js", "MySQL", "AI Integration", "Function Calling", "SSE", "TypeScript", "TailwindCSS", "MQTT", "ESP8266", "ESP32", "C++", "Arduino", "Hilt", "Room", "WorkManager", "CameraX", "ML Kit", "Glance", "Zod", "JWT"],
+    link: "",
+    category: "personal",
+    repositories: [
+      {
+        title: "PawFeed Server (Backend API)",
+        description: {
+          vi: "Hệ thống API backend viết bằng Node.js kết hợp SSE & MQTT điều khiển thiết bị thời gian thực và tích hợp AI Agent xử lý logic gọi hàm để tự động hóa quy trình cho ăn.",
+          en: "Backend API system built with Node.js, SSE & MQTT for real-time device communication, integrated with an AI Agent featuring function calling logic."
+        },
+        tech: ["Node.js", "Express", "MySQL", "SSE", "AI Integration", "Function Calling", "MQTT", "Zod", "JWT", "Express Rate Limit", "Helmet"],
+        link: "https://github.com/PhongDayNai/PawFeed_Server"
+      },
+      {
+        title: "PawFeed Mobile App (Android Client)",
+        description: {
+          vi: "Ứng dụng di động native chạy trên Android dành cho người dùng để giám sát, điều khiển máy cho ăn và tương tác với trợ lý AI chăm sóc thú cưng.",
+          en: "Native Android mobile client for monitoring, remote control, and interacting with the AI pet care assistant."
+        },
+        tech: ["Jetpack Compose", "Retrofit", "SSE", "Hilt", "Room", "DataStore", "WorkManager", "CameraX", "ML Kit", "Glance"],
+        link: "https://github.com/PhongDayNai/PawFeed_App"
+      },
+      {
+        title: "PawFeed Web Client",
+        description: {
+          vi: "Nền tảng ứng dụng Web đa tính năng giúp người dùng quản lý thiết bị, xem lịch sử cho ăn và thiết lập lịch trình từ trình duyệt.",
+          en: "Web application platform for managing pet feeding schedules, viewing history, and controlling devices via web browsers."
+        },
+        tech: ["Next.js", "React", "TypeScript", "TailwindCSS", "ESLint", "Lucide React"],
+        link: "https://github.com/PhongDayNai/PawFeed_Web",
+        website: "https://pawfeed.phongdaynai.id.vn"
+      },
+      {
+        title: "PawFeed IoT Firmware (Hardware client)",
+        description: {
+          vi: "Mã nguồn firmware chạy trên vi điều khiển ESP8266/ESP32, quản lý kết nối Wi-Fi, đọc cảm biến, điều khiển động cơ servo cho ăn, lưu trữ cấu hình cục bộ qua LittleFS và giao tiếp hai chiều thời gian thực qua giao thức MQTT bảo mật bằng chữ ký số HMAC-SHA256.",
+          en: "Firmware code running on ESP8266/ESP32 microcontrollers, managing Wi-Fi, reading sensors, controlling servo motors, utilizing LittleFS for local configuration, and communicating via MQTT protocol secured with HMAC-SHA256 signature verification."
+        },
+        tech: ["ESP8266", "ESP32", "C++", "Arduino", "MQTT", "LittleFS", "BearSSL", "HMAC-SHA256"],
+        link: "https://github.com/PhongDayNai/PawFeed_Server/blob/main/machine/main.cpp"
       }
     ]
   },
