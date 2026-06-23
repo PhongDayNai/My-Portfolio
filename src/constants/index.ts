@@ -270,56 +270,96 @@ export const PROJECTS: Project[] = [
   },
 ];
 
-export const WORK_EXPERIENCE = [
-  {
-    company: "CHAINZ JS COMPANY",
-    role: "Android Developer",
-    duration: "12/2024 - 06/2026",
-    tasks: [
-      "Phát triển hệ thống nhận diện thực vật Plantie AI.",
-      "Xây dựng công cụ GPS Camera tích hợp dữ liệu môi trường thời gian thực.",
-      "Phát triển ứng dụng Muslim Pro+ hỗ trợ cộng đồng Hồi giáo.",
-    ],
-  },
-];
-
 export const TIMELINE_DATA = [
   {
     id: 1,
-    title: "Mobile App Developer",
-    organization: "ChainZ",
-    date: "12/2024 - 06/2026",
+    title: {
+      vi: "Lập trình viên Mobile",
+      en: "Mobile App Developer",
+    },
+    organization: {
+      vi: "ChainZ",
+      en: "ChainZ",
+    },
+    date: {
+      vi: "12/2024 - 06/2026",
+      en: "12/2024 - 06/2026",
+    },
     status: "active",
-    description: [
-      "Phát triển các giải pháp di động trên nền tảng Flutter và Android Native.",
-      "Tối ưu hóa quy trình kết nối API và quản lý trạng thái ứng dụng.",
-      "Làm việc trong môi trường chuyên nghiệp với quy trình Scrum/Agile.",
-    ],
+    description: {
+      vi: [
+        "Phát triển ứng dụng Android Native với Kotlin & Jetpack Compose (Plantie AI, GPS Camera,...).",
+        "Tối ưu hóa kết nối API, quản lý trạng thái và tích hợp các tính năng AI/LLM.",
+        "Làm việc trong môi trường Scrum/Agile chuyên nghiệp.",
+      ],
+      en: [
+        "Developed Native Android apps with Kotlin & Jetpack Compose (Plantie AI, GPS Camera,...).",
+        "Optimized API connections, state management, and integrated AI/LLM features.",
+        "Operated in professional Scrum/Agile workflows.",
+      ],
+    },
     type: "work",
   },
   {
     id: 2,
-    title: "Full-Stack Developer (Independent)",
-    organization: "Personal Projects",
-    date: "2023 - Hiện tại",
+    title: {
+      vi: "Lập trình viên Full-Stack\n(Tự do)",
+      en: "Full-Stack Developer\n(Independent)",
+    },
+    organization: {
+      vi: "Dự án cá nhân",
+      en: "Personal Projects",
+    },
+    date: {
+      vi: "2023 - Hiện tại",
+      en: "2023 - Present",
+    },
     status: "active",
-    description: [
-      "Vận hành hệ thống ChillingStories (Node.js/Docker/CI-CD).",
-      "Phát triển hệ thống HTEM - Smart Electronic Menu.",
-      "Tự quản lý hệ thống Home-lab và Cloudflare Tunnel cá nhân.",
-    ],
+    description: {
+      vi: [
+        "Xây dựng trọn gói (Full-Stack) các hệ sinh thái IoT/AI (PawFeed) và Web/Mobile (HTEM, ChefMate).",
+        "Thiết kế backend thời gian thực (Socket.io, SSE, MQTT) và lập trình firmware vi điều khiển.",
+        "Vận hành hệ thống bằng Docker, thiết lập CI/CD tự động và quản lý Home-server cá nhân.",
+      ],
+      en: [
+        "Developed end-to-end (Full-Stack) IoT/AI ecosystems (PawFeed) and Web/Mobile apps (HTEM, ChefMate).",
+        "Designed real-time backends (Socket.io, SSE, MQTT) and programmed microcontroller firmware.",
+        "Containerized services using Docker, set up automated CI/CD, and managed a personal Home-server.",
+      ],
+    },
     type: "work",
   },
   {
     id: 3,
-    title: "Sinh viên CNTT",
-    organization: "Đại học Thủy Lợi",
-    date: "2022 - Hiện tại",
+    title: {
+      vi: "Sinh viên Công nghệ\nthông tin",
+      en: "Information Technology\nStudent",
+    },
+    organization: {
+      vi: "Đại học Thủy Lợi",
+      en: "Thuy Loi University",
+    },
+    date: {
+      vi: "2022 - Hiện tại",
+      en: "2022 - Present",
+    },
     status: "studying",
-    description: [
-      "GPA:3.2/4.0.",
-      "Tập trung nghiên cứu chuyên sâu về Android SDK và Kiến trúc hệ thống.",
-    ],
+    description: {
+      vi: [
+        "GPA tích lũy: 3.2/4.0.",
+        "Làm chủ các ngôn ngữ nền tảng: C/C++, Java, Python, JavaScript.",
+        "Nghiên cứu lý thuyết về quy trình và vòng đời phát triển phần mềm.",
+        "Tự đào sâu phát triển Mobile/Web và kiến trúc hệ thống hiện đại.",
+        "Thực hành tối ưu UX và triển khai hệ thống vào dự án thực tế.",
+      ],
+      en: [
+        "Academic: Maintaining a cumulative GPA of 3.2/4.0.",
+        "Core Languages: Proficient in C/C++, Java, Python, and JS.",
+        "Theory: Studying software development lifecycles and methodologies.",
+        "Self-Research: Deep-diving into Mobile/Web & system architecture.",
+        "Application: Implementing UX optimization and real-world deployment.",
+      ],
+    },
     type: "education",
   },
 ];

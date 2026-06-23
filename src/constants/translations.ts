@@ -83,43 +83,6 @@ export const translations = {
     projects: {
       tabs: { professional: "Dự án Công ty", personal: "Dự án Cá nhân" },
     },
-    timeline: [
-      {
-        title: "Lập trình viên Mobile",
-        org: "ChainZ",
-        date: "12/2024 - 06/2026",
-        desc: [
-          "Phát triển ứng dụng Android Native (Kotlin/Jetpack Compose).",
-          "Xây dựng đa dạng sản phẩm (Plantie AI, CameraGPS).",
-          "Tối ưu hóa kết nối API và quản lý trạng thái ứng dụng.",
-          "Làm việc trong quy trình Scrum/Agile chuyên nghiệp.",
-        ],
-      },
-      {
-        title: "Lập trình viên Full-Stack (Tự do)",
-        org: "Dự án cá nhân",
-        date: "2023 - Hiện tại",
-        desc: [
-          "Xây dựng trọn gói hệ thống HTEM & ChefMate (Android, Web Admin, Backend).",
-          "Phát triển Android Native (Jetpack Compose) và quản lý trạng thái phức tạp.",
-          "Thiết kế Dashboard Admin bằng ReactJS, quản lý dữ liệu thời gian thực.",
-          "Triển khai Backend (Node.js) trên Docker với quy trình CI/CD tự động.",
-          "Quản trị Home-server cá nhân, bảo mật qua Cloudflare Tunnel.",
-        ],
-      },
-      {
-        title: "Sinh viên Công nghệ thông tin",
-        org: "Đại học Thủy Lợi",
-        date: "2022 - Hiện tại",
-        desc: [
-          "GPA tích lũy: 3.2/4.0.",
-          "Làm chủ các ngôn ngữ nền tảng: C/C++, Java, Python, JavaScript.",
-          "Nghiên cứu lý thuyết về quy trình và vòng đời phát triển phần mềm.",
-          "Tự đào sâu phát triển Mobile/Web và kiến trúc hệ thống hiện đại.",
-          "Thực hành tối ưu UX và triển khai hệ thống vào dự án thực tế.",
-        ],
-      },
-    ],
     socials: [
       { name: "GitHub", desc: "@PhongDayNai" },
       { name: "Facebook", desc: "Phong" },
@@ -170,43 +133,6 @@ export const translations = {
     projects: {
       tabs: { professional: "Professional Work", personal: "Personal Lab" },
     },
-    timeline: [
-      {
-        title: "Mobile App Developer",
-        org: "ChainZ",
-        date: "12/2024 - 06/2026",
-        desc: [
-          "Developing Android Native apps (Kotlin/Jetpack Compose).",
-          "Building diverse products (Plantie AI, CameraGPS).",
-          "Optimizing API integration and app state management.",
-          "Operating in professional Scrum/Agile workflows.",
-        ],
-      },
-      {
-        title: "Full-Stack Developer (Independent)",
-        org: "Personal Projects",
-        date: "2023 - Present",
-        desc: [
-          "End-to-end development of HTEM & ChefMate (Android, Web Admin, Backend).",
-          "Developed Android Native (Jetpack Compose) with complex state management.",
-          "Designed ReactJS Admin Dashboards for real-time data control.",
-          "Deployed Node.js backends on Docker with automated CI/CD pipelines.",
-          "Managed personal Home-server secured via Cloudflare Tunnel.",
-        ],
-      },
-      {
-        title: "Information Technology Student",
-        org: "Thuy Loi University",
-        date: "2022 - Present",
-        desc: [
-          "Academic: Maintaining a cumulative GPA of 3.2/4.0.",
-          "Core Languages: Proficient in C/C++, Java, Python, and JS.",
-          "Theory: Studying software development lifecycles and methodologies.",
-          "Self-Research: Deep-diving into Mobile/Web & system architecture.",
-          "Application: Implementing UX optimization and real-world deployment.",
-        ],
-      },
-    ],
     socials: [
       { name: "GitHub", desc: "@PhongDayNai" },
       { name: "Facebook", desc: "Phong" },

@@ -3,11 +3,9 @@ import { motion } from "framer-motion";
 import { Briefcase, GraduationCap, Calendar, Circle } from "lucide-react";
 import { TIMELINE_DATA } from "@/constants";
 import { useLanguage } from '@/context/LanguageContext';
-import { translations } from '@/constants/translations';
 
 export default function Timeline() {
   const { lang } = useLanguage();
-  const timelineTranslations = translations[lang].timeline;
 
   return (
     <div className="relative max-w-4xl mx-auto py-12 px-4">
@@ -15,8 +13,6 @@ export default function Timeline() {
 
       <div className="space-y-12">
         {TIMELINE_DATA.map((item, index) => {
-          const t = timelineTranslations[index];
-
           return (
             <motion.div
               key={item.id}
@@ -52,21 +48,21 @@ export default function Timeline() {
 
                   <div className="relative z-10">
                     <div className="flex flex-wrap items-center justify-between mb-4 gap-2">
-                      <h3 className="text-xl font-black text-white uppercase tracking-tight">
-                        {t?.title || item.title}
+                      <h3 className="text-xl font-black text-white uppercase tracking-tight whitespace-pre-line">
+                        {item.title[lang]}
                       </h3>
                       <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-mono text-blue-400 uppercase">
                         <Calendar size={12} />
-                        {t?.date || item.date}
+                        {item.date[lang]}
                       </span>
                     </div>
 
                     <p className="text-blue-500 font-bold text-sm mb-4">
-                      @ {t?.org || item.organization}
+                      @ {item.organization[lang]}
                     </p>
 
                     <ul className="space-y-2">
-                      {(t?.desc || item.description).map((desc: string, i: number) => (
+                      {item.description[lang].map((desc: string, i: number) => (
                         <li key={i} className="text-slate-400 text-sm flex gap-3 leading-relaxed">
                           <Circle size={6} className="mt-1.5 text-blue-500/50 fill-blue-500/50 shrink-0" />
                           <span>{desc}</span>
