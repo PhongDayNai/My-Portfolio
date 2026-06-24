@@ -307,6 +307,7 @@ export default function ProjectCard({
 
         {/* Collapsed Card (relative w-full h-full) */}
         <motion.div
+          role="button"
           onClick={handleCardClick}
           whileHover={{ y: isExpanded ? 0 : -10 }}
           transition={{
