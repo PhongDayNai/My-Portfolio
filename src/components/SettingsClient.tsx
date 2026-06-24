@@ -918,23 +918,37 @@ export default function SettingsClient({ data }: SettingsClientProps) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-6 py-3 border-b-2 font-bold text-xs uppercase tracking-wider transition-all whitespace-nowrap ${activeTab === tab.id
-                ? "border-blue-500 text-blue-400 bg-blue-500/5"
-                : "border-transparent text-slate-500 hover:text-slate-300 hover:bg-white/5"
+              className={`relative flex items-center gap-2 px-6 py-3 font-bold text-xs uppercase tracking-wider transition-all whitespace-nowrap ${activeTab === tab.id
+                ? "text-blue-400 bg-blue-500/5"
+                : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
                 }`}
             >
-              <tab.icon size={16} />
-              <span>{tab.label}</span>
+              <tab.icon size={16} className="relative z-10" />
+              <span className="relative z-10">{tab.label}</span>
+              {activeTab === tab.id && (
+                <motion.div
+                  layoutId="activeTabUnderline"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 z-10"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
             </button>
           ))}
         </div>
 
         {/* Tab Content Panels */}
         <div className="bg-[#141b2b]/40 border border-white/5 p-6 md:p-8 rounded-2xl shadow-xl min-h-[400px]">
-
-          {/* TAB 1: GENERAL INFO */}
-          {activeTab === "general" && (
-            <div className="space-y-8">
+          <AnimatePresence mode="wait">
+            {/* TAB 1: GENERAL INFO */}
+            {activeTab === "general" && (
+              <motion.div
+                key="general"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-8"
+              >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.adminName}</label>
@@ -1304,12 +1318,19 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                   )}
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* TAB 2: SKILLS & SOCIALS */}
           {activeTab === "skills" && (
-            <div className="space-y-8">
+            <motion.div
+              key="skills"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-8"
+            >
 
               {/* SKILLS SECTION - ĐÃ ĐƯỢC CHUYỂN DỊCH SANG DẠNG QUẢN LÝ ĐỘNG (THÊM/BỚT/SỬA) */}
               <div className="space-y-6">
@@ -1601,12 +1622,19 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                   </div>
                 )}
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* TAB 3: PROJECTS */}
           {activeTab === "projects" && (
-            <div className="space-y-6">
+            <motion.div
+              key="projects"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-6"
+            >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/5">
                 <h3 className="text-sm font-bold text-blue-400 uppercase tracking-widest">{t.projectList}</h3>
 
@@ -1997,12 +2025,19 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                   })}
                 </div>
               )}
-            </div>
+            </motion.div>
           )}
 
           {/* TAB 4: TIMELINE */}
           {activeTab === "timeline" && (
-            <div className="space-y-6">
+            <motion.div
+              key="timeline"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-6"
+            >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/5">
                 <h3 className="text-sm font-bold text-blue-400 uppercase tracking-widest">{t.timelineTitle}</h3>
 
@@ -2374,8 +2409,9 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                   })}
                 </div>
               )}
-            </div>
+            </motion.div>
           )}
+          </AnimatePresence>
         </div>
       </div>
 
