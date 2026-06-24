@@ -76,6 +76,17 @@ export const ProfileImageSchema = z.object({
   show: z.boolean().optional().default(true),
 });
 
+export const DocumentSchema = z.object({
+  name: z.string(),
+  title: z.object({
+    vi: z.string(),
+    en: z.string(),
+  }),
+  url: z.string(),
+  size: z.number().optional(),
+  uploadedAt: z.string(),
+});
+
 export const PortfolioDataSchema = z.object({
   personalInfo: z.object({
     name: z.string(),
@@ -87,6 +98,7 @@ export const PortfolioDataSchema = z.object({
     experienceStartDate: z.string(), // Định dạng YYYY-MM-DD
   }),
   profileImages: z.array(z.union([z.string(), ProfileImageSchema])).optional().default([]),
+  documents: z.array(DocumentSchema).optional().default([]),
   translations: z.object({
     vi: z.object({
       nav: z.object({
@@ -191,3 +203,4 @@ export type SubRepository = z.infer<typeof SubRepositorySchema>;
 export type TimelineItem = z.infer<typeof TimelineItemSchema>;
 export type SkillGroup = z.infer<typeof SkillGroupSchema>;
 export type SocialLink = z.infer<typeof SocialLinkSchema>;
+export type Document = z.infer<typeof DocumentSchema>;

@@ -25,6 +25,7 @@ interface PortfolioDataContextType {
   translations: PortfolioData["translations"]["vi"] | PortfolioData["translations"]["en"];
   rawTranslations: PortfolioData["translations"];
   rawPersonalInfo: PortfolioData["personalInfo"];
+  documents: PortfolioData["documents"];
 }
 
 const PortfolioDataContext = createContext<PortfolioDataContextType | undefined>(undefined);
@@ -67,6 +68,7 @@ export function PortfolioProvider({
       },
       rawTranslations: data.translations,
       rawPersonalInfo: data.personalInfo,
+      documents: data.documents || [],
     };
   }, [data, lang]);
 
