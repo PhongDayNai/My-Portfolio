@@ -15,6 +15,7 @@ import { PortfolioData } from "@/lib/schema";
 import { updatePortfolio } from "@/app/actions";
 import { settingsTranslations } from "@/constants";
 import PortfolioEditor from "./PortfolioEditor";
+import ConfirmModal from "./ConfirmModal";
 
 interface SettingsClientProps {
   data: PortfolioData;
@@ -30,6 +31,18 @@ export default function SettingsClient({ data }: SettingsClientProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+  });
 
   const [documents, setDocuments] = useState<any[]>([]);
   const [isLoadingDocs, setIsLoadingDocs] = useState(false);
@@ -208,45 +221,48 @@ export default function SettingsClient({ data }: SettingsClientProps) {
     }
   };
 
-  const handleDeleteDocument = async (docUrl: string, docName: string) => {
-    if (!confirm(lang === "vi" ? `Bạn có chắc chắn muốn xóa tài liệu "${docName}"?` : `Are you sure you want to delete document "${docName}"?`)) {
-      return;
-    }
+  const handleDeleteDocument = (docUrl: string, docName: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: lang === "vi" ? "Xác nhận xóa tài liệu" : "Delete Document Confirmation",
+      message: lang === "vi" ? `Bạn có chắc chắn muốn xóa tài liệu "${docName}"? Hành động này không thể hoàn tác.` : `Are you sure you want to delete document "${docName}"? This action cannot be undone.`,
+      onConfirm: async () => {
+        setDeletingDocName(docName);
+        setToast(null);
 
-    setDeletingDocName(docName);
-    setToast(null);
+        try {
+          const response = await fetch("/api/documents", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ url: docUrl }),
+          });
 
-    try {
-      const response = await fetch("/api/documents", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ url: docUrl }),
-      });
-
-      const resData = await response.json();
-      if (response.ok && resData.success) {
-        setToast({
-          type: "success",
-          message: lang === "vi" ? "Xóa tài liệu thành công!" : "Document deleted successfully!"
-        });
-        fetchDocuments();
-      } else {
-        setToast({
-          type: "error",
-          message: resData.error || (lang === "vi" ? "Xóa thất bại." : "Delete failed.")
-        });
+          const resData = await response.json();
+          if (response.ok && resData.success) {
+            setToast({
+              type: "success",
+              message: lang === "vi" ? "Xóa tài liệu thành công!" : "Document deleted successfully!"
+            });
+            fetchDocuments();
+          } else {
+            setToast({
+              type: "error",
+              message: resData.error || (lang === "vi" ? "Xóa thất bại." : "Delete failed.")
+            });
+          }
+        } catch (err: any) {
+          setToast({
+            type: "error",
+            message: err?.message || (lang === "vi" ? "Đã xảy ra lỗi khi xóa." : "An error occurred during deletion.")
+          });
+        } finally {
+          setDeletingDocName(null);
+          setTimeout(() => setToast(null), 4000);
+        }
       }
-    } catch (err: any) {
-      setToast({
-        type: "error",
-        message: err?.message || (lang === "vi" ? "Đã xảy ra lỗi khi xóa." : "An error occurred during deletion.")
-      });
-    } finally {
-      setDeletingDocName(null);
-      setTimeout(() => setToast(null), 4000);
-    }
+    });
   };
 
   const copyToClipboard = (text: string) => {
@@ -1025,6 +1041,16 @@ export default function SettingsClient({ data }: SettingsClientProps) {
           )}
         </AnimatePresence>
       </div>
+
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={lang === "vi" ? "Xóa" : "Delete"}
+        cancelText={lang === "vi" ? "Hủy" : "Cancel"}
+        onConfirm={confirmModal.onConfirm}
+        onCancel={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 }
