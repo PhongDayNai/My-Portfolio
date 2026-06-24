@@ -9,12 +9,28 @@
     "experienceStartDate": "2024-06-01"
   },
   "profileImages": [
-    { "url": "/images/me-1.JPG", "show": true },
-    { "url": "/images/me-2.JPG", "show": true },
-    { "url": "/images/me-3.JPG", "show": true },
-    { "url": "/images/me-4.JPG", "show": true },
-    { "url": "/images/me-5.JPG", "show": true }
+    {
+      "url": "/images/me-1.JPG",
+      "show": true
+    },
+    {
+      "url": "/images/me-2.JPG",
+      "show": true
+    },
+    {
+      "url": "/images/me-3.JPG",
+      "show": true
+    },
+    {
+      "url": "/images/me-4.JPG",
+      "show": true
+    },
+    {
+      "url": "/images/me-5.JPG",
+      "show": true
+    }
   ],
+  "documents": [],
   "translations": {
     "vi": {
       "nav": {
@@ -709,14 +725,18 @@
       "status": "completed",
       "description": {
         "vi": [
-          "Phát triển ứng dụng Android Native với Kotlin & Jetpack Compose (Plantie AI, GPS Camera,...).",
-          "Tối ưu hóa kết nối API, quản lý trạng thái và tích hợp các tính năng AI/LLM.",
-          "Làm việc trong môi trường Scrum/Agile chuyên nghiệp."
+          "Phát triển ứng dụng Android Native sử dụng Kotlin & Jetpack Compose với kiến trúc sạch (Clean Architecture) và mô hình MVVM.",
+          "Tối ưu hóa thư viện CameraX nhúng siêu dữ liệu (GPS, bản đồ, thời tiết) vào ảnh/video và tích hợp Sensor API phát triển la bàn số.",
+          "Thiết kế hệ thống lưu trữ dữ liệu cục bộ với Room Database và thiết lập các tiến trình đồng bộ ngầm thông qua WorkManager.",
+          "Tích hợp mô hình AI/LLM, phát triển tính năng AI Live Chat thời gian thực (Plantie AI) và tối ưu hóa các tính năng phát sinh ảnh nghệ thuật.",
+          "Tối ưu hiệu năng, quản lý tài nguyên phần cứng thiết bị và trực tiếp đóng gói, phát hành ứng dụng lên Google Play Store."
         ],
         "en": [
-          "Developed Native Android apps with Kotlin & Jetpack Compose (Plantie AI, GPS Camera,...).",
-          "Optimized API connections, state management, and integrated AI/LLM features.",
-          "Operated in professional Scrum/Agile workflows."
+          "Developed native Android applications using Kotlin & Jetpack Compose following Clean Architecture and MVVM patterns.",
+          "Camera & Sensors: Optimized CameraX APIs to overlay real-time metadata (GPS, maps, weather) and leveraged Sensor APIs for digital compasses.",
+          "Data & Sync: Architected local storage solutions using Room Database and configured background synchronization tasks with WorkManager.",
+          "AI Integration: Embedded AI/LLM features including real-time AI Live Chat (Plantie AI) and optimized generative AI-art workflows.",
+          "App Release: Tuned runtime performance, optimized hardware resources, and managed end-to-end publishing on the Google Play Store."
         ]
       },
       "type": "work",
@@ -725,8 +745,8 @@
     {
       "id": 2,
       "title": {
-        "vi": "Lập trình viên Full-Stack\n(Tự do)",
-        "en": "Full-Stack Developer\n(Independent)"
+        "vi": "Lập trình viên Full-Stack (Tự do)",
+        "en": "Full-Stack Developer (Independent)"
       },
       "organization": {
         "vi": "Dự án cá nhân",
@@ -739,14 +759,18 @@
       "status": "active",
       "description": {
         "vi": [
-          "Xây dựng trọn gói (Full-Stack) các hệ sinh thái IoT/AI (PawFeed) và Web/Mobile (HTEM, ChefMate).",
-          "Thiết kế backend thời gian thực (Socket.io, SSE, MQTT) và lập trình firmware vi điều khiển.",
-          "Vận hành hệ thống bằng Docker, thiết lập CI/CD tự động và quản lý Home-server cá nhân."
+          "Xây dựng trọn gói (Full-Stack) các hệ sinh thái IoT/AI (PawFeed) và Web/Mobile (HTEM, ChefMate, PawFeed...).",
+          "Tối ưu hóa trải nghiệm người dùng (UX) và hiệu năng render giao diện trên đa nền tảng Native Mobile (Jetpack Compose) và Web (Next.js/React).",
+          "Thiết kế backend thời gian thực (Socket.io, SSE, MQTT) kết hợp chuẩn hóa cơ sở dữ liệu quan hệ (MySQL) tối ưu qua Sequelize ORM.",
+          "Nghiên cứu và tích hợp AI Agent (Function Calling), tự vận hành mô hình ngôn ngữ lớn (Llama qua llama.cpp) để tạo trợ lý thông minh.",
+          "Lập trình firmware vi điều khiển, vận hành hệ thống bằng Docker, thiết lập CI/CD tự động và quản lý Home-server cá nhân."
         ],
         "en": [
-          "Developed end-to-end (Full-Stack) IoT/AI ecosystems (PawFeed) and Web/Mobile apps (HTEM, ChefMate).",
-          "Designed real-time backends (Socket.io, SSE, MQTT) and programmed microcontroller firmware.",
-          "Containerized services using Docker, set up automated CI/CD, and managed a personal Home-server."
+          "Developed end-to-end (Full-Stack) IoT/AI ecosystems (PawFeed) and Web/Mobile applications (HTEM, ChefMate, PawFeed...).",
+          "UI/UX Optimization: Streamlined user experiences and rendering performance across Native Mobile (Jetpack Compose) and Web (Next.js/React).",
+          "Designed real-time backends (Socket.io, SSE, MQTT) combined with relational database (MySQL) optimization via Sequelize ORM.",
+          "AI Integration: Implemented AI Agents with function-calling capabilities and self-hosted local LLMs (Llama via llama.cpp) for smart assistants.",
+          "Programmed microcontroller firmware, containerized services using Docker, set up automated CI/CD, and managed a personal Home-server."
         ]
       },
       "type": "work",
@@ -755,16 +779,16 @@
     {
       "id": 3,
       "title": {
-        "vi": "Sinh viên Công nghệ\nthông tin",
-        "en": "Information Technology\nStudent"
+        "vi": "Sinh viên Công nghệ thông tin",
+        "en": "Information Technology Student"
       },
       "organization": {
         "vi": "Đại học Thủy Lợi",
         "en": "Thuy Loi University"
       },
       "date": {
-        "vi": "2022 - Hiện tại",
-        "en": "2022 - Present"
+        "vi": "01/2022 - Hiện tại",
+        "en": "01/2022 - Present"
       },
       "status": "active",
       "description": {
@@ -773,14 +797,16 @@
           "Làm chủ các ngôn ngữ nền tảng: C/C++, Java, Python, JavaScript.",
           "Nghiên cứu lý thuyết về quy trình và vòng đời phát triển phần mềm.",
           "Tự đào sâu phát triển Mobile/Web và kiến trúc hệ thống hiện đại.",
-          "Thực hành tối ưu UX và triển khai hệ thống vào dự án thực tế."
+          "Thực hành tối ưu UX và triển khai hệ thống vào dự án thực tế.",
+          "Tích cực cọ xát tại các cuộc thi công nghệ và chủ động tham gia nghiên cứu khoa học để nâng cao tư duy thực chiến."
         ],
         "en": [
           "Academic: Maintaining a cumulative GPA of 3.2/4.0.",
           "Core Languages: Proficient in C/C++, Java, Python, and JS.",
           "Theory: Studying software development lifecycles and methodologies.",
           "Self-Research: Deep-diving into Mobile/Web & system architecture.",
-          "Application: Implementing UX optimization and real-world deployment."
+          "Application: Implementing UX optimization and real-world deployment.",
+          "Contests & Research: Actively competing in tech hackathons and conducting academic research to sharpen practical engineering skills."
         ]
       },
       "type": "education",
