@@ -88,6 +88,7 @@ export const DocumentSchema = z.object({
 });
 
 export const PortfolioDataSchema = z.object({
+  version: z.number().optional().default(2),
   personalInfo: z.object({
     name: z.string(),
     role: z.string(),

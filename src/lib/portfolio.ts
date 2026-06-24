@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { cache } from "react";
 import { PortfolioDataSchema, PortfolioData } from "./schema";
+import { migratePortfolioData, CURRENT_VERSION } from "./migrations";
 
 const getPaths = () => {
   const dataDir = path.join(process.cwd(), "src/data");
@@ -55,15 +56,49 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
     }
   }
 
+  // Load default data for migrations and translation merging
+  let defaultData: any = null;
+  try {
+    if (fs.existsSync(defaultPath)) {
+      const defaultContent = fs.readFileSync(defaultPath, "utf-8");
+      defaultData = JSON.parse(defaultContent);
+    }
+  } catch (err) {
+    console.error("Failed to load default data for migration context:", err);
+  }
+
+  // Run migration check and translation merge
+  let migratedData = rawData;
+  try {
+    migratedData = migratePortfolioData(rawData, defaultData);
+    
+    // Save updated data to disk if changes were made
+    if (JSON.stringify(rawData) !== JSON.stringify(migratedData)) {
+      console.log(`[Migration] Saving migrated/merged portfolio data to ${dataPath}...`);
+      if (fs.existsSync(dataPath)) {
+        const backupPath = `${dataPath}.bak`;
+        try {
+          fs.copyFileSync(dataPath, backupPath);
+        } catch (backupError) {
+          console.error(`Warning: Failed to create backup file at ${backupPath}`, backupError);
+        }
+      }
+      fs.writeFileSync(dataPath, JSON.stringify(migratedData, null, 2), "utf-8");
+      console.log("[Migration] Portfolio data successfully migrated and saved.");
+    }
+  } catch (migrationError) {
+    console.error("[Migration] Error processing migration:", migrationError);
+  }
+
   // Validate schema with Zod
-  const result = PortfolioDataSchema.safeParse(rawData);
+  const result = PortfolioDataSchema.safeParse(migratedData);
   if (!result.success) {
     console.error("Portfolio data validation failed:", result.error.format());
     // If validation fails, attempt to parse and return the default data
     try {
       const defaultContent = fs.readFileSync(defaultPath, "utf-8");
-      const defaultData = JSON.parse(defaultContent);
-      const defaultResult = PortfolioDataSchema.safeParse(defaultData);
+      const defaultDataParsed = JSON.parse(defaultContent);
+      const defaultResult = PortfolioDataSchema.safeParse(defaultDataParsed);
       if (defaultResult.success) {
         return defaultResult.data;
       } else {

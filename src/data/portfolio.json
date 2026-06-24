@@ -125,40 +125,41 @@
   },
   "skills": [
     {
+      "show": true,
       "category": {
         "vi": "Android / Mobile",
         "en": "Android / Mobile"
       },
-      "items": "Kotlin, Jetpack Compose, Hilt, Room, Retrofit, Coroutines, WorkManager, CameraX, Glance, ML Kit, MVVM & Clean Architecture",
-      "show": true
+      "items": "Kotlin, Jetpack Compose, Hilt, Room, Retrofit, Coroutines, WorkManager, CameraX, Glance, ML Kit, MVVM & Clean Architecture"
     },
     {
+      "show": true,
       "category": {
         "vi": "Web / Frontend",
         "en": "Web / Frontend"
       },
-      "items": "React, Next.js, TypeScript, TailwindCSS, Vite, Framer Motion, Recharts",
-      "show": true
+      "items": "React, Next.js, TypeScript, TailwindCSS, Vite, Framer Motion, Recharts"
     },
     {
+      "show": true,
       "category": {
         "vi": "Backend",
         "en": "Backend"
       },
-      "items": "Node.js, Express, MySQL, ORM (Sequelize), Socket.io, SSE, JWT & Zod, AI/LLM Integration (Function Calling)",
-      "show": true
+      "items": "Node.js, Express, MySQL, ORM (Sequelize), Socket.io, SSE, JWT & Zod, AI/LLM Integration (Function Calling)"
     },
     {
+      "show": true,
       "category": {
         "vi": "DevOps & Cơ sở hạ tầng",
         "en": "DevOps & Infrastructure"
       },
-      "items": "Docker, GitHub Actions, Cloudflare Tunnel, Linux & Home-Lab Setup",
-      "show": true
+      "items": "Docker, GitHub Actions, Cloudflare Tunnel, Linux & Home-Lab Setup"
     }
   ],
   "socialLinks": [
     {
+      "show": true,
       "name": "GitHub",
       "icon": "Github",
       "link": "https://github.com/PhongDayNai",
@@ -166,10 +167,10 @@
       "desc": {
         "vi": "@PhongDayNai",
         "en": "@PhongDayNai"
-      },
-      "show": true
+      }
     },
     {
+      "show": true,
       "name": "Facebook",
       "icon": "Facebook",
       "link": "https://www.facebook.com/phongdaynai",
@@ -177,10 +178,10 @@
       "desc": {
         "vi": "Phong",
         "en": "Phong"
-      },
-      "show": true
+      }
     },
     {
+      "show": true,
       "name": "TikTok",
       "icon": "TikTok",
       "link": "https://www.tiktok.com/@phongdaynai",
@@ -188,10 +189,10 @@
       "desc": {
         "vi": "Sở thích & Đời sống",
         "en": "Hobby & Life"
-      },
-      "show": true
+      }
     },
     {
+      "show": true,
       "name": "HomeLab",
       "icon": "Server",
       "link": "https://portfolio.phongdaynai.id.vn",
@@ -199,10 +200,10 @@
       "desc": {
         "vi": "Hệ thống Self-hosted",
         "en": "Self-hosted Lab"
-      },
-      "show": true
+      }
     },
     {
+      "show": false,
       "name": "LinkedIn",
       "icon": "Linkedin",
       "link": "https://www.linkedin.com/in/phongdaynai",
@@ -210,10 +211,10 @@
       "desc": {
         "vi": "Kết nối công việc",
         "en": "Professional Network"
-      },
-      "show": false
+      }
     },
     {
+      "show": false,
       "name": "X",
       "icon": "X",
       "link": "https://x.com/phongdaynai",
@@ -221,10 +222,10 @@
       "desc": {
         "vi": "Tin tức & Chia sẻ",
         "en": "Thoughts & Tech"
-      },
-      "show": false
+      }
     },
     {
+      "show": false,
       "name": "Reddit",
       "icon": "Reddit",
       "link": "https://www.reddit.com/user/phongdaynai",
@@ -232,10 +233,10 @@
       "desc": {
         "vi": "Cộng đồng & Thảo luận",
         "en": "Communities & Forums"
-      },
-      "show": false
+      }
     },
     {
+      "show": false,
       "name": "Telegram",
       "icon": "Telegram",
       "link": "https://t.me/phongdaynai",
@@ -243,10 +244,10 @@
       "desc": {
         "vi": "Kênh trao đổi lập trình",
         "en": "Developer Chat Channel"
-      },
-      "show": false
+      }
     },
     {
+      "show": false,
       "name": "Zalo",
       "icon": "Zalo",
       "link": "https://zalo.me/0855576569",
@@ -254,10 +255,10 @@
       "desc": {
         "vi": "Liên hệ trực tiếp",
         "en": "Direct Contact"
-      },
-      "show": false
+      }
     },
     {
+      "show": false,
       "name": "Discord",
       "icon": "Discord",
       "link": "https://discord.gg/phongdaynai",
@@ -265,10 +266,10 @@
       "desc": {
         "vi": "Cộng đồng công nghệ",
         "en": "Tech Community"
-      },
-      "show": false
+      }
     },
     {
+      "show": false,
       "name": "YouTube",
       "icon": "Youtube",
       "link": "https://youtube.com/@phongdaynai",
@@ -276,10 +277,10 @@
       "desc": {
         "vi": "Chia sẻ video & Hướng dẫn",
         "en": "Video Tutorials"
-      },
-      "show": false
+      }
     },
     {
+      "show": false,
       "name": "Instagram",
       "icon": "Instagram",
       "link": "https://instagram.com/phongdaynai",
@@ -287,12 +288,12 @@
       "desc": {
         "vi": "Hình ảnh đời sống",
         "en": "Life & Photos"
-      },
-      "show": false
+      }
     }
   ],
   "projects": [
     {
+      "show": true,
       "title": "Plantie AI - Plant Detection",
       "description": {
         "vi": "Hệ thống trí tuệ nhân tạo (AI) nhận diện thực vật thông qua hình ảnh và hỗ trợ tư vấn chăm sóc trực tuyến thời gian thực qua Live Chat AI.",
@@ -306,10 +307,10 @@
       ],
       "link": "https://play.google.com/store/apps/details?id=com.plantidentification.chainz",
       "category": "work",
-      "company": "ChainZ",
-      "show": true
+      "company": "ChainZ"
     },
     {
+      "show": true,
       "title": "GPS Camera - Timestamp & Maps",
       "description": {
         "vi": "Tối ưu CameraX templates nhúng dữ liệu vị trí và môi trường thời gian thực.",
@@ -323,10 +324,10 @@
       ],
       "link": "https://play.google.com/store/apps/details?id=com.lawmatic.cameragps",
       "category": "work",
-      "company": "ChainZ",
-      "show": true
+      "company": "ChainZ"
     },
     {
+      "show": true,
       "title": "Muslim Pro+ - Lifestyle Companion",
       "description": {
         "vi": "Ứng dụng hỗ trợ phong cách sống Hồi giáo tích hợp nhắc nhở giờ cầu nguyện tự động, la bàn định hướng Qibla và đọc kinh Quran (Chưa phát hành).",
@@ -340,10 +341,10 @@
       ],
       "link": "#",
       "category": "work",
-      "company": "ChainZ",
-      "show": true
+      "company": "ChainZ"
     },
     {
+      "show": true,
       "title": "AI Studio - AI-art Generator",
       "description": {
         "vi": "Thiết kế UI/UX và tích hợp mô hình phát sinh ảnh nghệ thuật hiệu suất cao bằng Jetpack Compose.",
@@ -356,10 +357,10 @@
       ],
       "link": "https://play.google.com/store/apps/details?id=com.chainz.bananastudio",
       "category": "work",
-      "company": "ChainZ",
-      "show": true
+      "company": "ChainZ"
     },
     {
+      "show": true,
       "title": "AmiChat - AI Creative Buddy",
       "description": {
         "vi": "Người bạn đồng hành AI sáng tạo và thân thiện, tích hợp các mô hình ngôn ngữ lớn (LLM) để tối ưu hóa trải nghiệm trò chuyện và giải đáp thông tin thông minh.",
@@ -372,10 +373,10 @@
       ],
       "link": "https://play.google.com/store/apps/details?id=com.lawmatic.amichat",
       "category": "work",
-      "company": "ChainZ",
-      "show": true
+      "company": "ChainZ"
     },
     {
+      "show": true,
       "title": "HTEM - High-Tech Electronic Menu",
       "description": {
         "vi": "Hệ sinh thái thực đơn điện tử thông minh tích hợp giải pháp gọi món thời gian thực, quản lý bàn ăn và tối ưu hóa vận hành nhà hàng.",
@@ -436,10 +437,10 @@
           ],
           "link": "https://github.com/PhongDayNai/HTEM_Admin_Web"
         }
-      ],
-      "show": true
+      ]
     },
     {
+      "show": true,
       "title": "ChillingStories - Scalable Backend Engine",
       "description": {
         "vi": "Thiết kế và tối ưu hóa hệ thống backend hiệu năng cao cho ứng dụng đọc truyện, tích hợp hạ tầng tự động hóa CI/CD và ảo hóa Docker.",
@@ -453,10 +454,10 @@
         "GitHub Actions"
       ],
       "link": "https://github.com/PhongDayNai/ChillingStories_Server",
-      "category": "personal",
-      "show": true
+      "category": "personal"
     },
     {
+      "show": true,
       "title": "ChefMate - Smart Cooking Companion",
       "description": {
         "vi": "Hệ thống trợ lý nấu ăn thông minh quản lý thực phẩm trong tủ lạnh, theo dõi lịch sử ăn uống để đề xuất món ăn cá nhân hóa và nhắc nhở ngày hết hạn của nguyên liệu.",
@@ -534,10 +535,10 @@
           ],
           "link": "https://github.com/PhongDayNai/ChefMate_Admin_Web"
         }
-      ],
-      "show": true
+      ]
     },
     {
+      "show": true,
       "title": "Vi Vu Bình Điền - Huế Travel Portal",
       "description": {
         "vi": "Cổng thông tin du lịch trực quan giới thiệu danh lam thắng cảnh, ẩm thực địa phương, văn hóa bản địa cùng tích hợp bản đồ số và kênh phản hồi tại xã Bình Điền, Huế.",
@@ -553,10 +554,10 @@
       ],
       "link": "https://github.com/PhongDayNai/hue-heritage-expo",
       "category": "personal",
-      "website": "https://binhdien.phongdaynai.id.vn",
-      "show": true
+      "website": "https://binhdien.phongdaynai.id.vn"
     },
     {
+      "show": true,
       "title": "Agent Chat UI - Desktop Client",
       "description": {
         "vi": "Ứng dụng chat client chạy trên desktop viết bằng PyQt6 cho các API tương thích OpenAI, hỗ trợ 3 chế độ hoạt động (Chat, Character, Agent) và tích hợp terminal agent chạy lệnh local.",
@@ -571,10 +572,10 @@
       ],
       "link": "https://github.com/PhongDayNai/Agent-Chat-UI",
       "category": "personal",
-      "website": "https://github.com/PhongDayNai/Agent-Chat-UI/releases",
-      "show": true
+      "website": "https://github.com/PhongDayNai/Agent-Chat-UI/releases"
     },
     {
+      "show": true,
       "title": "My Portfolio - Personal Website",
       "description": {
         "vi": "Trang web portfolio cá nhân thiết kế theo phong cách hiện đại với hiệu ứng con trỏ chuột tương tác vật lý, spotlight chuyển động và giao diện tối ưu hóa trải nghiệm.",
@@ -589,10 +590,10 @@
       ],
       "link": "https://github.com/PhongDayNai/My-Portfolio",
       "category": "personal",
-      "website": "https://portfolio.phongdaynai.id.vn",
-      "show": true
+      "website": "https://portfolio.phongdaynai.id.vn"
     },
     {
+      "show": true,
       "title": "PawFeed - Smart Pet Feeder Ecosystem",
       "description": {
         "vi": "Hệ sinh thái cho thú cưng ăn tự động từ xa tích hợp AI thông minh với bộ nhớ dài hạn (memory) và cơ chế xây dựng ngữ cảnh (context builder), hỗ trợ gọi hàm (function calling) để tính toán khẩu phần ăn và điều khiển thiết bị.",
@@ -703,12 +704,12 @@
           ],
           "link": "https://github.com/PhongDayNai/PawFeed_Server/blob/main/machine/main.cpp"
         }
-      ],
-      "show": true
+      ]
     }
   ],
   "timeline": [
     {
+      "show": true,
       "id": 1,
       "title": {
         "vi": "Lập trình viên Mobile",
@@ -739,10 +740,10 @@
           "App Release: Tuned runtime performance, optimized hardware resources, and managed end-to-end publishing on the Google Play Store."
         ]
       },
-      "type": "work",
-      "show": true
+      "type": "work"
     },
     {
+      "show": true,
       "id": 2,
       "title": {
         "vi": "Lập trình viên Full-Stack (Tự do)",
@@ -773,10 +774,10 @@
           "Programmed microcontroller firmware, containerized services using Docker, set up automated CI/CD, and managed a personal Home-server."
         ]
       },
-      "type": "work",
-      "show": true
+      "type": "work"
     },
     {
+      "show": true,
       "id": 3,
       "title": {
         "vi": "Sinh viên Công nghệ thông tin",
@@ -809,8 +810,8 @@
           "Contests & Research: Actively competing in tech hackathons and conducting academic research to sharpen practical engineering skills."
         ]
       },
-      "type": "education",
-      "show": true
+      "type": "education"
     }
-  ]
+  ],
+  "version": 2
 }
