@@ -291,7 +291,7 @@ export default function ProjectCard({
   // If the project has sub-repositories, enable standalone absolute overlay expansion
   if (project.repositories) {
     return (
-      <div className="w-full h-full" ref={cardRef}>
+      <div className="w-full h-full relative" ref={cardRef}>
         {/* Backdrop (z-30) to dim the background and allow click-out close */}
         <AnimatePresence>
           {isExpanded && (
