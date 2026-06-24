@@ -2,16 +2,17 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-const images = [
-  "/images/me-1.JPG",
-  "/images/me-2.JPG",
-  "/images/me-3.JPG",
-  "/images/me-4.JPG",
-  "/images/me-5.JPG",
-];
+import { usePortfolio } from "@/context/PortfolioDataContext";
 
 export default function SpotlightPhoto() {
+  const { profileImages } = usePortfolio();
+  const images = profileImages && profileImages.length > 0 ? profileImages : [
+    "/images/me-1.JPG",
+    "/images/me-2.JPG",
+    "/images/me-3.JPG",
+    "/images/me-4.JPG",
+    "/images/me-5.JPG",
+  ];
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isReady, setIsReady] = useState(false);
   
