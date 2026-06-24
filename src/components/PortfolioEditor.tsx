@@ -16,6 +16,7 @@ import { PortfolioData } from "@/lib/schema";
 import { updatePortfolio } from "@/app/actions";
 import { settingsTranslations } from "@/constants";
 import CustomDatePicker from "@/components/CustomDatePicker";
+import ConfirmModal from "./ConfirmModal";
 
 interface PortfolioEditorProps {
   portfolio: PortfolioData;
@@ -327,6 +328,18 @@ export default function PortfolioEditor({
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<"general" | "skills" | "projects" | "timeline">("general");
+
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+  });
 
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [previewImageIndex, setPreviewImageIndex] = useState<number | null>(null);
@@ -1233,35 +1246,40 @@ export default function PortfolioEditor({
                               {/* Nút xóa ảnh */}
                               <button
                                 type="button"
-                                onClick={async (e) => {
+                                onClick={(e) => {
                                   e.stopPropagation();
-                                  if (confirm(t.confirmDeleteImage)) {
-                                    try {
-                                      // Gọi API xóa file vật lý
-                                      const res = await fetch("/api/images", {
-                                        method: "DELETE",
-                                        headers: {
-                                          "Content-Type": "application/json",
-                                        },
-                                        body: JSON.stringify({ url: imgUrl }),
-                                      });
+                                  setConfirmModal({
+                                    isOpen: true,
+                                    title: lang === "vi" ? "Xác nhận xóa ảnh" : "Delete Image Confirmation",
+                                    message: t.confirmDeleteImage,
+                                    onConfirm: async () => {
+                                      try {
+                                        // Gọi API xóa file vật lý
+                                        const res = await fetch("/api/images", {
+                                          method: "DELETE",
+                                          headers: {
+                                            "Content-Type": "application/json",
+                                          },
+                                          body: JSON.stringify({ url: imgUrl }),
+                                        });
 
-                                      const result = await res.json();
-                                      if (result.success) {
-                                        setPortfolio(prev => ({
-                                          ...prev,
-                                          profileImages: (prev.profileImages || []).filter((_, i) => i !== imgIdx)
-                                        }));
-                                        setToast({ type: "success", message: t.deleteSuccess });
-                                      } else {
-                                        setToast({ type: "error", message: result.error || t.deleteFailed });
+                                        const result = await res.json();
+                                        if (result.success) {
+                                          setPortfolio(prev => ({
+                                            ...prev,
+                                            profileImages: (prev.profileImages || []).filter((_, i) => i !== imgIdx)
+                                          }));
+                                          setToast({ type: "success", message: t.deleteSuccess });
+                                        } else {
+                                          setToast({ type: "error", message: result.error || t.deleteFailed });
+                                        }
+                                      } catch (err: any) {
+                                        setToast({ type: "error", message: err?.message || t.errorOccurred });
+                                      } finally {
+                                        setTimeout(() => setToast(null), 3000);
                                       }
-                                    } catch (err: any) {
-                                      setToast({ type: "error", message: err?.message || t.errorOccurred });
-                                    } finally {
-                                      setTimeout(() => setToast(null), 3000);
                                     }
-                                  }
+                                  });
                                 }}
                                 className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 active:scale-95 text-red-400 hover:text-red-300 transition-all duration-200 border border-red-500/20 flex items-center justify-center shadow-lg"
                                 title={t.deleteImage}
@@ -1338,9 +1356,12 @@ export default function PortfolioEditor({
                         {/* Nút xóa nhóm kỹ năng */}
                         <button
                           onClick={() => {
-                            if (confirm(t.confirmDeleteSkillGroup)) {
-                              deleteSkillGroup(idx);
-                            }
+                            setConfirmModal({
+                              isOpen: true,
+                              title: lang === "vi" ? "Xác nhận xóa nhóm kỹ năng" : "Delete Skill Group Confirmation",
+                              message: t.confirmDeleteSkillGroup,
+                              onConfirm: () => deleteSkillGroup(idx),
+                            });
                           }}
                           className="absolute top-4 right-4 text-slate-500 hover:text-red-400 hover:bg-red-500/10 p-1.5 rounded-lg transition-all"
                           title={t.confirmDeleteSkillGroup}
@@ -1493,9 +1514,12 @@ export default function PortfolioEditor({
                           <button
                             type="button"
                             onClick={() => {
-                              if (confirm(t.confirmDeleteSocial)) {
-                                deleteSocialLink(idx);
-                              }
+                              setConfirmModal({
+                                isOpen: true,
+                                title: lang === "vi" ? "Xác nhận xóa mạng xã hội" : "Delete Social Link Confirmation",
+                                message: t.confirmDeleteSocial,
+                                onConfirm: () => deleteSocialLink(idx),
+                              });
                             }}
                             className="absolute top-4 right-4 text-slate-500 hover:text-red-400 hover:bg-red-500/10 p-1.5 rounded-lg transition-all"
                             title={t.confirmDeleteSocial}
@@ -1707,15 +1731,20 @@ export default function PortfolioEditor({
                             </button>
 
                             <button
-                              onClick={() => {
-                                if (confirm("Xóa dự án này?")) {
-                                  setPortfolio(prev => ({
-                                    ...prev,
-                                    projects: prev.projects.filter((_, i) => i !== idx)
-                                  }));
-                                  if (expandedProjectIndex === idx) setExpandedProjectIndex(null);
-                                }
-                              }}
+                               onClick={() => {
+                                 setConfirmModal({
+                                   isOpen: true,
+                                   title: lang === "vi" ? "Xác nhận xóa dự án" : "Delete Project Confirmation",
+                                   message: lang === "vi" ? "Bạn có chắc chắn muốn xóa dự án này?" : "Are you sure you want to delete this project?",
+                                   onConfirm: () => {
+                                     setPortfolio(prev => ({
+                                       ...prev,
+                                       projects: prev.projects.filter((_, i) => i !== idx)
+                                     }));
+                                     if (expandedProjectIndex === idx) setExpandedProjectIndex(null);
+                                   }
+                                 });
+                               }}
                               className="text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors p-2 rounded-xl"
                             >
                               <Trash2 size={16} />
@@ -1910,9 +1939,12 @@ export default function PortfolioEditor({
                                               <button
                                                 type="button"
                                                 onClick={() => {
-                                                  if (confirm(t.confirmDeleteSubRepo)) {
-                                                    deleteSubRepo(idx, subIdx);
-                                                  }
+                                                  setConfirmModal({
+                                                    isOpen: true,
+                                                    title: lang === "vi" ? "Xác nhận xóa kho lưu trữ con" : "Delete Sub-Repository Confirmation",
+                                                    message: t.confirmDeleteSubRepo,
+                                                    onConfirm: () => deleteSubRepo(idx, subIdx),
+                                                  });
                                                 }}
                                                 className="text-slate-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/5 transition-colors"
                                                 title={t.confirmDeleteSubRepo}
@@ -2123,13 +2155,18 @@ export default function PortfolioEditor({
 
                             <button
                               onClick={() => {
-                                if (confirm("Xóa dòng thời gian này?")) {
-                                  setPortfolio(prev => ({
-                                    ...prev,
-                                    timeline: prev.timeline.filter((_, i) => i !== idx)
-                                  }));
-                                  if (expandedTimelineIndex === idx) setExpandedTimelineIndex(null);
-                                }
+                                setConfirmModal({
+                                  isOpen: true,
+                                  title: lang === "vi" ? "Xác nhận xóa dòng thời gian" : "Delete Timeline Item Confirmation",
+                                  message: lang === "vi" ? "Bạn có chắc chắn muốn xóa dòng thời gian này?" : "Are you sure you want to delete this timeline item?",
+                                  onConfirm: () => {
+                                    setPortfolio(prev => ({
+                                      ...prev,
+                                      timeline: prev.timeline.filter((_, i) => i !== idx)
+                                    }));
+                                    if (expandedTimelineIndex === idx) setExpandedTimelineIndex(null);
+                                  }
+                                });
                               }}
                               className="text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors p-2 rounded-xl"
                             >
@@ -3406,6 +3443,16 @@ export default function PortfolioEditor({
           </div>
         )}
       </AnimatePresence>
+
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={lang === "vi" ? "Xóa" : "Delete"}
+        cancelText={lang === "vi" ? "Hủy" : "Cancel"}
+        onConfirm={confirmModal.onConfirm}
+        onCancel={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 }
