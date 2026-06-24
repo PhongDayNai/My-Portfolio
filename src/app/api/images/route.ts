@@ -3,6 +3,8 @@ import { cookies } from 'next/headers';
 import fs from 'fs';
 import path from 'path';
 import { verifyJWT } from '@/lib/jwt';
+import { getPortfolioData, savePortfolioData } from '@/lib/portfolio';
+import { revalidatePath } from 'next/cache';
 
 async function isAuthenticated() {
   try {
@@ -90,6 +92,29 @@ export async function POST(request: Request) {
     fs.writeFileSync(filePath, buffer);
 
     const url = `/images/${filename}`;
+
+    // Automatically append to portfolio.json profileImages
+    try {
+      const portfolio = await getPortfolioData();
+      const currentImages = portfolio.profileImages || [];
+      const updatedImages = [...currentImages];
+      
+      const exists = updatedImages.some((img: any) => {
+        const imgUrl = typeof img === 'string' ? img : img.url;
+        return imgUrl === url;
+      });
+
+      if (!exists) {
+        updatedImages.push({ url, show: true });
+        portfolio.profileImages = updatedImages;
+        await savePortfolioData(portfolio);
+        revalidatePath("/");
+        revalidatePath("/settings");
+      }
+    } catch (err) {
+      console.error("Failed to auto-update portfolio.json on image upload:", err);
+    }
+
     return NextResponse.json({ success: true, url });
   } catch (error: any) {
     console.error("Failed to upload image:", error);
@@ -119,8 +144,32 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Không có quyền truy cập tệp tin ngoài thư mục ảnh' }, { status: 403 });
     }
 
+    let fileDeleted = false;
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
+      fileDeleted = true;
+    }
+
+    // Automatically remove from portfolio.json profileImages
+    try {
+      const portfolio = await getPortfolioData();
+      const currentImages = portfolio.profileImages || [];
+      const updatedImages = currentImages.filter((img: any) => {
+        const imgUrl = typeof img === 'string' ? img : img.url;
+        return imgUrl !== url;
+      });
+
+      if (updatedImages.length !== currentImages.length) {
+        portfolio.profileImages = updatedImages;
+        await savePortfolioData(portfolio);
+        revalidatePath("/");
+        revalidatePath("/settings");
+      }
+    } catch (err) {
+      console.error("Failed to auto-remove image from portfolio.json on delete:", err);
+    }
+
+    if (fileDeleted) {
       return NextResponse.json({ success: true });
     } else {
       // Nếu file không tồn tại vật lý nhưng được yêu cầu xóa, ta vẫn trả về thành công để đồng bộ
