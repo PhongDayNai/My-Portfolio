@@ -247,6 +247,74 @@ const SOCIAL_METADATA: Record<string, {
   },
 };
 
+// Helper functions to parse and format timeline dates for CustomDatePicker
+function parseTimelineDate(dateStr: string) {
+  const defaultStart = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+  if (!dateStr) return { start: defaultStart, end: "", isPresent: true };
+
+  const parts = dateStr.split("-").map(p => p.trim());
+  const startPart = parts[0] || "";
+  const endPart = parts[1] || "";
+
+  // Parse startPart (e.g. "12/2024" or "2023")
+  let startVal = defaultStart;
+  if (startPart) {
+    const subParts = startPart.split("/");
+    if (subParts.length === 2) {
+      const mm = subParts[0].padStart(2, "0");
+      const yyyy = subParts[1];
+      startVal = `${yyyy}-${mm}-01`;
+    } else if (startPart.length === 4 && !isNaN(Number(startPart))) {
+      startVal = `${startPart}-01-01`;
+    }
+  }
+
+  // Parse endPart (e.g. "06/2026" or "Hiện tại" or "Present")
+  let endVal = "";
+  let isPresent = false;
+  if (!endPart || endPart === "Hiện tại" || endPart === "Present" || endPart.toLowerCase() === "present" || endPart === "nay" || endPart === "hiện tại") {
+    isPresent = true;
+  } else {
+    const subParts = endPart.split("/");
+    if (subParts.length === 2) {
+      const mm = subParts[0].padStart(2, "0");
+      const yyyy = subParts[1];
+      endVal = `${yyyy}-${mm}-01`;
+    } else if (endPart.length === 4 && !isNaN(Number(endPart))) {
+      endVal = `${endPart}-01-01`;
+    } else {
+      endVal = defaultStart;
+    }
+  }
+
+  return { start: startVal, end: endVal, isPresent };
+}
+
+function formatTimelineDate(start: string, end: string, isPresent: boolean) {
+  const formatPart = (val: string) => {
+    if (!val) return "";
+    const parts = val.split("-");
+    if (parts.length === 3) {
+      return `${parts[1]}/${parts[0]}`; // MM/YYYY
+    }
+    return val;
+  };
+
+  const startFormatted = formatPart(start);
+  if (isPresent) {
+    return {
+      vi: `${startFormatted} - Hiện tại`,
+      en: `${startFormatted} - Present`
+    };
+  } else {
+    const endFormatted = formatPart(end);
+    return {
+      vi: `${startFormatted} - ${endFormatted}`,
+      en: `${startFormatted} - ${endFormatted}`
+    };
+  }
+}
+
 export default function SettingsClient({ data }: SettingsClientProps) {
   const { lang } = useLanguage();
   const t = settingsTranslations[lang] || settingsTranslations.vi;
@@ -620,12 +688,17 @@ export default function SettingsClient({ data }: SettingsClientProps) {
   };
 
   const openAddTimelineModal = () => {
+    const today = new Date();
+    const formattedDefault = `${String(today.getMonth() + 1).padStart(2, "0")}/${today.getFullYear()}`;
     setNewTimelineState({
       type: "work",
       status: "active",
       title: { vi: "", en: "" },
       organization: { vi: "", en: "" },
-      date: { vi: "", en: "" },
+      date: {
+        vi: `${formattedDefault} - Hiện tại`,
+        en: `${formattedDefault} - Present`
+      },
       description: { vi: "", en: "" }
     });
     setIsAddTimelineModalOpen(true);
@@ -920,106 +993,167 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                 </div>
               </div>
 
-              {/* VIETNAMESE HERO & PROFILE */}
-              <div className="border-t border-white/5 pt-6 space-y-6">
-                <h3 className="text-sm font-bold text-blue-400 uppercase tracking-widest">{t.sectionVi}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.heroHello} ({t.fieldVietnamese})</label>
-                    <input
-                      type="text"
-                      value={portfolio.translations.vi.hero.hello}
-                      onChange={(e) => updateTranslation("vi", "hero", "hello", e.target.value)}
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
+              {/* HERO & PROFILE SECTION */}
+              <div className="border-t border-white/5 pt-6 space-y-8 mt-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-500">
+                    <User size={20} />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.heroFirstName} ({t.fieldVietnamese})</label>
-                    <input
-                      type="text"
-                      value={portfolio.translations.vi.hero.firstName}
-                      onChange={(e) => updateTranslation("vi", "hero", "firstName", e.target.value)}
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.heroLastName} ({t.fieldVietnamese})</label>
-                    <input
-                      type="text"
-                      value={portfolio.translations.vi.hero.lastName}
-                      onChange={(e) => updateTranslation("vi", "hero", "lastName", e.target.value)}
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.heroSummary} ({t.fieldVietnamese}) <span className="text-[10px] text-slate-500 lowercase normal-case">{t.heroSummaryDesc}</span>
-                    </label>
-                    <AutoResizeTextarea
-                      rows={2}
-                      value={portfolio.translations.vi.hero.summary}
-                      onChange={(e) => updateTranslation("vi", "hero", "summary", e.target.value)}
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.profileDesc} ({t.fieldVietnamese})</label>
-                    <AutoResizeTextarea
-                      rows={4}
-                      value={portfolio.translations.vi.profile.description}
-                      onChange={(e) => updateTranslation("vi", "profile", "description", e.target.value)}
-                    />
+                    <h3 className="text-base font-black text-white uppercase tracking-wider">
+                      {lang === "vi" ? "Giới thiệu bản thân & Hero Summary" : "About Me & Hero Summary"}
+                    </h3>
                   </div>
                 </div>
-              </div>
 
-              {/* ENGLISH HERO & PROFILE */}
-              <div className="border-t border-white/5 pt-6 space-y-6">
-                <h3 className="text-sm font-bold text-blue-400 uppercase tracking-widest">{t.sectionEn}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.heroHello} ({t.fieldEnglish})</label>
-                    <input
-                      type="text"
-                      value={portfolio.translations.en.hero.hello}
-                      onChange={(e) => updateTranslation("en", "hero", "hello", e.target.value)}
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
+                {/* LỜI CHÀO HERO */}
+                <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                    {t.heroHello}
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                      </span>
+                      <input
+                        type="text"
+                        value={portfolio.translations.vi.hero.hello}
+                        onChange={(e) => updateTranslation("vi", "hero", "hello", e.target.value)}
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                      </span>
+                      <input
+                        type="text"
+                        value={portfolio.translations.en.hero.hello}
+                        onChange={(e) => updateTranslation("en", "hero", "hello", e.target.value)}
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.heroFirstName} ({t.fieldEnglish})</label>
-                    <input
-                      type="text"
-                      value={portfolio.translations.en.hero.firstName}
-                      onChange={(e) => updateTranslation("en", "hero", "firstName", e.target.value)}
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
+                </div>
+
+                {/* HỌ & TÊN ĐỆM */}
+                <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                    {t.heroFirstName}
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                      </span>
+                      <input
+                        type="text"
+                        value={portfolio.translations.vi.hero.firstName}
+                        onChange={(e) => updateTranslation("vi", "hero", "firstName", e.target.value)}
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                      </span>
+                      <input
+                        type="text"
+                        value={portfolio.translations.en.hero.firstName}
+                        onChange={(e) => updateTranslation("en", "hero", "firstName", e.target.value)}
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.heroLastName} ({t.fieldEnglish})</label>
-                    <input
-                      type="text"
-                      value={portfolio.translations.en.hero.lastName}
-                      onChange={(e) => updateTranslation("en", "hero", "lastName", e.target.value)}
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
+                </div>
+
+                {/* TÊN */}
+                <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                    {t.heroLastName}
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                      </span>
+                      <input
+                        type="text"
+                        value={portfolio.translations.vi.hero.lastName}
+                        onChange={(e) => updateTranslation("vi", "hero", "lastName", e.target.value)}
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                      </span>
+                      <input
+                        type="text"
+                        value={portfolio.translations.en.hero.lastName}
+                        onChange={(e) => updateTranslation("en", "hero", "lastName", e.target.value)}
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
                   </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.heroSummary} ({t.fieldEnglish}) <span className="text-[10px] text-slate-500 lowercase normal-case">{t.heroSummaryDesc}</span>
-                    </label>
-                    <AutoResizeTextarea
-                      rows={2}
-                      value={portfolio.translations.en.hero.summary}
-                      onChange={(e) => updateTranslation("en", "hero", "summary", e.target.value)}
-                    />
+                </div>
+
+                {/* TÓM TẮT HERO */}
+                <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                    {t.heroSummary} <span className="text-[10px] text-slate-500 lowercase normal-case">{t.heroSummaryDesc}</span>
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                      </span>
+                      <AutoResizeTextarea
+                        rows={2}
+                        value={portfolio.translations.vi.hero.summary}
+                        onChange={(e) => updateTranslation("vi", "hero", "summary", e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                      </span>
+                      <AutoResizeTextarea
+                        rows={2}
+                        value={portfolio.translations.en.hero.summary}
+                        onChange={(e) => updateTranslation("en", "hero", "summary", e.target.value)}
+                      />
+                    </div>
                   </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.profileDesc} ({t.fieldEnglish})</label>
-                    <AutoResizeTextarea
-                      rows={4}
-                      value={portfolio.translations.en.profile.description}
-                      onChange={(e) => updateTranslation("en", "profile", "description", e.target.value)}
-                    />
+                </div>
+
+                {/* GIỚI THIỆU BẢN THÂN */}
+                <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                    {t.profileDesc}
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                      </span>
+                      <AutoResizeTextarea
+                        rows={4}
+                        value={portfolio.translations.vi.profile.description}
+                        onChange={(e) => updateTranslation("vi", "profile", "description", e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                      </span>
+                      <AutoResizeTextarea
+                        rows={4}
+                        value={portfolio.translations.en.profile.description}
+                        onChange={(e) => updateTranslation("en", "profile", "description", e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1090,28 +1224,35 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                           <Trash2 size={16} />
                         </button>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                          <div>
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1.5">
-                              {t.skillCategoryName} ({t.fieldVietnamese})
-                            </label>
-                            <input
-                              type="text"
-                              value={skillGroup.category.vi}
-                              onChange={(e) => updateSkillCategory(idx, "vi", e.target.value)}
-                              className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-lg p-2.5 text-white text-xs outline-none transition-all"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1.5">
-                              {t.skillCategoryName} ({t.fieldEnglish})
-                            </label>
-                            <input
-                              type="text"
-                              value={skillGroup.category.en}
-                              onChange={(e) => updateSkillCategory(idx, "en", e.target.value)}
-                              className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-lg p-2.5 text-white text-xs outline-none transition-all"
-                            />
+
+                        {/* TÊN NHÓM KỸ NĂNG */}
+                        <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-xl p-4.5 pt-3">
+                          <label className="block text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                            {t.skillCategoryName}
+                          </label>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <span className="block text-[9px] font-bold text-blue-400 uppercase tracking-widest mb-1">
+                                {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                              </span>
+                              <input
+                                type="text"
+                                value={skillGroup.category.vi}
+                                onChange={(e) => updateSkillCategory(idx, "vi", e.target.value)}
+                                className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-lg p-2.5 text-white text-xs outline-none transition-all"
+                              />
+                            </div>
+                            <div>
+                              <span className="block text-[9px] font-bold text-purple-400 uppercase tracking-widest mb-1">
+                                {lang === "vi" ? "Tiếng Anh" : "English"}
+                              </span>
+                              <input
+                                type="text"
+                                value={skillGroup.category.en}
+                                onChange={(e) => updateSkillCategory(idx, "en", e.target.value)}
+                                className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-lg p-2.5 text-white text-xs outline-none transition-all"
+                              />
+                            </div>
                           </div>
                         </div>
 
@@ -1269,28 +1410,34 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                             </div>
                           </div>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1.5">
-                                {t.socialDescVi}
-                              </label>
-                              <input
-                                type="text"
-                                value={social.desc?.vi || ""}
-                                onChange={(e) => updateSocialLinkDesc(idx, "vi", e.target.value)}
-                                className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-xs outline-none transition-all"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1.5">
-                                {t.socialDescEn}
-                              </label>
-                              <input
-                                type="text"
-                                value={social.desc?.en || ""}
-                                onChange={(e) => updateSocialLinkDesc(idx, "en", e.target.value)}
-                                className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-xs outline-none transition-all"
-                              />
+                          {/* MÔ TẢ MẠNG XÃ HỘI */}
+                          <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                            <label className="block text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                              {lang === "vi" ? "Mô tả ngắn" : "Short Description"}
+                            </label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <span className="block text-[9px] font-bold text-blue-400 uppercase tracking-widest mb-1">
+                                  {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                                </span>
+                                <input
+                                  type="text"
+                                  value={social.desc?.vi || ""}
+                                  onChange={(e) => updateSocialLinkDesc(idx, "vi", e.target.value)}
+                                  className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-xs outline-none transition-all"
+                                />
+                              </div>
+                              <div>
+                                <span className="block text-[9px] font-bold text-purple-400 uppercase tracking-widest mb-1">
+                                  {lang === "vi" ? "Tiếng Anh" : "English"}
+                                </span>
+                                <input
+                                  type="text"
+                                  value={social.desc?.en || ""}
+                                  onChange={(e) => updateSocialLinkDesc(idx, "en", e.target.value)}
+                                  className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-xs outline-none transition-all"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -1542,30 +1689,40 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                                   />
                                 </div>
 
-                                <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
-                                  <div>
-                                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.projectDesc} ({t.fieldVietnamese})</label>
-                                    <AutoResizeTextarea
-                                      rows={3}
-                                      value={project.description.vi}
-                                      onChange={(e) => {
-                                        const updated = [...portfolio.projects];
-                                        updated[idx].description.vi = e.target.value;
-                                        setPortfolio(prev => ({ ...prev, projects: updated }));
-                                      }}
-                                    />
-                                  </div>
-                                  <div>
-                                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.projectDesc} ({t.fieldEnglish})</label>
-                                    <AutoResizeTextarea
-                                      rows={3}
-                                      value={project.description.en}
-                                      onChange={(e) => {
-                                        const updated = [...portfolio.projects];
-                                        updated[idx].description.en = e.target.value;
-                                        setPortfolio(prev => ({ ...prev, projects: updated }));
-                                      }}
-                                    />
+                                {/* MÔ TẢ DỰ ÁN */}
+                                <div className="md:col-span-3 space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                                    {t.projectDesc}
+                                  </label>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                                      </span>
+                                      <AutoResizeTextarea
+                                        rows={3}
+                                        value={project.description.vi}
+                                        onChange={(e) => {
+                                          const updated = [...portfolio.projects];
+                                          updated[idx].description.vi = e.target.value;
+                                          setPortfolio(prev => ({ ...prev, projects: updated }));
+                                        }}
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                                      </span>
+                                      <AutoResizeTextarea
+                                        rows={3}
+                                        value={project.description.en}
+                                        onChange={(e) => {
+                                          const updated = [...portfolio.projects];
+                                          updated[idx].description.en = e.target.value;
+                                          setPortfolio(prev => ({ ...prev, projects: updated }));
+                                        }}
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -1885,6 +2042,13 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                                     onChange={(val) => {
                                       const updated = [...portfolio.timeline];
                                       updated[idx].status = val;
+                                      const { start, end } = parseTimelineDate(item.date.vi);
+                                      if (val === "active") {
+                                        updated[idx].date = formatTimelineDate(start, end, true);
+                                      } else {
+                                        const endVal = (end && end !== start) ? end : new Date().toISOString().split("T")[0];
+                                        updated[idx].date = formatTimelineDate(start, endVal, false);
+                                      }
                                       setPortfolio(prev => ({ ...prev, timeline: updated }));
                                     }}
                                   />
@@ -1900,120 +2064,161 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                                   </div>
                                 </div>
 
-                                {/* VI fields */}
-                                <div>
-                                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.projectTitle} ({t.fieldVietnamese})</label>
-                                  <input
-                                    type="text"
-                                    value={item.title.vi}
-                                    onChange={(e) => {
-                                      const updated = [...portfolio.timeline];
-                                      updated[idx].title.vi = e.target.value;
-                                      setPortfolio(prev => ({ ...prev, timeline: updated }));
-                                    }}
-                                    className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none"
-                                  />
-                                </div>
-
-                                <div>
-                                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.timelineOrg} ({t.fieldVietnamese})</label>
-                                  <input
-                                    type="text"
-                                    value={item.organization.vi}
-                                    onChange={(e) => {
-                                      const updated = [...portfolio.timeline];
-                                      updated[idx].organization.vi = e.target.value;
-                                      setPortfolio(prev => ({ ...prev, timeline: updated }));
-                                    }}
-                                    className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none"
-                                  />
-                                </div>
-
-                                <div>
-                                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.timelineDate} ({t.fieldVietnamese})</label>
-                                  <input
-                                    type="text"
-                                    value={item.date.vi}
-                                    onChange={(e) => {
-                                      const updated = [...portfolio.timeline];
-                                      updated[idx].date.vi = e.target.value;
-                                      setPortfolio(prev => ({ ...prev, timeline: updated }));
-                                    }}
-                                    className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none"
-                                  />
-                                </div>
-
-                                {/* EN fields */}
-                                <div>
-                                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.projectTitle} ({t.fieldEnglish})</label>
-                                  <input
-                                    type="text"
-                                    value={item.title.en}
-                                    onChange={(e) => {
-                                      const updated = [...portfolio.timeline];
-                                      updated[idx].title.en = e.target.value;
-                                      setPortfolio(prev => ({ ...prev, timeline: updated }));
-                                    }}
-                                    className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none"
-                                  />
-                                </div>
-
-                                <div>
-                                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.timelineOrg} ({t.fieldEnglish})</label>
-                                  <input
-                                    type="text"
-                                    value={item.organization.en}
-                                    onChange={(e) => {
-                                      const updated = [...portfolio.timeline];
-                                      updated[idx].organization.en = e.target.value;
-                                      setPortfolio(prev => ({ ...prev, timeline: updated }));
-                                    }}
-                                    className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none"
-                                  />
-                                </div>
-
-                                <div>
-                                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.timelineDate} ({t.fieldEnglish})</label>
-                                  <input
-                                    type="text"
-                                    value={item.date.en}
-                                    onChange={(e) => {
-                                      const updated = [...portfolio.timeline];
-                                      updated[idx].date.en = e.target.value;
-                                      setPortfolio(prev => ({ ...prev, timeline: updated }));
-                                    }}
-                                    className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none"
-                                  />
-                                </div>
-
-                                <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Duration / Thời gian hoạt động */}
+                                <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 items-end border-y border-white/5 py-4">
                                   <div>
                                     <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                                      {t.timelineDetailDesc} ({t.fieldVietnamese}) <span className="text-[10px] text-slate-500 lowercase normal-case">{t.timelineDetailDescPlaceholder}</span>
+                                      {lang === "vi" ? "Thời gian bắt đầu" : "Start Date"}
                                     </label>
-                                    <AutoResizeTextarea
-                                      rows={4}
-                                      value={item.description.vi.join("\n")}
-                                      onChange={(e) => {
+                                    <CustomDatePicker
+                                      value={parseTimelineDate(item.date.vi).start}
+                                      onChange={(newStart) => {
+                                        const { end, isPresent } = parseTimelineDate(item.date.vi);
+                                        const newDateObj = formatTimelineDate(newStart, end, isPresent);
                                         const updated = [...portfolio.timeline];
-                                        updated[idx].description.vi = e.target.value.split("\n").filter(Boolean);
+                                        updated[idx].date = newDateObj;
                                         setPortfolio(prev => ({ ...prev, timeline: updated }));
                                       }}
+                                      lang={lang}
                                     />
                                   </div>
+
                                   <div>
                                     <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                                      {t.timelineDetailDesc} ({t.fieldEnglish}) <span className="text-[10px] text-slate-500 lowercase normal-case">{t.timelineDetailDescPlaceholder}</span>
+                                      {lang === "vi" ? "Thời gian kết thúc" : "End Date"}
                                     </label>
-                                    <AutoResizeTextarea
-                                      rows={4}
-                                      value={item.description.en.join("\n")}
-                                      onChange={(e) => {
-                                        const updated = [...portfolio.timeline];
-                                        updated[idx].description.en = e.target.value.split("\n").filter(Boolean);
-                                        setPortfolio(prev => ({ ...prev, timeline: updated }));
-                                      }}
-                                    />
+                                    {item.status === "active" ? (
+                                      <div className="w-full bg-[#1e293b]/20 border border-white/5 rounded-xl p-3 text-slate-400 text-sm select-none cursor-not-allowed font-semibold">
+                                        {lang === "vi" ? "Hiện tại" : "Present"}
+                                      </div>
+                                    ) : (
+                                      <CustomDatePicker
+                                        value={parseTimelineDate(item.date.vi).end || new Date().toISOString().split("T")[0]}
+                                        onChange={(newEnd) => {
+                                          const { start } = parseTimelineDate(item.date.vi);
+                                          const newDateObj = formatTimelineDate(start, newEnd, false);
+                                          const updated = [...portfolio.timeline];
+                                          updated[idx].date = newDateObj;
+                                          setPortfolio(prev => ({ ...prev, timeline: updated }));
+                                        }}
+                                        lang={lang}
+                                      />
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* TIÊU ĐỀ CÔNG VIỆC */}
+                                <div className="md:col-span-3 space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                                    {t.projectTitle}
+                                  </label>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                                      </span>
+                                      <input
+                                        type="text"
+                                        value={item.title.vi}
+                                        onChange={(e) => {
+                                          const updated = [...portfolio.timeline];
+                                          updated[idx].title.vi = e.target.value;
+                                          setPortfolio(prev => ({ ...prev, timeline: updated }));
+                                        }}
+                                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none"
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                                      </span>
+                                      <input
+                                        type="text"
+                                        value={item.title.en}
+                                        onChange={(e) => {
+                                          const updated = [...portfolio.timeline];
+                                          updated[idx].title.en = e.target.value;
+                                          setPortfolio(prev => ({ ...prev, timeline: updated }));
+                                        }}
+                                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                {/* TỔ CHỨC */}
+                                <div className="md:col-span-3 space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                                    {t.timelineOrg}
+                                  </label>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                                      </span>
+                                      <input
+                                        type="text"
+                                        value={item.organization.vi}
+                                        onChange={(e) => {
+                                          const updated = [...portfolio.timeline];
+                                          updated[idx].organization.vi = e.target.value;
+                                          setPortfolio(prev => ({ ...prev, timeline: updated }));
+                                        }}
+                                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none"
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                                      </span>
+                                      <input
+                                        type="text"
+                                        value={item.organization.en}
+                                        onChange={(e) => {
+                                          const updated = [...portfolio.timeline];
+                                          updated[idx].organization.en = e.target.value;
+                                          setPortfolio(prev => ({ ...prev, timeline: updated }));
+                                        }}
+                                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* MÔ TẢ CHI TIẾT */}
+                                <div className="md:col-span-3 space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                                    {t.timelineDetailDesc} <span className="text-[10px] text-slate-500 lowercase normal-case">{t.timelineDetailDescPlaceholder}</span>
+                                  </label>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                                      </span>
+                                      <AutoResizeTextarea
+                                        rows={4}
+                                        value={item.description.vi.join("\n")}
+                                        onChange={(e) => {
+                                          const updated = [...portfolio.timeline];
+                                          updated[idx].description.vi = e.target.value.split("\n").filter(Boolean);
+                                          setPortfolio(prev => ({ ...prev, timeline: updated }));
+                                        }}
+                                      />
+                                    </div>
+                                    <div>
+                                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                                      </span>
+                                      <AutoResizeTextarea
+                                        rows={4}
+                                        value={item.description.en.join("\n")}
+                                        onChange={(e) => {
+                                          const updated = [...portfolio.timeline];
+                                          updated[idx].description.en = e.target.value.split("\n").filter(Boolean);
+                                          setPortfolio(prev => ({ ...prev, timeline: updated }));
+                                        }}
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -2096,38 +2301,44 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.socialDescVi}
-                    </label>
-                    <input
-                      type="text"
-                      value={newSocial.desc.vi}
-                      onChange={(e) => setNewSocial(prev => ({
-                        ...prev,
-                        desc: { ...prev.desc, vi: e.target.value }
-                      }))}
-                      placeholder={SOCIAL_METADATA[newSocial.name]?.placeholderDescVi || ""}
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.socialDescEn}
-                    </label>
-                    <input
-                      type="text"
-                      value={newSocial.desc.en}
-                      onChange={(e) => setNewSocial(prev => ({
-                        ...prev,
-                        desc: { ...prev.desc, en: e.target.value }
-                      }))}
-                      placeholder={SOCIAL_METADATA[newSocial.name]?.placeholderDescEn || ""}
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
-                  </div>
-                </div>
+                 {/* MÔ TẢ MẠNG XÃ HỘI */}
+                 <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                   <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                     {lang === "vi" ? "Mô tả ngắn" : "Short Description"}
+                   </label>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div>
+                       <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                         {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                       </span>
+                       <input
+                         type="text"
+                         value={newSocial.desc.vi}
+                         onChange={(e) => setNewSocial(prev => ({
+                           ...prev,
+                           desc: { ...prev.desc, vi: e.target.value }
+                         }))}
+                         placeholder={SOCIAL_METADATA[newSocial.name]?.placeholderDescVi || ""}
+                         className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                       />
+                     </div>
+                     <div>
+                       <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                         {lang === "vi" ? "Tiếng Anh" : "English"}
+                       </span>
+                       <input
+                         type="text"
+                         value={newSocial.desc.en}
+                         onChange={(e) => setNewSocial(prev => ({
+                           ...prev,
+                           desc: { ...prev.desc, en: e.target.value }
+                         }))}
+                         placeholder={SOCIAL_METADATA[newSocial.name]?.placeholderDescEn || ""}
+                         className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                       />
+                     </div>
+                   </div>
+                 </div>
 
                 <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
                   <button
@@ -2177,38 +2388,44 @@ export default function SettingsClient({ data }: SettingsClientProps) {
               </h3>
 
               <form onSubmit={handleAddSkillSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.skillCategoryName} ({t.fieldVietnamese})
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={newSkill.category.vi}
-                      onChange={(e) => setNewSkill(prev => ({
-                        ...prev,
-                        category: { ...prev.category, vi: e.target.value }
-                      }))}
-                      placeholder="Ví dụ: Backend"
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.skillCategoryName} ({t.fieldEnglish})
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={newSkill.category.en}
-                      onChange={(e) => setNewSkill(prev => ({
-                        ...prev,
-                        category: { ...prev.category, en: e.target.value }
-                      }))}
-                      placeholder="Ví dụ: Backend"
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
+                {/* TÊN NHÓM KỸ NĂNG */}
+                <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                    {t.skillCategoryName}
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                      </span>
+                      <input
+                        type="text"
+                        required
+                        value={newSkill.category.vi}
+                        onChange={(e) => setNewSkill(prev => ({
+                          ...prev,
+                          category: { ...prev.category, vi: e.target.value }
+                        }))}
+                        placeholder="Ví dụ: Backend"
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                      </span>
+                      <input
+                        type="text"
+                        required
+                        value={newSkill.category.en}
+                        onChange={(e) => setNewSkill(prev => ({
+                          ...prev,
+                          category: { ...prev.category, en: e.target.value }
+                        }))}
+                        placeholder="Ví dụ: Backend"
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -2357,36 +2574,42 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.projectDesc} ({t.fieldVietnamese})
-                    </label>
-                    <AutoResizeTextarea
-                      rows={3}
-                      required
-                      value={newProjectState.description.vi}
-                      onChange={(e) => setNewProjectState(prev => ({
-                        ...prev,
-                        description: { ...prev.description, vi: e.target.value }
-                      }))}
-                      placeholder="Nhập mô tả tiếng Việt..."
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.projectDesc} ({t.fieldEnglish})
-                    </label>
-                    <AutoResizeTextarea
-                      rows={3}
-                      required
-                      value={newProjectState.description.en}
-                      onChange={(e) => setNewProjectState(prev => ({
-                        ...prev,
-                        description: { ...prev.description, en: e.target.value }
-                      }))}
-                      placeholder="Enter English description..."
-                    />
+                {/* MÔ TẢ DỰ ÁN */}
+                <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                    {t.projectDesc}
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                      </span>
+                      <AutoResizeTextarea
+                        rows={3}
+                        required
+                        value={newProjectState.description.vi}
+                        onChange={(e) => setNewProjectState(prev => ({
+                          ...prev,
+                          description: { ...prev.description, vi: e.target.value }
+                        }))}
+                        placeholder="Nhập mô tả tiếng Việt..."
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                      </span>
+                      <AutoResizeTextarea
+                        rows={3}
+                        required
+                        value={newProjectState.description.en}
+                        onChange={(e) => setNewProjectState(prev => ({
+                          ...prev,
+                          description: { ...prev.description, en: e.target.value }
+                        }))}
+                        placeholder="Enter English description..."
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -2463,146 +2686,188 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                         { value: "completed", label: t.timelineStatusCompletedLabel },
                       ]}
                       selectedValue={newTimelineState.status}
-                      onChange={(val) => setNewTimelineState(prev => ({ ...prev, status: val }))}
+                      onChange={(val) => {
+                        const { start, end } = parseTimelineDate(newTimelineState.date.vi);
+                        let newDateObj;
+                        if (val === "active") {
+                          newDateObj = formatTimelineDate(start, end, true);
+                        } else {
+                          const endVal = (end && end !== start) ? end : new Date().toISOString().split("T")[0];
+                          newDateObj = formatTimelineDate(start, endVal, false);
+                        }
+                        setNewTimelineState(prev => ({
+                          ...prev,
+                          status: val,
+                          date: newDateObj
+                        }));
+                      }}
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Duration / Thời gian hoạt động */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end border-y border-white/5 py-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.projectTitle} ({t.fieldVietnamese})
+                      {lang === "vi" ? "Thời gian bắt đầu" : "Start Date"}
                     </label>
-                    <input
-                      type="text"
-                      required
-                      value={newTimelineState.title.vi}
-                      onChange={(e) => setNewTimelineState(prev => ({
-                        ...prev,
-                        title: { ...prev.title, vi: e.target.value }
-                      }))}
-                      placeholder="Ví dụ: Lập trình viên Full-Stack"
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                    <CustomDatePicker
+                      value={parseTimelineDate(newTimelineState.date.vi).start}
+                      onChange={(newStart) => {
+                        const { end, isPresent } = parseTimelineDate(newTimelineState.date.vi);
+                        const newDateObj = formatTimelineDate(newStart, end, isPresent);
+                        setNewTimelineState(prev => ({
+                          ...prev,
+                          date: newDateObj
+                        }));
+                      }}
+                      lang={lang}
                     />
                   </div>
+
                   <div>
                     <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.projectTitle} ({t.fieldEnglish})
+                      {lang === "vi" ? "Thời gian kết thúc" : "End Date"}
                     </label>
-                    <input
-                      type="text"
-                      required
-                      value={newTimelineState.title.en}
-                      onChange={(e) => setNewTimelineState(prev => ({
-                        ...prev,
-                        title: { ...prev.title, en: e.target.value }
-                      }))}
-                      placeholder="Ví dụ: Full-Stack Developer"
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
+                    {newTimelineState.status === "active" ? (
+                      <div className="w-full bg-[#1e293b]/20 border border-white/5 rounded-xl p-3 text-slate-400 text-sm select-none cursor-not-allowed font-semibold">
+                        {lang === "vi" ? "Hiện tại" : "Present"}
+                      </div>
+                    ) : (
+                      <CustomDatePicker
+                        value={parseTimelineDate(newTimelineState.date.vi).end || new Date().toISOString().split("T")[0]}
+                        onChange={(newEnd) => {
+                          const { start } = parseTimelineDate(newTimelineState.date.vi);
+                          const newDateObj = formatTimelineDate(start, newEnd, false);
+                          setNewTimelineState(prev => ({
+                            ...prev,
+                            date: newDateObj
+                          }));
+                        }}
+                        lang={lang}
+                      />
+                    )}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.timelineOrg} ({t.fieldVietnamese})
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={newTimelineState.organization.vi}
-                      onChange={(e) => setNewTimelineState(prev => ({
-                        ...prev,
-                        organization: { ...prev.organization, vi: e.target.value }
-                      }))}
-                      placeholder="Tên công ty hoặc trường học"
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.timelineOrg} ({t.fieldEnglish})
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={newTimelineState.organization.en}
-                      onChange={(e) => setNewTimelineState(prev => ({
-                        ...prev,
-                        organization: { ...prev.organization, en: e.target.value }
-                      }))}
-                      placeholder="Company or School Name"
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.timelineDate} ({t.fieldVietnamese})
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={newTimelineState.date.vi}
-                      onChange={(e) => setNewTimelineState(prev => ({
-                        ...prev,
-                        date: { ...prev.date, vi: e.target.value }
-                      }))}
-                      placeholder="Ví dụ: 12/2024 - Hiện tại"
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.timelineDate} ({t.fieldEnglish})
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={newTimelineState.date.en}
-                      onChange={(e) => setNewTimelineState(prev => ({
-                        ...prev,
-                        date: { ...prev.date, en: e.target.value }
-                      }))}
-                      placeholder="Ví dụ: 12/2024 - Present"
-                      className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                    />
+                {/* TIÊU ĐỀ CÔNG VIỆC */}
+                <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                    {t.projectTitle}
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                      </span>
+                      <input
+                        type="text"
+                        required
+                        value={newTimelineState.title.vi}
+                        onChange={(e) => setNewTimelineState(prev => ({
+                          ...prev,
+                          title: { ...prev.title, vi: e.target.value }
+                        }))}
+                        placeholder="Ví dụ: Lập trình viên Full-Stack"
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                      </span>
+                      <input
+                        type="text"
+                        required
+                        value={newTimelineState.title.en}
+                        onChange={(e) => setNewTimelineState(prev => ({
+                          ...prev,
+                          title: { ...prev.title, en: e.target.value }
+                        }))}
+                        placeholder="Ví dụ: Full-Stack Developer"
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.timelineDetailDesc} ({t.fieldVietnamese}) <span className="text-[10px] text-slate-500 lowercase normal-case">{t.timelineDetailDescPlaceholder}</span>
-                    </label>
-                    <AutoResizeTextarea
-                      rows={4}
-                      required
-                      value={newTimelineState.description.vi}
-                      onChange={(e) => setNewTimelineState(prev => ({
-                        ...prev,
-                        description: { ...prev.description, vi: e.target.value }
-                      }))}
-                      placeholder="Mô tả công việc (Xuống dòng cho mỗi gạch đầu dòng)..."
-                    />
+                {/* TỔ CHỨC */}
+                <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                    {t.timelineOrg}
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                      </span>
+                      <input
+                        type="text"
+                        required
+                        value={newTimelineState.organization.vi}
+                        onChange={(e) => setNewTimelineState(prev => ({
+                          ...prev,
+                          organization: { ...prev.organization, vi: e.target.value }
+                        }))}
+                        placeholder="Tên công ty hoặc trường học"
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                      </span>
+                      <input
+                        type="text"
+                        required
+                        value={newTimelineState.organization.en}
+                        onChange={(e) => setNewTimelineState(prev => ({
+                          ...prev,
+                          organization: { ...prev.organization, en: e.target.value }
+                        }))}
+                        placeholder="Company or School Name"
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.timelineDetailDesc} ({t.fieldEnglish}) <span className="text-[10px] text-slate-500 lowercase normal-case">{t.timelineDetailDescPlaceholder}</span>
-                    </label>
-                    <AutoResizeTextarea
-                      rows={4}
-                      required
-                      value={newTimelineState.description.en}
-                      onChange={(e) => setNewTimelineState(prev => ({
-                        ...prev,
-                        description: { ...prev.description, en: e.target.value }
-                      }))}
-                      placeholder="Enter description (New line for each bullet)..."
-                    />
+                </div>
+
+                {/* MÔ TẢ CHI TIẾT */}
+                <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                    {t.timelineDetailDesc} <span className="text-[10px] text-slate-500 lowercase normal-case">{t.timelineDetailDescPlaceholder}</span>
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                      </span>
+                      <AutoResizeTextarea
+                        rows={4}
+                        required
+                        value={newTimelineState.description.vi}
+                        onChange={(e) => setNewTimelineState(prev => ({
+                          ...prev,
+                          description: { ...prev.description, vi: e.target.value }
+                        }))}
+                        placeholder="Mô tả công việc (Xuống dòng cho mỗi gạch đầu dòng)..."
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                      </span>
+                      <AutoResizeTextarea
+                        rows={4}
+                        required
+                        value={newTimelineState.description.en}
+                        onChange={(e) => setNewTimelineState(prev => ({
+                          ...prev,
+                          description: { ...prev.description, en: e.target.value }
+                        }))}
+                        placeholder="Enter description (New line for each bullet)..."
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -2711,36 +2976,42 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.subRepoDescVi}
-                    </label>
-                    <AutoResizeTextarea
-                      rows={3}
-                      required
-                      value={newSubRepoState.description.vi}
-                      onChange={(e) => setNewSubRepoState(prev => ({
-                        ...prev,
-                        description: { ...prev.description, vi: e.target.value }
-                      }))}
-                      placeholder="Nhập mô tả tiếng Việt..."
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">
-                      {t.subRepoDescEn}
-                    </label>
-                    <AutoResizeTextarea
-                      rows={3}
-                      required
-                      value={newSubRepoState.description.en}
-                      onChange={(e) => setNewSubRepoState(prev => ({
-                        ...prev,
-                        description: { ...prev.description, en: e.target.value }
-                      }))}
-                      placeholder="Enter English description..."
-                    />
+                {/* MÔ TẢ DỰ ÁN CON */}
+                <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                    {t.projectDesc}
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                      </span>
+                      <AutoResizeTextarea
+                        rows={3}
+                        required
+                        value={newSubRepoState.description.vi}
+                        onChange={(e) => setNewSubRepoState(prev => ({
+                          ...prev,
+                          description: { ...prev.description, vi: e.target.value }
+                        }))}
+                        placeholder="Nhập mô tả tiếng Việt..."
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                      </span>
+                      <AutoResizeTextarea
+                        rows={3}
+                        required
+                        value={newSubRepoState.description.en}
+                        onChange={(e) => setNewSubRepoState(prev => ({
+                          ...prev,
+                          description: { ...prev.description, en: e.target.value }
+                        }))}
+                        placeholder="Enter English description..."
+                      />
+                    </div>
                   </div>
                 </div>
 
