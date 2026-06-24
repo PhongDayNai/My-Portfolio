@@ -4,12 +4,12 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  LogOut, Settings, User, FileText, Key, ShieldCheck, 
-  Loader2, Save, ArrowLeft, Plus, Trash2, HelpCircle, 
+import {
+  LogOut, Settings, User, FileText, Key, ShieldCheck,
+  Loader2, Save, ArrowLeft, Plus, Trash2, HelpCircle,
   Code, Share2, Calendar, CheckCircle, ChevronDown, ChevronUp,
   Briefcase, GraduationCap, Folder, Search, X, Edit, GitBranch,
-  ChevronLeft, ChevronRight, Eye, EyeOff
+  ChevronLeft, ChevronRight, Eye, EyeOff, ExternalLink
 } from "lucide-react";
 import Link from "next/link";
 import { PortfolioData } from "@/lib/schema";
@@ -73,9 +73,8 @@ function PillSelector<T extends string>({ options, selectedValue, onChange, layo
             key={opt.value}
             type="button"
             onClick={() => onChange(opt.value)}
-            className={`flex-1 text-center py-2.5 px-3 rounded-lg text-xs font-bold transition-all relative z-10 ${
-              isSelected ? "text-white" : "text-slate-400 hover:text-slate-200"
-            }`}
+            className={`flex-1 text-center py-2.5 px-3 rounded-lg text-xs font-bold transition-all relative z-10 ${isSelected ? "text-white" : "text-slate-400 hover:text-slate-200"
+              }`}
           >
             {isSelected && (
               <motion.div
@@ -110,7 +109,7 @@ interface DropdownProps<T extends string> {
 function CustomDropdown<T extends string>({ options, selectedValue, onChange, className }: DropdownProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
+
   const selectedOption = options.find(opt => opt.value === selectedValue) || options[0];
 
   useEffect(() => {
@@ -151,9 +150,8 @@ function CustomDropdown<T extends string>({ options, selectedValue, onChange, cl
                   onChange(opt.value);
                   setIsOpen(false);
                 }}
-                className={`w-full text-left px-4 py-3 text-xs font-bold transition-all hover:bg-blue-600/20 ${
-                  selectedValue === opt.value ? "bg-blue-600/10 text-blue-400" : "text-slate-300"
-                }`}
+                className={`w-full text-left px-4 py-3 text-xs font-bold transition-all hover:bg-blue-600/20 ${selectedValue === opt.value ? "bg-blue-600/10 text-blue-400" : "text-slate-300"
+                  }`}
               >
                 {opt.label}
               </button>
@@ -322,10 +320,12 @@ export default function SettingsClient({ data }: SettingsClientProps) {
 
   const [portfolio, setPortfolio] = useState<PortfolioData>(data);
   const [activeTab, setActiveTab] = useState<"general" | "skills" | "projects" | "timeline">("general");
-  
+
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [previewImageIndex, setPreviewImageIndex] = useState<number | null>(null);
 
   // States quản lý Modal thêm mạng xã hội
   const [isAddSocialModalOpen, setIsAddSocialModalOpen] = useState(false);
@@ -411,12 +411,12 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       // Validate duplicate social link names with the same URLs
       // "cho phép trùng loại item nhưng phải khác value link url"
       const socialLinks = portfolio.socialLinks;
-      const duplicates = socialLinks.filter((item, index) => 
+      const duplicates = socialLinks.filter((item, index) =>
         socialLinks.findIndex(s => s.name === item.name && s.link.trim() === item.link.trim()) !== index
       );
       if (duplicates.length > 0) {
-        setToast({ 
-          type: "error", 
+        setToast({
+          type: "error",
           message: `${t.duplicateSocialError}${duplicates[0].name} (${duplicates[0].link})`
         });
         setIsSaving(false);
@@ -661,7 +661,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
     setIsSubRepoModalOpen(false);
     setToast({
       type: "success",
-      message: subRepoModalMode === "add" 
+      message: subRepoModalMode === "add"
         ? (lang === "vi" ? "Đã thêm repo con mới!" : "Sub-repository added!")
         : (lang === "vi" ? "Đã cập nhật repo con!" : "Sub-repository updated!")
     });
@@ -796,7 +796,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       setTimeout(() => setToast(null), 4000);
       return;
     }
-    
+
     // Check duplicates
     const socialLinks = portfolio.socialLinks;
     const exists = socialLinks.some(s => s.name === newSocial.name && s.link.trim() === newSocial.link.trim());
@@ -847,7 +847,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-blue-600/5 blur-[150px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto space-y-8 relative z-10">
-        
+
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pb-6 border-b border-white/5">
           <div className="flex items-center gap-3">
@@ -896,11 +896,10 @@ export default function SettingsClient({ data }: SettingsClientProps) {
               initial={{ opacity: 0, y: -15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
-              className={`p-4 rounded-xl border font-bold text-sm text-center flex items-center justify-center gap-2 ${
-                toast.type === "success" 
-                  ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
-                  : "bg-red-500/10 border-red-500/30 text-red-400"
-              }`}
+              className={`p-4 rounded-xl border font-bold text-sm text-center flex items-center justify-center gap-2 ${toast.type === "success"
+                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                : "bg-red-500/10 border-red-500/30 text-red-400"
+                }`}
             >
               {toast.type === "success" && <CheckCircle size={16} />}
               <span>{toast.message}</span>
@@ -919,11 +918,10 @@ export default function SettingsClient({ data }: SettingsClientProps) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-6 py-3 border-b-2 font-bold text-xs uppercase tracking-wider transition-all whitespace-nowrap ${
-                activeTab === tab.id
-                  ? "border-blue-500 text-blue-400 bg-blue-500/5"
-                  : "border-transparent text-slate-500 hover:text-slate-300 hover:bg-white/5"
-              }`}
+              className={`flex items-center gap-2 px-6 py-3 border-b-2 font-bold text-xs uppercase tracking-wider transition-all whitespace-nowrap ${activeTab === tab.id
+                ? "border-blue-500 text-blue-400 bg-blue-500/5"
+                : "border-transparent text-slate-500 hover:text-slate-300 hover:bg-white/5"
+                }`}
             >
               <tab.icon size={16} />
               <span>{tab.label}</span>
@@ -933,7 +931,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
 
         {/* Tab Content Panels */}
         <div className="bg-[#141b2b]/40 border border-white/5 p-6 md:p-8 rounded-2xl shadow-xl min-h-[400px]">
-          
+
           {/* TAB 1: GENERAL INFO */}
           {activeTab === "general" && (
             <div className="space-y-8">
@@ -1156,6 +1154,155 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                     </div>
                   </div>
                 </div>
+
+                {/* HÌNH ẢNH CÁ NHÂN (ABOUT ME) */}
+                <div className="space-y-4 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                  <div className="flex items-center justify-between gap-4 pb-2 border-b border-white/5">
+                    <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                      {t.aboutMeImages}
+                    </label>
+
+                    {/* Nút Upload ảnh ẩn và nhãn nhấn chọn */}
+                    <div>
+                      <input
+                        type="file"
+                        id="profile-image-upload"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+
+                          // Set uploading state
+                          setIsUploadingImage(true);
+                          try {
+                            const formData = new FormData();
+                            formData.append("file", file);
+
+                            const res = await fetch("/api/images", {
+                              method: "POST",
+                              body: formData,
+                            });
+
+                            const result = await res.json();
+                            if (result.success && result.url) {
+                              setPortfolio(prev => ({
+                                ...prev,
+                                profileImages: [...(prev.profileImages || []), result.url]
+                              }));
+                              setToast({ type: "success", message: t.uploadSuccess });
+                            } else {
+                              setToast({ type: "error", message: result.error || t.uploadFailed });
+                            }
+                          } catch (err: any) {
+                            setToast({ type: "error", message: err?.message || t.errorOccurred });
+                          } finally {
+                            setIsUploadingImage(false);
+                            e.target.value = "";
+                            setTimeout(() => setToast(null), 3000);
+                          }
+                        }}
+                      />
+                      <label
+                        htmlFor="profile-image-upload"
+                        className={`flex items-center gap-1.5 text-[11px] font-bold bg-blue-600/10 hover:bg-blue-600/20 active:scale-95 text-blue-400 py-1.5 px-3 rounded-xl border border-blue-500/20 transition-all shadow-md cursor-pointer ${isUploadingImage ? "opacity-50 cursor-not-allowed pointer-events-none" : ""}`}
+                      >
+                        {isUploadingImage ? (
+                          <>
+                            <Loader2 size={12} className="animate-spin" />
+                            <span>{t.uploading}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Plus size={12} />
+                            <span>{t.addImage}</span>
+                          </>
+                        )}
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Danh sách ảnh dưới dạng grid */}
+                  {(!portfolio.profileImages || portfolio.profileImages.length === 0) ? (
+                    <div className="text-slate-500 text-xs italic py-6 text-center bg-white/5 rounded-xl border border-dashed border-white/5">
+                      {t.noImages}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                      {portfolio.profileImages.map((img, imgIdx) => (
+                        <div
+                          key={imgIdx}
+                          onClick={() => setPreviewImageIndex(imgIdx)}
+                          className="relative aspect-[3/4] rounded-xl overflow-hidden border border-white/10 bg-[#141b2b] group hover:border-blue-500/30 transition-all duration-300 shadow-md cursor-pointer"
+                        >
+                          <img
+                            src={img}
+                            alt={`About me ${imgIdx + 1}`}
+                            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                          />
+                          <div
+                            className="absolute inset-x-0 bottom-0 h-[60%] flex flex-col items-center justify-center gap-2.5 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out z-10"
+                            style={{
+                              background: "linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0) 100%)"
+                            }}
+                          >
+                            {/* Nút xem ảnh lớn */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPreviewImageIndex(imgIdx);
+                              }}
+                              className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-slate-200 hover:text-white transition-all duration-200 border border-white/10 flex items-center justify-center shadow-lg cursor-pointer"
+                              title={t.viewLargeImage}
+                            >
+                              <ExternalLink size={16} />
+                            </button>
+
+                            {/* Nút xóa ảnh */}
+                            <button
+                              type="button"
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                if (confirm(t.confirmDeleteImage)) {
+                                  try {
+                                    // Gọi API xóa file vật lý
+                                    const res = await fetch("/api/images", {
+                                      method: "DELETE",
+                                      headers: {
+                                        "Content-Type": "application/json",
+                                      },
+                                      body: JSON.stringify({ url: img }),
+                                    });
+
+                                    const result = await res.json();
+                                    if (result.success) {
+                                      setPortfolio(prev => ({
+                                        ...prev,
+                                        profileImages: (prev.profileImages || []).filter((_, i) => i !== imgIdx)
+                                      }));
+                                      setToast({ type: "success", message: t.deleteSuccess });
+                                    } else {
+                                      setToast({ type: "error", message: result.error || t.deleteFailed });
+                                    }
+                                  } catch (err: any) {
+                                    setToast({ type: "error", message: err?.message || t.errorOccurred });
+                                  } finally {
+                                    setTimeout(() => setToast(null), 3000);
+                                  }
+                                }
+                              }}
+                              className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 active:scale-95 text-red-400 hover:text-red-300 transition-all duration-200 border border-red-500/20 flex items-center justify-center shadow-lg"
+                              title={t.deleteImage}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -1163,7 +1310,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
           {/* TAB 2: SKILLS & SOCIALS */}
           {activeTab === "skills" && (
             <div className="space-y-8">
-              
+
               {/* SKILLS SECTION - ĐÃ ĐƯỢC CHUYỂN DỊCH SANG DẠNG QUẢN LÝ ĐỘNG (THÊM/BỚT/SỬA) */}
               <div className="space-y-6">
                 <div className="flex justify-between items-center pb-4 border-b border-white/5">
@@ -1177,19 +1324,18 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                     <span>{t.addSkillGroup}</span>
                   </button>
                 </div>
-                
+
                 {portfolio.skills.length === 0 ? (
                   <div className="text-center py-12 text-slate-500 text-sm font-semibold">{t.noItem}</div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {portfolio.skills.map((skillGroup, idx) => (
-                      <div 
-                        key={idx} 
-                        className={`border rounded-2xl p-5 space-y-4 relative transition-all ${
-                          skillGroup.show === false
-                            ? "bg-[#1e293b]/5 border-red-500/20 opacity-60"
-                            : "bg-[#1e293b]/20 border-white/5"
-                        }`}
+                      <div
+                        key={idx}
+                        className={`border rounded-2xl p-5 space-y-4 relative transition-all ${skillGroup.show === false
+                          ? "bg-[#1e293b]/5 border-red-500/20 opacity-60"
+                          : "bg-[#1e293b]/20 border-white/5"
+                          }`}
                       >
                         {/* Nút ẩn/hiện nhóm kỹ năng */}
                         <button
@@ -1201,11 +1347,10 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                             };
                             setPortfolio(prev => ({ ...prev, skills: updated }));
                           }}
-                          className={`absolute top-4 right-12 p-1.5 rounded-lg transition-all ${
-                            skillGroup.show === false 
-                              ? "text-red-400 hover:text-red-300 hover:bg-red-500/10" 
-                              : "text-slate-500 hover:text-blue-400 hover:bg-white/5"
-                          }`}
+                          className={`absolute top-4 right-12 p-1.5 rounded-lg transition-all ${skillGroup.show === false
+                            ? "text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                            : "text-slate-500 hover:text-blue-400 hover:bg-white/5"
+                            }`}
                           title={skillGroup.show === false ? (lang === "vi" ? "Đang ẩn (Click để hiện)" : "Hidden (Click to show)") : (lang === "vi" ? "Đang hiện (Click để ẩn)" : "Shown (Click to hide)")}
                         >
                           {skillGroup.show === false ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -1289,7 +1434,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
               <div className="border-t border-white/5 pt-6 space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/5">
                   <h3 className="text-sm font-bold text-blue-400 uppercase tracking-widest">{t.socialsTitle}</h3>
-                  
+
                   <div className="flex items-center gap-3 flex-1 sm:max-w-md">
                     <div className="relative flex-1">
                       <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -1322,14 +1467,14 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                     </button>
                   </div>
                 </div>
-                
+
                 {portfolio.socialLinks.length === 0 ? (
                   <div className="text-center py-12 text-slate-500 text-sm font-semibold">{t.noItem}</div>
                 ) : (
                   <div className="space-y-6">
                     {portfolio.socialLinks.map((social, idx) => {
                       const searchLower = socialSearch.toLowerCase();
-                      const matchesSearch = 
+                      const matchesSearch =
                         social.name.toLowerCase().includes(searchLower) ||
                         social.link.toLowerCase().includes(searchLower) ||
                         social.desc.vi.toLowerCase().includes(searchLower) ||
@@ -1338,13 +1483,12 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                       if (socialSearch && !matchesSearch) return null;
 
                       return (
-                        <div 
-                          key={`${social.name}-${idx}`} 
-                          className={`relative p-5 rounded-2xl border transition-all space-y-4 ${
-                            social.show === false 
-                              ? "bg-[#1e293b]/5 border-red-500/20 opacity-60" 
-                              : "bg-[#1e293b]/20 border-white/5"
-                          }`}
+                        <div
+                          key={`${social.name}-${idx}`}
+                          className={`relative p-5 rounded-2xl border transition-all space-y-4 ${social.show === false
+                            ? "bg-[#1e293b]/5 border-red-500/20 opacity-60"
+                            : "bg-[#1e293b]/20 border-white/5"
+                            }`}
                         >
                           {/* Visibility Toggle Button */}
                           <button
@@ -1357,11 +1501,10 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                               };
                               setPortfolio(prev => ({ ...prev, socialLinks: updated }));
                             }}
-                            className={`absolute top-4 right-12 p-1.5 rounded-lg transition-all ${
-                              social.show === false 
-                                ? "text-red-400 hover:text-red-300 hover:bg-red-500/10" 
-                                : "text-slate-500 hover:text-blue-400 hover:bg-white/5"
-                            }`}
+                            className={`absolute top-4 right-12 p-1.5 rounded-lg transition-all ${social.show === false
+                              ? "text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                              : "text-slate-500 hover:text-blue-400 hover:bg-white/5"
+                              }`}
                             title={social.show === false ? (lang === "vi" ? "Đang ẩn (Click để hiện)" : "Hidden (Click to show)") : (lang === "vi" ? "Đang hiện (Click để ẩn)" : "Shown (Click to hide)")}
                           >
                             {social.show === false ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -1466,7 +1609,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/5">
                 <h3 className="text-sm font-bold text-blue-400 uppercase tracking-widest">{t.projectList}</h3>
-                
+
                 <div className="flex items-center gap-3 flex-1 sm:max-w-md">
                   <div className="relative flex-1">
                     <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -1505,7 +1648,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                 <div className="space-y-4">
                   {portfolio.projects.map((project, idx) => {
                     const searchLower = projectSearch.toLowerCase();
-                    const matchesSearch = 
+                    const matchesSearch =
                       project.title.toLowerCase().includes(searchLower) ||
                       project.company?.toLowerCase().includes(searchLower) ||
                       project.tech.some(t => t.toLowerCase().includes(searchLower)) ||
@@ -1516,29 +1659,26 @@ export default function SettingsClient({ data }: SettingsClientProps) {
 
                     const isExpanded = expandedProjectIndex === idx;
                     return (
-                      <div 
-                        key={idx} 
-                        className={`border rounded-2xl overflow-hidden transition-all duration-300 ${
-                          project.show === false
-                            ? "bg-[#1e293b]/5 border-red-500/20 opacity-60"
-                            : isExpanded 
-                              ? "bg-[#141b2b]/60 border-blue-500/30 shadow-xl shadow-blue-900/5" 
-                              : "bg-[#1e293b]/10 border-white/5 hover:border-white/10"
-                        }`}
+                      <div
+                        key={idx}
+                        className={`border rounded-2xl overflow-hidden transition-all duration-300 ${project.show === false
+                          ? "bg-[#1e293b]/5 border-red-500/20 opacity-60"
+                          : isExpanded
+                            ? "bg-[#141b2b]/60 border-blue-500/30 shadow-xl shadow-blue-900/5"
+                            : "bg-[#1e293b]/10 border-white/5 hover:border-white/10"
+                          }`}
                       >
                         {/* Header Accordion */}
-                        <div 
+                        <div
                           onClick={() => setExpandedProjectIndex(isExpanded ? null : idx)}
-                          className={`p-5 flex items-center justify-between cursor-pointer select-none gap-4 transition-colors ${
-                            isExpanded ? "bg-blue-600/5" : "bg-[#141b2b]/30 hover:bg-[#141b2b]/50"
-                          }`}
+                          className={`p-5 flex items-center justify-between cursor-pointer select-none gap-4 transition-colors ${isExpanded ? "bg-blue-600/5" : "bg-[#141b2b]/30 hover:bg-[#141b2b]/50"
+                            }`}
                         >
                           <div className="flex items-center gap-4 min-w-0">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
-                              isExpanded 
-                                ? "bg-blue-500/10 border-blue-500/30 text-blue-400" 
-                                : "bg-slate-500/5 border-white/5 text-slate-400"
-                            }`}>
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-all ${isExpanded
+                              ? "bg-blue-500/10 border-blue-500/30 text-blue-400"
+                              : "bg-slate-500/5 border-white/5 text-slate-400"
+                              }`}>
                               <Folder size={18} />
                             </div>
                             <div className="min-w-0">
@@ -1558,7 +1698,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                               </p>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
                             {/* Visibility Toggle */}
                             <button
@@ -1571,11 +1711,10 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                                 };
                                 setPortfolio(prev => ({ ...prev, projects: updated }));
                               }}
-                              className={`p-2 rounded-xl transition-colors ${
-                                project.show === false 
-                                  ? "text-red-400 hover:text-red-300 hover:bg-red-500/10" 
-                                  : "text-slate-500 hover:text-blue-400 hover:bg-white/5"
-                              }`}
+                              className={`p-2 rounded-xl transition-colors ${project.show === false
+                                ? "text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                                : "text-slate-500 hover:text-blue-400 hover:bg-white/5"
+                                }`}
                               title={project.show === false ? (lang === "vi" ? "Đang ẩn (Click để hiện)" : "Hidden (Click to show)") : (lang === "vi" ? "Đang hiện (Click để ẩn)" : "Shown (Click to hide)")}
                             >
                               {project.show === false ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -1606,9 +1745,8 @@ export default function SettingsClient({ data }: SettingsClientProps) {
 
                         {/* Content Accordion */}
                         <div
-                          className={`grid transition-all duration-300 ease-in-out ${
-                            isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0 pointer-events-none"
-                          }`}
+                          className={`grid transition-all duration-300 ease-in-out ${isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0 pointer-events-none"
+                            }`}
                         >
                           <div className="overflow-hidden border-t border-white/5 bg-[#141b2b]/15">
                             <div className="p-6 space-y-6">
@@ -1867,7 +2005,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/5">
                 <h3 className="text-sm font-bold text-blue-400 uppercase tracking-widest">{t.timelineTitle}</h3>
-                
+
                 <div className="flex items-center gap-3 flex-1 sm:max-w-md">
                   <div className="relative flex-1">
                     <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -1906,7 +2044,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                 <div className="space-y-4">
                   {portfolio.timeline.map((item, idx) => {
                     const searchLower = timelineSearch.toLowerCase();
-                    const matchesSearch = 
+                    const matchesSearch =
                       item.title.vi.toLowerCase().includes(searchLower) ||
                       item.title.en.toLowerCase().includes(searchLower) ||
                       item.organization.vi.toLowerCase().includes(searchLower) ||
@@ -1923,29 +2061,26 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                     const displayDate = lang === "vi" ? item.date.vi : item.date.en;
 
                     return (
-                      <div 
-                        key={item.id} 
-                        className={`border rounded-2xl overflow-hidden transition-all duration-300 ${
-                          item.show === false
-                            ? "bg-[#1e293b]/5 border-red-500/20 opacity-60"
-                            : isExpanded 
-                              ? "bg-[#141b2b]/60 border-purple-500/30 shadow-xl shadow-purple-900/5" 
-                              : "bg-[#1e293b]/10 border-white/5 hover:border-white/10"
-                        }`}
+                      <div
+                        key={item.id}
+                        className={`border rounded-2xl overflow-hidden transition-all duration-300 ${item.show === false
+                          ? "bg-[#1e293b]/5 border-red-500/20 opacity-60"
+                          : isExpanded
+                            ? "bg-[#141b2b]/60 border-purple-500/30 shadow-xl shadow-purple-900/5"
+                            : "bg-[#1e293b]/10 border-white/5 hover:border-white/10"
+                          }`}
                       >
                         {/* Header Accordion */}
-                        <div 
+                        <div
                           onClick={() => setExpandedTimelineIndex(isExpanded ? null : idx)}
-                          className={`p-5 flex items-center justify-between cursor-pointer select-none gap-4 transition-colors ${
-                            isExpanded ? "bg-purple-600/5" : "bg-[#141b2b]/30 hover:bg-[#141b2b]/50"
-                          }`}
+                          className={`p-5 flex items-center justify-between cursor-pointer select-none gap-4 transition-colors ${isExpanded ? "bg-purple-600/5" : "bg-[#141b2b]/30 hover:bg-[#141b2b]/50"
+                            }`}
                         >
                           <div className="flex items-center gap-4 min-w-0">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
-                              isExpanded 
-                                ? "bg-purple-500/10 border-purple-500/30 text-purple-400" 
-                                : "bg-slate-500/5 border-white/5 text-slate-400"
-                            }`}>
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-all ${isExpanded
+                              ? "bg-purple-500/10 border-purple-500/30 text-purple-400"
+                              : "bg-slate-500/5 border-white/5 text-slate-400"
+                              }`}>
                               <TimelineIcon size={18} />
                             </div>
                             <div className="min-w-0">
@@ -1971,7 +2106,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                               </p>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
                             {/* Visibility Toggle */}
                             <button
@@ -1984,11 +2119,10 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                                 };
                                 setPortfolio(prev => ({ ...prev, timeline: updated }));
                               }}
-                              className={`p-2 rounded-xl transition-colors ${
-                                item.show === false 
-                                  ? "text-red-400 hover:text-red-300 hover:bg-red-500/10" 
-                                  : "text-slate-500 hover:text-blue-400 hover:bg-white/5"
-                              }`}
+                              className={`p-2 rounded-xl transition-colors ${item.show === false
+                                ? "text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                                : "text-slate-500 hover:text-blue-400 hover:bg-white/5"
+                                }`}
                               title={item.show === false ? (lang === "vi" ? "Đang ẩn (Click để hiện)" : "Hidden (Click to show)") : (lang === "vi" ? "Đang hiện (Click để ẩn)" : "Shown (Click to hide)")}
                             >
                               {item.show === false ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -2019,9 +2153,8 @@ export default function SettingsClient({ data }: SettingsClientProps) {
 
                         {/* Content Accordion */}
                         <div
-                          className={`grid transition-all duration-300 ease-in-out ${
-                            isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0 pointer-events-none"
-                          }`}
+                          className={`grid transition-all duration-300 ease-in-out ${isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0 pointer-events-none"
+                            }`}
                         >
                           <div className="overflow-hidden border-t border-white/5 bg-[#141b2b]/15">
                             <div className="p-6 space-y-6">
@@ -2067,11 +2200,10 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                                 </div>
 
                                 <div className="flex flex-col justify-end">
-                                  <div className={`p-3 rounded-xl border text-[11px] leading-relaxed transition-all duration-300 ${
-                                    item.status === "active" 
-                                      ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-400 shadow-md shadow-emerald-500/5" 
-                                      : "bg-slate-500/5 border-white/5 text-slate-400"
-                                  }`}>
+                                  <div className={`p-3 rounded-xl border text-[11px] leading-relaxed transition-all duration-300 ${item.status === "active"
+                                    ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-400 shadow-md shadow-emerald-500/5"
+                                    : "bg-slate-500/5 border-white/5 text-slate-400"
+                                    }`}>
                                     {item.status === "active" ? t.timelineStatusActiveDesc : t.timelineStatusCompletedDesc}
                                   </div>
                                 </div>
@@ -2157,7 +2289,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                                     </div>
                                   </div>
                                 </div>
-                                
+
                                 {/* TỔ CHỨC */}
                                 <div className="md:col-span-3 space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
                                   <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
@@ -2250,7 +2382,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       {/* MODAL THÊM MẠNG XÃ HỘI */}
       <AnimatePresence>
         {isAddSocialModalOpen && (
-          <div 
+          <div
             onClick={() => setIsAddSocialModalOpen(false)}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           >
@@ -2313,44 +2445,44 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                   />
                 </div>
 
-                 {/* MÔ TẢ MẠNG XÃ HỘI */}
-                 <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
-                   <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
-                     {lang === "vi" ? "Mô tả ngắn" : "Short Description"}
-                   </label>
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                     <div>
-                       <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
-                         {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
-                       </span>
-                       <input
-                         type="text"
-                         value={newSocial.desc.vi}
-                         onChange={(e) => setNewSocial(prev => ({
-                           ...prev,
-                           desc: { ...prev.desc, vi: e.target.value }
-                         }))}
-                         placeholder={SOCIAL_METADATA[newSocial.name]?.placeholderDescVi || ""}
-                         className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                       />
-                     </div>
-                     <div>
-                       <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
-                         {lang === "vi" ? "Tiếng Anh" : "English"}
-                       </span>
-                       <input
-                         type="text"
-                         value={newSocial.desc.en}
-                         onChange={(e) => setNewSocial(prev => ({
-                           ...prev,
-                           desc: { ...prev.desc, en: e.target.value }
-                         }))}
-                         placeholder={SOCIAL_METADATA[newSocial.name]?.placeholderDescEn || ""}
-                         className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
-                       />
-                     </div>
-                   </div>
-                 </div>
+                {/* MÔ TẢ MẠNG XÃ HỘI */}
+                <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-2xl p-4">
+                  <label className="block text-xs font-black text-slate-300 uppercase tracking-widest">
+                    {lang === "vi" ? "Mô tả ngắn" : "Short Description"}
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Việt" : "Vietnamese"}
+                      </span>
+                      <input
+                        type="text"
+                        value={newSocial.desc.vi}
+                        onChange={(e) => setNewSocial(prev => ({
+                          ...prev,
+                          desc: { ...prev.desc, vi: e.target.value }
+                        }))}
+                        placeholder={SOCIAL_METADATA[newSocial.name]?.placeholderDescVi || ""}
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">
+                        {lang === "vi" ? "Tiếng Anh" : "English"}
+                      </span>
+                      <input
+                        type="text"
+                        value={newSocial.desc.en}
+                        onChange={(e) => setNewSocial(prev => ({
+                          ...prev,
+                          desc: { ...prev.desc, en: e.target.value }
+                        }))}
+                        placeholder={SOCIAL_METADATA[newSocial.name]?.placeholderDescEn || ""}
+                        className="w-full bg-[#1e293b]/50 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                      />
+                    </div>
+                  </div>
+                </div>
 
                 <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
                   <button
@@ -2376,7 +2508,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       {/* MODAL THÊM NHÓM KỸ NĂNG */}
       <AnimatePresence>
         {isAddSkillModalOpen && (
-          <div 
+          <div
             onClick={() => setIsAddSkillModalOpen(false)}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           >
@@ -2478,7 +2610,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       {/* MODAL THÊM DỰ ÁN */}
       <AnimatePresence>
         {isAddProjectModalOpen && (
-          <div 
+          <div
             onClick={() => setIsAddProjectModalOpen(false)}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           >
@@ -2649,7 +2781,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       {/* MODAL THÊM DÒNG THỜI GIAN */}
       <AnimatePresence>
         {isAddTimelineModalOpen && (
-          <div 
+          <div
             onClick={() => setIsAddTimelineModalOpen(false)}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           >
@@ -2907,7 +3039,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       {/* MODAL THÊM/SỬA REPO CON (SUB-REPO) */}
       <AnimatePresence>
         {isSubRepoModalOpen && (
-          <div 
+          <div
             onClick={() => setIsSubRepoModalOpen(false)}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           >
@@ -3044,6 +3176,121 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                 </div>
               </form>
             </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Xem Ảnh Lớn */}
+      <AnimatePresence>
+        {previewImageIndex !== null && portfolio.profileImages[previewImageIndex] && (
+          <div
+            onClick={() => setPreviewImageIndex(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md"
+            style={{
+              backgroundColor: "rgba(10, 15, 26, 0.75)"
+            }}
+          >
+            {/* Khung chứa các nút điều khiển định vị độc lập trải rộng toàn màn hình */}
+            <div
+              className="z-50"
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                right: 0,
+                bottom: 0,
+                width: "100%",
+                height: "100%",
+                pointerEvents: "none"
+              }}
+            >
+              {/* Nút mũi tên trái */}
+              {portfolio.profileImages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPreviewImageIndex(prev =>
+                      prev !== null
+                        ? (prev - 1 + portfolio.profileImages.length) % portfolio.profileImages.length
+                        : null
+                    );
+                  }}
+                  className="absolute pointer-events-auto p-4 rounded-full transition-all duration-300 active:scale-90 flex items-center justify-center group cursor-pointer"
+                  style={{
+                    position: "absolute",
+                    left: "32px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    backgroundColor: "rgba(255, 255, 255, 0.05)",
+                    backdropFilter: "blur(16px)",
+                    border: "1px solid rgba(255, 255, 255, 0.12)",
+                    color: "#ffffff",
+                    boxShadow: "0 12px 40px 0 rgba(0, 0, 0, 0.4)"
+                  }}
+                  title={lang === "vi" ? "Ảnh trước" : "Previous"}
+                >
+                  <ChevronLeft size={32} className="transition-transform group-hover:-translate-x-1 duration-200" />
+                </button>
+              )}
+
+              {/* Nút mũi tên phải */}
+              {portfolio.profileImages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPreviewImageIndex(prev =>
+                      prev !== null
+                        ? (prev + 1) % portfolio.profileImages.length
+                        : null
+                    );
+                  }}
+                  className="absolute pointer-events-auto p-4 rounded-full transition-all duration-300 active:scale-90 flex items-center justify-center group cursor-pointer"
+                  style={{
+                    position: "absolute",
+                    right: "32px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    backgroundColor: "rgba(255, 255, 255, 0.05)",
+                    backdropFilter: "blur(16px)",
+                    border: "1px solid rgba(255, 255, 255, 0.12)",
+                    color: "#ffffff",
+                    boxShadow: "0 12px 40px 0 rgba(0, 0, 0, 0.4)"
+                  }}
+                  title={lang === "vi" ? "Ảnh sau" : "Next"}
+                >
+                  <ChevronRight size={32} className="transition-transform group-hover:translate-x-1 duration-200" />
+                </button>
+              )}
+            </div>
+
+            {/* Khối hiển thị ảnh lớn */}
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative flex items-center justify-center select-none z-10 p-4"
+            >
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={previewImageIndex}
+                  src={portfolio.profileImages[previewImageIndex]}
+                  alt={`Preview profile ${previewImageIndex + 1}`}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="rounded-lg shadow-2xl"
+                  style={{
+                    maxWidth: "calc(100vw - 240px)",
+                    maxHeight: "85vh",
+                    width: "auto",
+                    height: "auto",
+                    objectFit: "contain",
+                    border: "1px solid rgba(255, 255, 255, 0.12)"
+                  }}
+                />
+              </AnimatePresence>
+            </div>
           </div>
         )}
       </AnimatePresence>
