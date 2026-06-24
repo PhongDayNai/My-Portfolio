@@ -71,6 +71,11 @@ export const SocialLinkSchema = z.object({
   show: z.boolean().optional().default(true),
 });
 
+export const ProfileImageSchema = z.object({
+  url: z.string(),
+  show: z.boolean().optional().default(true),
+});
+
 export const PortfolioDataSchema = z.object({
   personalInfo: z.object({
     name: z.string(),
@@ -81,7 +86,7 @@ export const PortfolioDataSchema = z.object({
     github: z.string(),
     experienceStartDate: z.string(), // Định dạng YYYY-MM-DD
   }),
-  profileImages: z.array(z.string()).optional().default([]),
+  profileImages: z.array(z.union([z.string(), ProfileImageSchema])).optional().default([]),
   translations: z.object({
     vi: z.object({
       nav: z.object({

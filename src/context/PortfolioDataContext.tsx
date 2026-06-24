@@ -51,7 +51,9 @@ export function PortfolioProvider({
         ...data.personalInfo,
         summary: updatedSummary,
       },
-      profileImages: data.profileImages || [],
+      profileImages: (data.profileImages || [])
+        .filter((img: any) => typeof img === 'string' || img.show !== false)
+        .map((img: any) => typeof img === 'string' ? img : img.url),
       projects: data.projects,
       timeline: data.timeline,
       socialLinks: data.socialLinks,

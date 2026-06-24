@@ -1091,7 +1091,7 @@ export default function PortfolioEditor({
                             if (result.success && result.url) {
                               setPortfolio(prev => ({
                                 ...prev,
-                                profileImages: [...(prev.profileImages || []), result.url]
+                                profileImages: [...(prev.profileImages || []), { url: result.url, show: true }]
                               }));
                               setToast({ type: "success", message: t.uploadSuccess });
                             } else {
@@ -1132,77 +1132,112 @@ export default function PortfolioEditor({
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                      {portfolio.profileImages.map((img, imgIdx) => (
-                        <div
-                          key={imgIdx}
-                          onClick={() => setPreviewImageIndex(imgIdx)}
-                          className="relative aspect-[3/4] rounded-xl overflow-hidden border border-white/10 bg-[#141b2b] group hover:border-blue-500/30 transition-all duration-300 shadow-md cursor-pointer"
-                        >
-                          <img
-                            src={img}
-                            alt={`About me ${imgIdx + 1}`}
-                            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
-                          />
+                      {portfolio.profileImages.map((img, imgIdx) => {
+                        const imgUrl = typeof img === 'string' ? img : img.url;
+                        const isShown = typeof img === 'string' ? true : (img.show !== false);
+                        return (
                           <div
-                            className="absolute inset-x-0 bottom-0 h-[60%] flex flex-col items-center justify-center gap-2.5 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out z-10"
-                            style={{
-                              background: "linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0) 100%)"
-                            }}
+                            key={imgIdx}
+                            onClick={() => setPreviewImageIndex(imgIdx)}
+                            className="relative aspect-[3/4] rounded-xl overflow-hidden border border-white/10 bg-[#141b2b] group hover:border-blue-500/30 transition-all duration-300 shadow-md cursor-pointer"
                           >
-                            {/* Nút xem ảnh lớn */}
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setPreviewImageIndex(imgIdx);
+                            {!isShown && (
+                              <div className="absolute top-2 right-2 bg-red-500/80 backdrop-blur-sm text-white p-1.5 rounded-lg z-10 border border-red-500/20 shadow-md" title={lang === 'vi' ? 'Ảnh đang bị ẩn' : 'Image is hidden'}>
+                                <EyeOff size={12} />
+                              </div>
+                            )}
+                            <img
+                              src={imgUrl}
+                              alt={`About me ${imgIdx + 1}`}
+                              className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                            />
+                            <div
+                              className="absolute inset-x-0 bottom-0 h-[60%] flex flex-col items-center justify-center gap-2.5 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out z-10"
+                              style={{
+                                background: "linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0) 100%)"
                               }}
-                              className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-slate-200 hover:text-white transition-all duration-200 border border-white/10 flex items-center justify-center shadow-lg cursor-pointer"
-                              title={t.viewLargeImage}
                             >
-                              <ExternalLink size={16} />
-                            </button>
+                              {/* Nút xem ảnh lớn */}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setPreviewImageIndex(imgIdx);
+                                }}
+                                className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-slate-200 hover:text-white transition-all duration-200 border border-white/10 flex items-center justify-center shadow-lg cursor-pointer"
+                                title={t.viewLargeImage}
+                              >
+                                <ExternalLink size={16} />
+                              </button>
 
-                            {/* Nút xóa ảnh */}
-                            <button
-                              type="button"
-                              onClick={async (e) => {
-                                e.stopPropagation();
-                                if (confirm(t.confirmDeleteImage)) {
-                                  try {
-                                    // Gọi API xóa file vật lý
-                                    const res = await fetch("/api/images", {
-                                      method: "DELETE",
-                                      headers: {
-                                        "Content-Type": "application/json",
-                                      },
-                                      body: JSON.stringify({ url: img }),
-                                    });
-
-                                    const result = await res.json();
-                                    if (result.success) {
-                                      setPortfolio(prev => ({
-                                        ...prev,
-                                        profileImages: (prev.profileImages || []).filter((_, i) => i !== imgIdx)
-                                      }));
-                                      setToast({ type: "success", message: t.deleteSuccess });
+                              {/* Nút ẩn/hiện ảnh */}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setPortfolio(prev => {
+                                    const updated = [...(prev.profileImages || [])];
+                                    const current = updated[imgIdx];
+                                    if (typeof current === 'string') {
+                                      updated[imgIdx] = { url: current, show: false };
                                     } else {
-                                      setToast({ type: "error", message: result.error || t.deleteFailed });
+                                      updated[imgIdx] = { ...current, show: !isShown };
                                     }
-                                  } catch (err: any) {
-                                    setToast({ type: "error", message: err?.message || t.errorOccurred });
-                                  } finally {
-                                    setTimeout(() => setToast(null), 3000);
+                                    return { ...prev, profileImages: updated };
+                                  });
+                                }}
+                                className={`p-2.5 rounded-xl transition-all duration-200 border flex items-center justify-center shadow-lg ${
+                                  isShown 
+                                    ? "bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white border-white/10" 
+                                    : "bg-red-500/20 hover:bg-red-500/30 text-red-400 border-red-500/30"
+                                }`}
+                                title={isShown ? (lang === 'vi' ? 'Ẩn ảnh' : 'Hide image') : (lang === 'vi' ? 'Hiện ảnh' : 'Show image')}
+                              >
+                                {isShown ? <Eye size={16} /> : <EyeOff size={16} />}
+                              </button>
+
+                              {/* Nút xóa ảnh */}
+                              <button
+                                type="button"
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  if (confirm(t.confirmDeleteImage)) {
+                                    try {
+                                      // Gọi API xóa file vật lý
+                                      const res = await fetch("/api/images", {
+                                        method: "DELETE",
+                                        headers: {
+                                          "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({ url: imgUrl }),
+                                      });
+
+                                      const result = await res.json();
+                                      if (result.success) {
+                                        setPortfolio(prev => ({
+                                          ...prev,
+                                          profileImages: (prev.profileImages || []).filter((_, i) => i !== imgIdx)
+                                        }));
+                                        setToast({ type: "success", message: t.deleteSuccess });
+                                      } else {
+                                        setToast({ type: "error", message: result.error || t.deleteFailed });
+                                      }
+                                    } catch (err: any) {
+                                      setToast({ type: "error", message: err?.message || t.errorOccurred });
+                                    } finally {
+                                      setTimeout(() => setToast(null), 3000);
+                                    }
                                   }
-                                }
-                              }}
-                              className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 active:scale-95 text-red-400 hover:text-red-300 transition-all duration-200 border border-red-500/20 flex items-center justify-center shadow-lg"
-                              title={t.deleteImage}
-                            >
-                              <Trash2 size={16} />
-                            </button>
+                                }}
+                                className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 active:scale-95 text-red-400 hover:text-red-300 transition-all duration-200 border border-red-500/20 flex items-center justify-center shadow-lg"
+                                title={t.deleteImage}
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -3197,7 +3232,11 @@ export default function PortfolioEditor({
               <AnimatePresence mode="wait">
                 <motion.img
                   key={previewImageIndex}
-                  src={portfolio.profileImages[previewImageIndex]}
+                  src={
+                    typeof portfolio.profileImages[previewImageIndex] === 'string'
+                      ? (portfolio.profileImages[previewImageIndex] as string)
+                      : (portfolio.profileImages[previewImageIndex] as any)?.url
+                  }
                   alt={`Preview profile ${previewImageIndex + 1}`}
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}

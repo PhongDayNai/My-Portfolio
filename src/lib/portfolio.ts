@@ -10,34 +10,6 @@ const getPaths = () => {
   return { defaultPath, dataPath };
 };
 
-const getProfileImagesFromDisk = (): string[] => {
-  try {
-    const imagesDir = path.join(process.cwd(), "public/images");
-    if (!fs.existsSync(imagesDir)) return [];
-    
-    const files = fs.readdirSync(imagesDir);
-    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.JPG', '.JPEG', '.PNG', '.WEBP'];
-    
-    return files
-      .filter(file => {
-        const ext = path.extname(file);
-        const nameWithoutExt = path.basename(file, ext);
-        return allowedExtensions.includes(ext) && nameWithoutExt.startsWith('me-');
-      })
-      .sort((a, b) => {
-        const matchA = a.match(/^me-(\d+)/i);
-        const matchB = b.match(/^me-(\d+)/i);
-        const numA = matchA ? parseInt(matchA[1], 10) : 0;
-        const numB = matchB ? parseInt(matchB[1], 10) : 0;
-        return numA - numB;
-      })
-      .map(file => `/images/${file}`);
-  } catch (error) {
-    console.error("Failed to dynamically scan profile images:", error);
-    return [];
-  }
-};
-
 // Caching helper to deduplicate reads across a single request
 export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
   const { defaultPath, dataPath } = getPaths();
@@ -93,12 +65,7 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
       const defaultData = JSON.parse(defaultContent);
       const defaultResult = PortfolioDataSchema.safeParse(defaultData);
       if (defaultResult.success) {
-        const finalData = defaultResult.data;
-        const diskImages = getProfileImagesFromDisk();
-        if (diskImages.length > 0) {
-          finalData.profileImages = diskImages;
-        }
-        return finalData;
+        return defaultResult.data;
       } else {
         throw new Error("Default portfolio data validation failed.");
       }
@@ -107,12 +74,7 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
     }
   }
 
-  const finalData = result.data;
-  const diskImages = getProfileImagesFromDisk();
-  if (diskImages.length > 0) {
-    finalData.profileImages = diskImages;
-  }
-  return finalData;
+  return result.data;
 });
 
 export const savePortfolioData = async (data: PortfolioData): Promise<void> => {

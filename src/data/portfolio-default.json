@@ -8,6 +8,13 @@
     "github": "https://github.com/PhongDayNai",
     "experienceStartDate": "2024-06-01"
   },
+  "profileImages": [
+    { "url": "/images/me-1.JPG", "show": true },
+    { "url": "/images/me-2.JPG", "show": true },
+    { "url": "/images/me-3.JPG", "show": true },
+    { "url": "/images/me-4.JPG", "show": true },
+    { "url": "/images/me-5.JPG", "show": true }
+  ],
   "translations": {
     "vi": {
       "nav": {
