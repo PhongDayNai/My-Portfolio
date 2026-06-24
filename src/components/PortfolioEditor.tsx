@@ -9,7 +9,7 @@ import {
   Loader2, Save, ArrowLeft, Plus, Trash2, HelpCircle,
   Code, Share2, Calendar, CheckCircle, ChevronDown, ChevronUp,
   Briefcase, GraduationCap, Folder, Search, X, Edit, GitBranch,
-  ChevronLeft, ChevronRight, Eye, EyeOff, ExternalLink
+  ChevronLeft, ChevronRight, Eye, EyeOff, ExternalLink, Upload
 } from "lucide-react";
 import Link from "next/link";
 import { PortfolioData } from "@/lib/schema";
@@ -331,6 +331,11 @@ export default function PortfolioEditor({
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [previewImageIndex, setPreviewImageIndex] = useState<number | null>(null);
 
+  // States quản lý Modal thêm ảnh chân dung
+  const [isAddImageModalOpen, setIsAddImageModalOpen] = useState(false);
+  const [newImageShow, setNewImageShow] = useState(true);
+  const [isDragActive, setIsDragActive] = useState(false);
+
   // States quản lý Modal thêm mạng xã hội
   const [isAddSocialModalOpen, setIsAddSocialModalOpen] = useState(false);
   const [newSocial, setNewSocial] = useState({
@@ -397,6 +402,79 @@ export default function PortfolioEditor({
       ...prev,
       personalInfo: { ...prev.personalInfo, [field]: value }
     }));
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setIsDragActive(true);
+    } else if (e.type === "dragleave") {
+      setIsDragActive(false);
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragActive(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      await handleImageUpload(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleImageUpload = async (file: File) => {
+    if (!file) return;
+
+    // Validate size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setToast({
+        type: "error",
+        message: lang === "vi" ? "Dung lượng ảnh tối đa là 5MB." : "Maximum image size is 5MB."
+      });
+      setTimeout(() => setToast(null), 4000);
+      return;
+    }
+
+    // Validate extension
+    const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+    if (![".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"].includes(ext)) {
+      setToast({
+        type: "error",
+        message: lang === "vi" ? "Chỉ hỗ trợ định dạng JPG, PNG, WEBP, GIF, SVG." : "Only JPG, PNG, WEBP, GIF, SVG formats are supported."
+      });
+      setTimeout(() => setToast(null), 4000);
+      return;
+    }
+
+    setIsUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/images", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+      if (result.success && result.url) {
+        setPortfolio(prev => ({
+          ...prev,
+          profileImages: [...(prev.profileImages || []), { url: result.url, show: newImageShow }]
+        }));
+        setToast({ type: "success", message: t.uploadSuccess });
+        setIsAddImageModalOpen(false);
+      } else {
+        setToast({ type: "error", message: result.error || t.uploadFailed });
+      }
+    } catch (err: any) {
+      setToast({ type: "error", message: err?.message || t.errorOccurred });
+    } finally {
+      setIsUploadingImage(false);
+      setTimeout(() => setToast(null), 3000);
+    }
   };
 
   const updateTranslation = (langKey: "vi" | "en", section: "hero" | "profile" | "education", field: string, value: string) => {
@@ -1065,63 +1143,19 @@ export default function PortfolioEditor({
                       {t.aboutMeImages}
                     </label>
 
-                    {/* Nút Upload ảnh ẩn và nhãn nhấn chọn */}
+                    {/* Nút mở Modal thêm ảnh */}
                     <div>
-                      <input
-                        type="file"
-                        id="profile-image-upload"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={async (e) => {
-                          const file = e.target.files?.[0];
-                          if (!file) return;
-
-                          // Set uploading state
-                          setIsUploadingImage(true);
-                          try {
-                            const formData = new FormData();
-                            formData.append("file", file);
-
-                            const res = await fetch("/api/images", {
-                              method: "POST",
-                              body: formData,
-                            });
-
-                            const result = await res.json();
-                            if (result.success && result.url) {
-                              setPortfolio(prev => ({
-                                ...prev,
-                                profileImages: [...(prev.profileImages || []), { url: result.url, show: true }]
-                              }));
-                              setToast({ type: "success", message: t.uploadSuccess });
-                            } else {
-                              setToast({ type: "error", message: result.error || t.uploadFailed });
-                            }
-                          } catch (err: any) {
-                            setToast({ type: "error", message: err?.message || t.errorOccurred });
-                          } finally {
-                            setIsUploadingImage(false);
-                            e.target.value = "";
-                            setTimeout(() => setToast(null), 3000);
-                          }
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNewImageShow(true);
+                          setIsAddImageModalOpen(true);
                         }}
-                      />
-                      <label
-                        htmlFor="profile-image-upload"
-                        className={`flex items-center gap-1.5 text-[11px] font-bold bg-blue-600/10 hover:bg-blue-600/20 active:scale-95 text-blue-400 py-1.5 px-3 rounded-xl border border-blue-500/20 transition-all shadow-md cursor-pointer ${isUploadingImage ? "opacity-50 cursor-not-allowed pointer-events-none" : ""}`}
+                        className="flex items-center gap-1.5 text-[11px] font-bold bg-blue-600/10 hover:bg-blue-600/20 active:scale-95 text-blue-400 py-1.5 px-3 rounded-xl border border-blue-500/20 transition-all shadow-md cursor-pointer"
                       >
-                        {isUploadingImage ? (
-                          <>
-                            <Loader2 size={12} className="animate-spin" />
-                            <span>{t.uploading}</span>
-                          </>
-                        ) : (
-                          <>
-                            <Plus size={12} />
-                            <span>{t.addImage}</span>
-                          </>
-                        )}
-                      </label>
+                        <Plus size={12} />
+                        <span>{t.addImage}</span>
+                      </button>
                     </div>
                   </div>
 
@@ -3134,6 +3168,117 @@ export default function PortfolioEditor({
                   </button>
                 </div>
               </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* MODAL THÊM ẢNH CHÂN DUNG */}
+      <AnimatePresence>
+        {isAddImageModalOpen && (
+          <div
+            onClick={() => setIsAddImageModalOpen(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-[#141b2b] border border-white/10 rounded-3xl p-6 md:p-8 w-full max-w-lg shadow-2xl relative space-y-6"
+            >
+              <button
+                type="button"
+                onClick={() => setIsAddImageModalOpen(false)}
+                className="absolute top-4 right-4 text-slate-500 hover:text-white p-2 rounded-xl transition-colors"
+              >
+                <X size={20} />
+              </button>
+
+              <h3 className="text-lg font-black text-white uppercase tracking-wider">
+                {lang === "vi" ? "Thêm ảnh chân dung" : "Add Profile Image"}
+              </h3>
+
+              {/* TRẠNG THÁI HIỂN THỊ SWITCH */}
+              <div className="flex items-center justify-between p-4 bg-[#1e293b]/20 border border-white/5 rounded-2xl">
+                <div className="space-y-0.5">
+                  <span className="block text-xs font-bold text-white uppercase tracking-wider">
+                    {lang === "vi" ? "Trạng thái hiển thị" : "Visibility"}
+                  </span>
+                  <span className="block text-[11px] text-slate-400">
+                    {lang === "vi" ? "Cho phép hiển thị ảnh này trên trang chủ" : "Allow showing this image on the homepage"}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setNewImageShow(!newImageShow)}
+                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                    newImageShow ? 'bg-blue-600' : 'bg-slate-700'
+                  }`}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                      newImageShow ? 'translate-x-5' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* DRAG & DROP AREA */}
+              <div
+                onDragEnter={handleDrag}
+                onDragOver={handleDrag}
+                onDragLeave={handleDrag}
+                onDrop={handleDrop}
+                onClick={() => {
+                  const input = document.getElementById("profile-image-upload-modal") as HTMLInputElement;
+                  input?.click();
+                }}
+                className={`border-2 border-dashed rounded-3xl p-8 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-300 ${
+                  isDragActive
+                    ? "border-blue-500 bg-blue-500/10 scale-[1.02]"
+                    : "border-white/10 bg-[#1e293b]/10 hover:border-white/20 hover:bg-[#1e293b]/20"
+                }`}
+              >
+                <input
+                  type="file"
+                  id="profile-image-upload-modal"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      await handleImageUpload(file);
+                      e.target.value = "";
+                    }
+                  }}
+                />
+                {isUploadingImage ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <Loader2 className="animate-spin text-blue-500" size={32} />
+                    <span className="text-xs text-slate-400 font-bold">
+                      {lang === "vi" ? "Đang tải ảnh lên..." : "Uploading image..."}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2 text-center">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-500">
+                      <Upload size={24} />
+                    </div>
+                    <div className="space-y-1">
+                      <span className="block text-sm font-bold text-slate-200">
+                        {lang === "vi" ? "Kéo thả ảnh vào đây" : "Drag & drop image here"}
+                      </span>
+                      <span className="block text-xs text-slate-500">
+                        {lang === "vi" ? "hoặc click để chọn tệp từ thiết bị" : "or click to select file from device"}
+                      </span>
+                    </div>
+                    <span className="block text-[10px] text-slate-600 uppercase font-black tracking-widest mt-2">
+                      {lang === "vi" ? "Định dạng: JPG, PNG, WEBP, GIF, SVG (Tối đa 5MB)" : "Formats: JPG, PNG, WEBP, GIF, SVG (Max 5MB)"}
+                    </span>
+                  </div>
+                )}
+              </div>
             </motion.div>
           </div>
         )}
