@@ -8,16 +8,22 @@ interface CustomDatePickerProps {
   value: string;
   onChange: (val: string) => void;
   lang?: "vi" | "en";
+  onlyMonth?: boolean;
 }
 
-export default function CustomDatePicker({ value, onChange, lang = "vi" }: CustomDatePickerProps) {
+export default function CustomDatePicker({ value, onChange, lang = "vi", onlyMonth = false }: CustomDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Parse value (YYYY-MM-DD)
+  // Parse value (YYYY-MM-DD or YYYY-MM)
   const parseDate = (dateStr: string) => {
     if (!dateStr) return new Date();
     const parts = dateStr.split("-");
+    if (parts.length === 2) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      return new Date(year, month, 1);
+    }
     if (parts.length !== 3) return new Date();
     const year = parseInt(parts[0], 10);
     const month = parseInt(parts[1], 10) - 1;
@@ -29,24 +35,27 @@ export default function CustomDatePicker({ value, onChange, lang = "vi" }: Custo
   const [viewDate, setViewDate] = useState(selectedDate);
 
   // States to track view mode: 'days' | 'months' | 'years'
-  const [viewMode, setViewMode] = useState<"days" | "months" | "years">("days");
+  const [viewMode, setViewMode] = useState<"days" | "months" | "years">(onlyMonth ? "months" : "days");
 
   // Sync viewDate when value changes from outside
   useEffect(() => {
     setViewDate(parseDate(value));
-  }, [value]);
+    if (onlyMonth) {
+      setViewMode("months");
+    }
+  }, [value, onlyMonth]);
 
   // Click outside to close
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
-        setViewMode("days"); // Reset mode when closed
+        setViewMode(onlyMonth ? "months" : "days"); // Reset mode when closed
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [onlyMonth]);
 
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth(); // 0-indexed
@@ -93,8 +102,15 @@ export default function CustomDatePicker({ value, onChange, lang = "vi" }: Custo
   };
 
   const handleSelectMonth = (mIdx: number) => {
-    setViewDate(new Date(year, mIdx, 1));
-    setViewMode("days");
+    if (onlyMonth) {
+      const formattedMonth = String(mIdx + 1).padStart(2, "0");
+      const formattedDate = `${year}-${formattedMonth}-01`;
+      onChange(formattedDate);
+      setIsOpen(false);
+    } else {
+      setViewDate(new Date(year, mIdx, 1));
+      setViewMode("days");
+    }
   };
 
   const handleSelectYear = (selectedYear: number) => {
@@ -116,7 +132,10 @@ export default function CustomDatePicker({ value, onChange, lang = "vi" }: Custo
   const getFormattedValue = () => {
     if (!value) return lang === "vi" ? "Chọn ngày..." : "Select date...";
     const parts = value.split("-");
-    if (parts.length !== 3) return value;
+    if (parts.length !== 3 && parts.length !== 2) return value;
+    if (onlyMonth) {
+      return `${parts[1]}/${parts[0]}`; // MM/YYYY
+    }
     return `${parts[2]}/${parts[1]}/${parts[0]}`; // DD/MM/YYYY
   };
 
@@ -269,7 +288,7 @@ export default function CustomDatePicker({ value, onChange, lang = "vi" }: Custo
                   </span>
                   <button
                     type="button"
-                    onClick={() => setViewMode("days")}
+                    onClick={() => setViewMode(onlyMonth ? "months" : "days")}
                     className="text-xs font-bold text-blue-400 hover:text-blue-300 hover:bg-white/5 px-2.5 py-1 rounded-md transition-all"
                   >
                     {lang === "vi" ? "Quay lại" : "Back"}

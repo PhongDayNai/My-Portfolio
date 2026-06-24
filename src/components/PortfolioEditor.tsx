@@ -2217,6 +2217,7 @@ export default function PortfolioEditor({
                                         setPortfolio(prev => ({ ...prev, timeline: updated }));
                                       }}
                                       lang={lang}
+                                      onlyMonth={true}
                                     />
                                   </div>
 
@@ -2239,6 +2240,7 @@ export default function PortfolioEditor({
                                           setPortfolio(prev => ({ ...prev, timeline: updated }));
                                         }}
                                         lang={lang}
+                                        onlyMonth={true}
                                       />
                                     )}
                                   </div>
@@ -2859,6 +2861,7 @@ export default function PortfolioEditor({
                         }));
                       }}
                       lang={lang}
+                      onlyMonth={true}
                     />
                   </div>
 
@@ -2882,6 +2885,7 @@ export default function PortfolioEditor({
                           }));
                         }}
                         lang={lang}
+                        onlyMonth={true}
                       />
                     )}
                   </div>
