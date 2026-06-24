@@ -161,6 +161,7 @@ export default function CustomDatePicker({ value, onChange, lang = "vi" }: Custo
                     >
                       {months[month]}
                     </button>
+                    <span className="text-slate-500 text-xs select-none">•</span>
                     <button
                       type="button"
                       onClick={() => setViewMode("years")}
