@@ -24,11 +24,20 @@ ENV HOSTNAME "0.0.0.0"
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
+# Tạo các thư mục lưu trữ persistent và phân quyền cho user nextjs
+RUN mkdir -p /app/data /app/public/uploads /app/public/images && chown -R nextjs:nodejs /app/data /app/public/uploads /app/public/images
+
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+# Sao lưu thư mục images gốc để tự động khôi phục khi mount volume trống
+COPY --from=builder --chown=nextjs:nodejs /app/public/images ./public/images-default
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Copy file dữ liệu mặc định để làm fallback lúc khởi chạy
+COPY --from=builder --chown=nextjs:nodejs /app/src/data/portfolio-default.json ./src/data/portfolio-default.json
+# Copy bootstrap script để phục vụ khởi động container
+COPY --from=builder --chown=nextjs:nodejs /app/bootstrap.js ./bootstrap.js
 
 USER nextjs
 EXPOSE 2664
 
-CMD ["node", "server.js"]
+CMD ["node", "bootstrap.js"]

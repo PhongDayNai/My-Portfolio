@@ -43,5 +43,6 @@ next-env.d.ts
 
 public/images/me-*
 public/uploads/
+data/
 docs/
 bak/

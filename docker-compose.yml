@@ -1,0 +1,30 @@
+services:
+  # Container khởi tạo để phân quyền thư mục volume ngoài Host cho user nextjs (1001:1001)
+  init-permissions:
+    image: alpine:3.20
+    user: "root"
+    volumes:
+      - /app/data/my-portfolio:/mnt/data
+    command: sh -c "mkdir -p /mnt/data/uploads /mnt/data/images && chown -R 1001:1001 /mnt/data"
+
+  portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: portfolio-app
+    ports:
+      - "2664:2664"
+    depends_on:
+      init-permissions:
+        condition: service_completed_successfully
+    volumes:
+      - /app/data/my-portfolio:/app/data
+      - /app/data/my-portfolio/uploads:/app/public/uploads
+      - /app/data/my-portfolio/images:/app/public/images
+    environment:
+      - PORTFOLIO_DATA_PATH=/app/data/portfolio.json
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
+      - JWT_SECRET=${JWT_SECRET}
+      - NODE_ENV=production
+    restart: always
