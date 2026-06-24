@@ -1,11 +1,10 @@
 "use client";
-import { useLanguage } from '@/context/LanguageContext';
-import { translations } from '@/constants/translations';
+import { usePortfolio } from '@/context/PortfolioDataContext';
 import { motion } from 'framer-motion';
 
 export default function SkillsCard() {
-  const { lang } = useLanguage();
-  const t = translations[lang].sections;
+  const { skills, translations, lang } = usePortfolio();
+  const t = translations.sections;
 
   return (
     <motion.div 
@@ -15,22 +14,12 @@ export default function SkillsCard() {
     >
       <h4 className="text-xl font-bold mb-4 text-white">{t.skills}</h4>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-slate-400 text-sm">
-        <div>
-          <p className="text-blue-500 font-bold mb-1">Android / Mobile</p>
-          <p>Kotlin, Jetpack Compose, Hilt, Room, Retrofit, Coroutines, WorkManager, CameraX, Glance, ML Kit, MVVM & Clean Architecture</p>
-        </div>
-        <div>
-          <p className="text-blue-500 font-bold mb-1">Web / Frontend</p>
-          <p>React, Next.js, TypeScript, TailwindCSS, Vite, Framer Motion, Recharts</p>
-        </div>
-        <div>
-          <p className="text-blue-500 font-bold mb-1">Backend</p>
-          <p>Node.js, Express, MySQL, ORM (Sequelize), Socket.io, SSE, JWT & Zod, AI/LLM Integration (Function Calling)</p>
-        </div>
-        <div>
-          <p className="text-blue-500 font-bold mb-1">DevOps & Infrastructure</p>
-          <p>Docker, GitHub Actions, Cloudflare Tunnel, Linux & Home-Lab Setup</p>
-        </div>
+        {skills.map((skillGroup, idx) => (
+          <div key={idx}>
+            <p className="text-blue-500 font-bold mb-1">{skillGroup.category[lang]}</p>
+            <p>{skillGroup.items}</p>
+          </div>
+        ))}
       </div>
     </motion.div>
   );

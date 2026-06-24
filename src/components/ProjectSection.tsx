@@ -3,13 +3,11 @@ import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import ProjectCard from "./ProjectCard";
-import { useLanguage } from "@/context/LanguageContext";
-import { translations } from "@/constants/translations";
-import { PROJECTS } from "@/constants";
+import { usePortfolio } from "@/context/PortfolioDataContext";
 
 export default function ProjectSection() {
-  const { lang } = useLanguage();
-  const t = translations[lang].projects;
+  const { projects, translations, lang } = usePortfolio();
+  const t = translations.projects;
   const [activeTab, setActiveTab] = useState<"professional" | "personal">(
     "personal",
   );
@@ -29,14 +27,14 @@ export default function ProjectSection() {
   }, [selectedCompany]);
 
   const companies = useMemo(() => {
-    const allCompanies = PROJECTS
+    const allCompanies = projects
       .filter((p) => p.category === "work" && p.company)
       .map((p) => p.company as string);
     return Array.from(new Set(allCompanies));
-  }, []);
+  }, [projects]);
 
   const list = useMemo(() => {
-    return PROJECTS.filter((p) => {
+    return projects.filter((p) => {
       if (activeTab === "professional") {
         if (p.category !== "work") return false;
         if (selectedCompany !== "ALL" && p.company !== selectedCompany) return false;
@@ -45,7 +43,7 @@ export default function ProjectSection() {
         return p.category === "personal";
       }
     }).reverse();
-  }, [activeTab, selectedCompany]);
+  }, [activeTab, selectedCompany, projects]);
 
   const pages = useMemo(() => {
     const result: any[][] = [];

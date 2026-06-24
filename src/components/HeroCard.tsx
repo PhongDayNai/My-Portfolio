@@ -1,11 +1,9 @@
 "use client";
-import { PERSONAL_INFO } from '@/constants';
-import { useLanguage } from '@/context/LanguageContext';
-import { translations } from '@/constants/translations';
+import { usePortfolio } from '@/context/PortfolioDataContext';
 
 export default function HeroCard() {
-  const { lang } = useLanguage();
-  const text = translations[lang].hero;
+  const { translations } = usePortfolio();
+  const text = translations.hero;
 
   return (
     <section className="relative min-h-[600px] flex flex-col justify-center px-8 md:px-20 bg-[#030712] overflow-hidden rounded-[2.5rem] border border-white/5 mx-4 my-8">

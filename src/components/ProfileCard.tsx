@@ -1,16 +1,14 @@
 "use client";
 import { motion } from "framer-motion";
 import { User, MapPin, Mail, Phone } from "lucide-react";
-import { useLanguage } from '@/context/LanguageContext';
-import { translations } from '@/constants/translations';
-import { PERSONAL_INFO } from "@/constants";
+import { usePortfolio } from '@/context/PortfolioDataContext';
 
 export default function ProfileCard() {
-  const { lang } = useLanguage();
-  const text = translations[lang].profile;
+  const { personalInfo, translations } = usePortfolio();
+  const text = translations.profile;
 
-  const email = PERSONAL_INFO.email;
-  const phoneNumber = PERSONAL_INFO.phone;
+  const email = personalInfo.email;
+  const phoneNumber = personalInfo.phone;
   const address = text.location;
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 

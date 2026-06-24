@@ -1,13 +1,12 @@
 "use client";
 import { GraduationCap } from "lucide-react";
-import { useLanguage } from "@/context/LanguageContext";
-import { translations } from "@/constants/translations";
+import { usePortfolio } from "@/context/PortfolioDataContext";
 import { motion } from "framer-motion";
 
 export default function EducationCard() {
-  const { lang } = useLanguage();
-  const edu = translations[lang].education;
-  const sect = translations[lang].sections;
+  const { translations } = usePortfolio();
+  const edu = translations.education;
+  const sect = translations.sections;
 
   return (
     <motion.div
@@ -32,7 +31,7 @@ export default function EducationCard() {
           {sect.gpa}
         </p>
         <div className="text-4xl font-black text-blue-500 tracking-tighter">
-          3.2
+          {edu.gpaValue}
         </div>
       </div>
     </motion.div>

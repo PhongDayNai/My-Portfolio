@@ -2,7 +2,8 @@ import "./globals.css";
 import { Be_Vietnam_Pro } from "next/font/google";
 import { Metadata } from "next";
 import ClientProviders from "@/components/ClientProviders";
-import { getExperienceEn } from "@/constants/translations";
+import { getPortfolioData } from "@/lib/portfolio";
+import { getExperienceText } from "@/lib/experience";
 
 const beVietnam = Be_Vietnam_Pro({
   subsets: ["vietnamese"],
@@ -11,14 +12,29 @@ const beVietnam = Be_Vietnam_Pro({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Hung Phong Duong | Portfolio",
-    description: `Full-Stack Developer Portfolio - Multi-disciplinary Developer with ${getExperienceEn()}.`,
-    icons: {
-      icon: "/favicon.ico",
-      apple: "/apple-touch-icon.png",
-    },
-  };
+  try {
+    const data = await getPortfolioData();
+    const expText = getExperienceText(data.personalInfo.experienceStartDate, "en");
+    const summary = data.translations.en.hero.summary.replace("{experience}", expText);
+    return {
+      title: `${data.personalInfo.name} | Portfolio`,
+      description: `${data.personalInfo.role} Portfolio - ${summary}`,
+      icons: {
+        icon: "/favicon.ico",
+        apple: "/apple-touch-icon.png",
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {
+      title: "Duong Hung Phong | Portfolio",
+      description: "Full-Stack Developer Portfolio",
+      icons: {
+        icon: "/favicon.ico",
+        apple: "/apple-touch-icon.png",
+      },
+    };
+  }
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

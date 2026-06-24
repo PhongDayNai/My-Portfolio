@@ -1,18 +1,17 @@
 "use client";
 import { motion } from "framer-motion";
 import { Briefcase, GraduationCap, Calendar, Circle } from "lucide-react";
-import { TIMELINE_DATA } from "@/constants";
-import { useLanguage } from '@/context/LanguageContext';
+import { usePortfolio } from "@/context/PortfolioDataContext";
 
 export default function Timeline() {
-  const { lang } = useLanguage();
+  const { timeline, lang } = usePortfolio();
 
   return (
     <div className="relative max-w-4xl mx-auto py-12 px-4">
       <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500/0 via-blue-500/50 to-blue-500/0 hidden md:block" />
 
       <div className="space-y-12">
-        {TIMELINE_DATA.map((item, index) => {
+        {timeline.map((item, index) => {
           return (
             <motion.div
               key={item.id}

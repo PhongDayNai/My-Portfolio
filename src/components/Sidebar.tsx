@@ -1,12 +1,11 @@
 'use client';
 import { Home, FolderCode, User, Briefcase } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useLanguage } from '@/context/LanguageContext';
-import { translations } from '@/constants/translations';
+import { usePortfolio } from '@/context/PortfolioDataContext';
 
 export default function Sidebar() {
-  const { lang } = useLanguage();
-  const text = translations[lang].nav;
+  const { translations } = usePortfolio();
+  const text = translations.nav;
 
   const menu = [
     { name: text.home, icon: Home, href: '#home' },

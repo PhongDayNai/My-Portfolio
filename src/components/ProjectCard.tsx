@@ -2,10 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Github, Layers, X, Play, Globe } from "lucide-react";
-import { Project } from "@/constants";
+import { Project } from "@/lib/schema";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLanguage } from "@/context/LanguageContext";
-import { translations } from "@/constants/translations";
+import { usePortfolio } from "@/context/PortfolioDataContext";
 
 interface ProjectCardProps {
   project: Project;
@@ -18,14 +17,14 @@ export default function ProjectCard({
   size = "normal",
   idx,
 }: ProjectCardProps) {
-  const { lang } = useLanguage();
+  const { lang, translations } = usePortfolio();
   const [isExpanded, setIsExpanded] = useState(false);
   const [xOffset, setXOffset] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
   const expandedCardRef = useRef<HTMLDivElement>(null);
 
   const isSpecial = size === "special";
-  const t = translations[lang].sections;
+  const t = translations.sections;
 
   const updateOffset = () => {
     if (!isExpanded || !cardRef.current || !expandedCardRef.current) return;
