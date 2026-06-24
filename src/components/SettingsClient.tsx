@@ -15,6 +15,7 @@ import Link from "next/link";
 import { PortfolioData } from "@/lib/schema";
 import { updatePortfolio } from "@/app/actions";
 import { settingsTranslations } from "@/constants";
+import CustomDatePicker from "@/components/CustomDatePicker";
 
 interface SettingsClientProps {
   data: PortfolioData;
@@ -911,11 +912,10 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t.expStartDate}</label>
-                  <input
-                    type="date"
+                  <CustomDatePicker
                     value={portfolio.personalInfo.experienceStartDate}
-                    onChange={(e) => updatePersonalInfo("experienceStartDate", e.target.value)}
-                    className="w-full bg-[#1e293b]/55 border border-white/5 focus:border-blue-500 rounded-xl p-3 text-white text-sm outline-none transition-all"
+                    onChange={(val) => updatePersonalInfo("experienceStartDate", val)}
+                    lang={lang}
                   />
                 </div>
               </div>
