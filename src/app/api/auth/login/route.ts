@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { verifyPassword } from '@/lib/auth';
+import { verifyPassword, getAdminPasswordHash } from '@/lib/auth';
 import { signJWT } from '@/lib/jwt';
 
 export async function POST(request: Request) {
@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     const { username, password } = await request.json();
 
     const expectedUsername = process.env.ADMIN_USERNAME || 'admin';
-    const storedHash = process.env.ADMIN_PASSWORD_HASH;
+    const storedHash = getAdminPasswordHash();
 
     if (!storedHash) {
       console.error("ADMIN_PASSWORD_HASH is not configured in .env");

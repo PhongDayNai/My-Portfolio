@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import fs from 'fs';
 import path from 'path';
 import { verifyJWT } from '@/lib/jwt';
-import { verifyPassword, hashPassword } from '@/lib/auth';
+import { verifyPassword, hashPassword, getAdminPasswordHash, saveAdminPasswordHash } from '@/lib/auth';
 
 async function isAuthenticated() {
   try {
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Mật khẩu mới phải có độ dài ít nhất 6 ký tự.' }, { status: 400 });
     }
 
-    const storedHash = process.env.ADMIN_PASSWORD_HASH;
+    const storedHash = getAdminPasswordHash();
     if (!storedHash) {
       return NextResponse.json({ error: 'Không tìm thấy cấu hình mật khẩu hiện tại trên server.' }, { status: 500 });
     }
@@ -50,29 +50,28 @@ export async function POST(request: Request) {
     // 2. Tạo hash mới cho mật khẩu mới
     const newHash = hashPassword(newPassword);
 
-    // 3. Ghi đè vào file .env
-    const envPath = path.join(process.cwd(), '.env');
-    let envContent = '';
-    if (fs.existsSync(envPath)) {
-      envContent = fs.readFileSync(envPath, 'utf8');
-    }
-
-    const regex = /^ADMIN_PASSWORD_HASH=.*$/m;
-    if (regex.test(envContent)) {
-      envContent = envContent.replace(regex, `ADMIN_PASSWORD_HASH=${newHash}`);
-    } else {
-      envContent += `\nADMIN_PASSWORD_HASH=${newHash}`;
-    }
-
-    try {
-      fs.writeFileSync(envPath, envContent, 'utf8');
-    } catch (writeError) {
-      console.error("Failed to write to .env file:", writeError);
+    // 3. Lưu mật khẩu vào file cấu hình persistent
+    const isSaved = saveAdminPasswordHash(newHash);
+    if (!isSaved) {
       return NextResponse.json({ error: 'Không thể cập nhật cấu hình mật khẩu trên máy chủ.' }, { status: 500 });
     }
 
-    // 4. Cập nhật biến môi trường trong memory để có hiệu lực lập tức
-    process.env.ADMIN_PASSWORD_HASH = newHash;
+    // 4. Đồng thời thử ghi đè vào file .env nếu có (fallback cho dev local)
+    try {
+      const envPath = path.join(process.cwd(), '.env');
+      if (fs.existsSync(envPath)) {
+        let envContent = fs.readFileSync(envPath, 'utf8');
+        const regex = /^ADMIN_PASSWORD_HASH=.*$/m;
+        if (regex.test(envContent)) {
+          envContent = envContent.replace(regex, `ADMIN_PASSWORD_HASH=${newHash}`);
+        } else {
+          envContent += `\nADMIN_PASSWORD_HASH=${newHash}`;
+        }
+        fs.writeFileSync(envPath, envContent, 'utf8');
+      }
+    } catch (envError) {
+      console.warn("Failed to write to local .env file (expected in production Docker):", envError);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
