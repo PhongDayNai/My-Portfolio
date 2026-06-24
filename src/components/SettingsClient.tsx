@@ -37,6 +37,15 @@ export default function SettingsClient({ data }: SettingsClientProps) {
   const [deletingDocName, setDeletingDocName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [titleVi, setTitleVi] = useState("");
+  const [titleEn, setTitleEn] = useState("");
+
+  const [editingDocUrl, setEditingDocUrl] = useState<string | null>(null);
+  const [editTitleVi, setEditTitleVi] = useState("");
+  const [editTitleEn, setEditTitleEn] = useState("");
+  const [isUpdatingDoc, setIsUpdatingDoc] = useState(false);
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -60,12 +69,12 @@ export default function SettingsClient({ data }: SettingsClientProps) {
     }
   };
 
-  const handleUploadDocument = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
     const file = files[0];
-    
+
     // Validate size (5MB)
     if (file.size > 5 * 1024 * 1024) {
       setToast({
@@ -73,6 +82,7 @@ export default function SettingsClient({ data }: SettingsClientProps) {
         message: lang === "vi" ? "Dung lượng tệp tối đa là 5MB." : "Maximum file size is 5MB."
       });
       setTimeout(() => setToast(null), 4000);
+      if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
 
@@ -84,6 +94,24 @@ export default function SettingsClient({ data }: SettingsClientProps) {
         message: lang === "vi" ? "Chỉ hỗ trợ định dạng .pdf, .docx, .doc." : "Only .pdf, .docx, .doc formats are supported."
       });
       setTimeout(() => setToast(null), 4000);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    setSelectedFile(file);
+    const baseName = file.name.substring(0, file.name.lastIndexOf("."));
+    setTitleVi(baseName);
+    setTitleEn(baseName);
+  };
+
+  const handleUploadDocument = async () => {
+    if (!selectedFile) return;
+    if (!titleVi.trim() || !titleEn.trim()) {
+      setToast({
+        type: "error",
+        message: lang === "vi" ? "Vui lòng nhập đầy đủ tiêu đề Việt và Anh." : "Please enter both Vietnamese and English titles."
+      });
+      setTimeout(() => setToast(null), 4000);
       return;
     }
 
@@ -91,7 +119,9 @@ export default function SettingsClient({ data }: SettingsClientProps) {
     setToast(null);
 
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", selectedFile);
+    formData.append("titleVi", titleVi.trim());
+    formData.append("titleEn", titleEn.trim());
 
     try {
       const response = await fetch("/api/documents", {
@@ -105,6 +135,9 @@ export default function SettingsClient({ data }: SettingsClientProps) {
           type: "success",
           message: lang === "vi" ? "Tải tài liệu lên thành công!" : "Document uploaded successfully!"
         });
+        setSelectedFile(null);
+        setTitleVi("");
+        setTitleEn("");
         fetchDocuments();
         if (fileInputRef.current) fileInputRef.current.value = "";
       } else {
@@ -120,6 +153,57 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       });
     } finally {
       setIsUploadingDoc(false);
+      setTimeout(() => setToast(null), 4000);
+    }
+  };
+
+  const handleUpdateDocument = async (docUrl: string) => {
+    if (!editTitleVi.trim() || !editTitleEn.trim()) {
+      setToast({
+        type: "error",
+        message: lang === "vi" ? "Vui lòng nhập đầy đủ tiêu đề Việt và Anh." : "Please enter both Vietnamese and English titles."
+      });
+      setTimeout(() => setToast(null), 4000);
+      return;
+    }
+
+    setIsUpdatingDoc(true);
+    setToast(null);
+
+    try {
+      const response = await fetch("/api/documents", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          url: docUrl,
+          titleVi: editTitleVi.trim(),
+          titleEn: editTitleEn.trim(),
+        }),
+      });
+
+      const resData = await response.json();
+      if (response.ok && resData.success) {
+        setToast({
+          type: "success",
+          message: lang === "vi" ? "Cập nhật tài liệu thành công!" : "Document updated successfully!"
+        });
+        setEditingDocUrl(null);
+        fetchDocuments();
+      } else {
+        setToast({
+          type: "error",
+          message: resData.error || (lang === "vi" ? "Cập nhật thất bại." : "Update failed.")
+        });
+      }
+    } catch (err: any) {
+      setToast({
+        type: "error",
+        message: err?.message || (lang === "vi" ? "Đã xảy ra lỗi khi cập nhật." : "An error occurred during update.")
+      });
+    } finally {
+      setIsUpdatingDoc(false);
       setTimeout(() => setToast(null), 4000);
     }
   };
@@ -517,46 +601,104 @@ export default function SettingsClient({ data }: SettingsClientProps) {
               className="space-y-6"
             >
               {/* Upload Section */}
-              <div className="bg-[#141b2b]/40 border border-white/5 p-8 rounded-2xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="space-y-2 text-center md:text-left">
-                  <h3 className="text-lg font-bold text-white flex items-center justify-center md:justify-start gap-2">
-                    <FileText className="text-indigo-400" size={22} />
-                    <span>{lang === "vi" ? "Tải lên CV & Tài liệu mới" : "Upload New CV & Document"}</span>
-                  </h3>
-                  <p className="text-slate-400 text-xs md:text-sm max-w-xl">
-                    {lang === "vi"
-                      ? "Chỉ chấp nhận các tệp định dạng .pdf, .docx, .doc với dung lượng tối đa 5MB. Tên file sẽ được chuẩn hóa tự động để đảm bảo an toàn."
-                      : "Only .pdf, .docx, .doc formats are accepted with a maximum size of 5MB. Filename will be automatically sanitized for safety."}
-                  </p>
-                </div>
+              {selectedFile ? (
+                <div className="bg-[#141b2b]/40 border border-white/5 p-8 rounded-2xl shadow-xl space-y-4">
+                  <div className="flex items-center gap-3">
+                    <FileText className="text-indigo-400" size={24} />
+                    <div>
+                      <h3 className="text-lg font-bold text-white">
+                        {lang === "vi" ? "Thông tin tài liệu tải lên" : "Upload Document Info"}
+                      </h3>
+                      <p className="text-xs text-slate-400">
+                        {lang === "vi" ? "Tệp đã chọn:" : "Selected file:"} <span className="font-semibold text-slate-200">{selectedFile.name}</span> ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                      </p>
+                    </div>
+                  </div>
 
-                <div className="flex flex-col items-center gap-3 w-full md:w-auto">
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleUploadDocument}
-                    accept=".pdf,.docx,.doc"
-                    className="hidden"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isUploadingDoc}
-                    className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-50 w-full md:w-auto cursor-pointer"
-                  >
-                    {isUploadingDoc ? (
-                      <Loader2 className="animate-spin" size={18} />
-                    ) : (
-                      <Upload size={18} />
-                    )}
-                    <span>
-                      {isUploadingDoc
-                        ? (lang === "vi" ? "Đang tải lên..." : "Uploading...")
-                        : (lang === "vi" ? "Chọn tệp tải lên" : "Select File")}
-                    </span>
-                  </button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                        {lang === "vi" ? "Tiêu đề tiếng Việt" : "Vietnamese Title"}
+                      </label>
+                      <input
+                        type="text"
+                        value={titleVi}
+                        onChange={(e) => setTitleVi(e.target.value)}
+                        placeholder={lang === "vi" ? "Ví dụ: CV Android Developer" : "e.g. CV Android Developer"}
+                        className="w-full bg-[#101622]/50 border border-white/5 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 text-white rounded-xl py-3 px-4 text-sm transition-all focus:outline-none"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                        {lang === "vi" ? "Tiêu đề tiếng Anh" : "English Title"}
+                      </label>
+                      <input
+                        type="text"
+                        value={titleEn}
+                        onChange={(e) => setTitleEn(e.target.value)}
+                        placeholder={lang === "vi" ? "Ví dụ: CV Android Developer" : "e.g. CV Android Developer"}
+                        className="w-full bg-[#101622]/50 border border-white/5 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 text-white rounded-xl py-3 px-4 text-sm transition-all focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 justify-end pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedFile(null);
+                        setTitleVi("");
+                        setTitleEn("");
+                        if (fileInputRef.current) fileInputRef.current.value = "";
+                      }}
+                      className="px-5 py-2.5 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 text-slate-300 font-semibold text-sm transition-all cursor-pointer"
+                    >
+                      {lang === "vi" ? "Hủy bỏ" : "Cancel"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleUploadDocument}
+                      disabled={isUploadingDoc}
+                      className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-2.5 px-6 rounded-xl transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-50 cursor-pointer text-sm"
+                    >
+                      {isUploadingDoc ? <Loader2 className="animate-spin" size={16} /> : <Upload size={16} />}
+                      <span>{isUploadingDoc ? (lang === "vi" ? "Đang tải lên..." : "Uploading...") : (lang === "vi" ? "Tải lên tài liệu" : "Upload Document")}</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="bg-[#141b2b]/40 border border-white/5 p-8 rounded-2xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="space-y-2 text-center md:text-left">
+                    <h3 className="text-lg font-bold text-white flex items-center justify-center md:justify-start gap-2">
+                      <FileText className="text-indigo-400" size={22} />
+                      <span>{lang === "vi" ? "Tải lên CV & Tài liệu mới" : "Upload New CV & Document"}</span>
+                    </h3>
+                    <p className="text-slate-400 text-xs md:text-sm max-w-xl">
+                      {lang === "vi"
+                        ? "Chỉ chấp nhận các tệp định dạng .pdf, .docx, .doc với dung lượng tối đa 5MB. Tên file sẽ được tự động tạo từ tên tiếng Anh của tài liệu để đồng bộ."
+                        : "Only .pdf, .docx, .doc formats are accepted with a maximum size of 5MB. Filename will be generated based on the English title."}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col items-center gap-3 w-full md:w-auto">
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileSelect}
+                      accept=".pdf,.docx,.doc"
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-indigo-500/20 w-full md:w-auto cursor-pointer"
+                    >
+                      <Upload size={18} />
+                      <span>{lang === "vi" ? "Chọn tệp tải lên" : "Select File"}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Documents List */}
               <div className="bg-[#141b2b]/40 border border-white/5 p-6 md:p-8 rounded-2xl shadow-xl space-y-6">
@@ -587,69 +729,153 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 gap-4">
-                    {documents.map((doc) => (
-                      <div
-                        key={doc.name}
-                        className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-white/5 bg-[#101622]/40 hover:bg-[#101622]/80 hover:border-white/10 transition-all gap-4"
-                      >
-                        <div className="flex items-start gap-3 min-w-0">
-                          <div className="w-10 h-10 rounded-lg bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
-                            <FileText size={20} />
-                          </div>
-                          <div className="min-w-0">
-                            <h4 className="font-semibold text-sm text-white truncate max-w-[250px] md:max-w-[400px]" title={doc.name}>
-                              {doc.name}
-                            </h4>
-                            <p className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-2">
-                              <span>{(doc.size / 1024 / 1024).toFixed(2)} MB</span>
-                              <span>•</span>
-                              <span>{new Date(doc.uploadedAt).toLocaleDateString(lang === "vi" ? "vi-VN" : "en-US", {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}</span>
-                            </p>
-                          </div>
-                        </div>
+                    {documents.map((doc) => {
+                      const isEditing = editingDocUrl === doc.url;
+                      return (
+                        <div
+                          key={doc.name}
+                          className="flex flex-col p-4 rounded-xl border border-white/5 bg-[#101622]/40 hover:bg-[#101622]/80 hover:border-white/10 transition-all gap-4"
+                        >
+                          {isEditing ? (
+                            <div className="space-y-4 w-full">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
+                                  <FileText size={20} />
+                                </div>
+                                <div className="min-w-0">
+                                  <h4 className="font-semibold text-sm text-slate-400 truncate max-w-[250px] md:max-w-[400px]">
+                                    {lang === "vi" ? "Đang chỉnh sửa: " : "Editing: "} {doc.name}
+                                  </h4>
+                                </div>
+                              </div>
 
-                        <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => copyToClipboard(doc.url)}
-                            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 text-slate-300 hover:text-white transition-all"
-                            title={lang === "vi" ? "Sao chép liên kết" : "Copy Link"}
-                          >
-                            <Copy size={16} />
-                          </button>
-                          
-                          <a
-                            href={doc.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 text-slate-300 hover:text-white transition-all flex items-center justify-center"
-                            title={lang === "vi" ? "Mở trong tab mới" : "Open in new tab"}
-                          >
-                            <ExternalLink size={16} />
-                          </a>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                  <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                    {lang === "vi" ? "Tiêu đề tiếng Việt" : "Vietnamese Title"}
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={editTitleVi}
+                                    onChange={(e) => setEditTitleVi(e.target.value)}
+                                    className="w-full bg-[#101622]/80 border border-indigo-500/30 text-white rounded-xl py-2 px-3 text-xs transition-all focus:outline-none"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                    {lang === "vi" ? "Tiêu đề tiếng Anh (Sẽ đổi tên file)" : "English Title (Will rename file)"}
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={editTitleEn}
+                                    onChange={(e) => setEditTitleEn(e.target.value)}
+                                    className="w-full bg-[#101622]/80 border border-indigo-500/30 text-white rounded-xl py-2 px-3 text-xs transition-all focus:outline-none"
+                                  />
+                                </div>
+                              </div>
 
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteDocument(doc.url, doc.name)}
-                            disabled={deletingDocName === doc.name}
-                            className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/15 hover:border-red-500/30 text-red-400 hover:text-red-300 transition-all disabled:opacity-50"
-                            title={lang === "vi" ? "Xóa tài liệu" : "Delete Document"}
-                          >
-                            {deletingDocName === doc.name ? (
-                              <Loader2 className="animate-spin" size={16} />
-                            ) : (
-                              <Trash2 size={16} />
-                            )}
-                          </button>
+                              <div className="flex gap-2 justify-end">
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingDocUrl(null)}
+                                  className="px-4 py-1.5 rounded-lg border border-white/5 bg-white/5 hover:bg-white/10 text-slate-300 font-semibold text-xs transition-all cursor-pointer"
+                                >
+                                  {lang === "vi" ? "Hủy" : "Cancel"}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleUpdateDocument(doc.url)}
+                                  disabled={isUpdatingDoc}
+                                  className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold py-1.5 px-4 rounded-lg transition-all shadow-md disabled:opacity-50 cursor-pointer text-xs"
+                                >
+                                  {isUpdatingDoc ? <Loader2 className="animate-spin" size={12} /> : <Save size={12} />}
+                                  <span>{isUpdatingDoc ? (lang === "vi" ? "Đang lưu..." : "Saving...") : (lang === "vi" ? "Lưu lại" : "Save")}</span>
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
+                              <div className="flex items-start gap-3 min-w-0">
+                                <div className="w-10 h-10 rounded-lg bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
+                                  <FileText size={20} />
+                                </div>
+                                <div className="min-w-0">
+                                  <h4 className="font-semibold text-sm text-white flex flex-wrap items-center gap-1.5">
+                                    <span>{lang === "vi" ? (doc.title?.vi || doc.name) : (doc.title?.en || doc.name)}</span>
+                                    {doc.title?.vi && doc.title?.en && (
+                                      <span className="text-slate-500 text-xs font-normal">
+                                        ({lang === "vi" ? `EN: ${doc.title.en}` : `VI: ${doc.title.vi}`})
+                                      </span>
+                                    )}
+                                  </h4>
+                                  <p className="text-[11px] text-slate-500 mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                                    <span className="font-mono text-slate-400">{doc.name}</span>
+                                    <span>•</span>
+                                    <span>{(doc.size / 1024 / 1024).toFixed(2)} MB</span>
+                                    <span>•</span>
+                                    <span>{new Date(doc.uploadedAt).toLocaleDateString(lang === "vi" ? "vi-VN" : "en-US", {
+                                      year: 'numeric',
+                                      month: 'short',
+                                      day: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit'
+                                    })}</span>
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingDocUrl(doc.url);
+                                    setEditTitleVi(doc.title?.vi || "");
+                                    setEditTitleEn(doc.title?.en || "");
+                                  }}
+                                  className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 text-slate-300 hover:text-white transition-all cursor-pointer"
+                                  title={lang === "vi" ? "Chỉnh sửa" : "Edit"}
+                                >
+                                  <Settings size={16} />
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => copyToClipboard(doc.url)}
+                                  className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 text-slate-300 hover:text-white transition-all cursor-pointer"
+                                  title={lang === "vi" ? "Sao chép liên kết" : "Copy Link"}
+                                >
+                                  <Copy size={16} />
+                                </button>
+                                
+                                <a
+                                  href={doc.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 text-slate-300 hover:text-white transition-all flex items-center justify-center cursor-pointer"
+                                  title={lang === "vi" ? "Mở trong tab mới" : "Open in new tab"}
+                                >
+                                  <ExternalLink size={16} />
+                                </a>
+
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteDocument(doc.url, doc.name)}
+                                  disabled={deletingDocName === doc.name}
+                                  className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/15 hover:border-red-500/30 text-red-400 hover:text-red-300 transition-all disabled:opacity-50 cursor-pointer"
+                                  title={lang === "vi" ? "Xóa tài liệu" : "Delete Document"}
+                                >
+                                  {deletingDocName === doc.name ? (
+                                    <Loader2 className="animate-spin" size={16} />
+                                  ) : (
+                                    <Trash2 size={16} />
+                                  )}
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
