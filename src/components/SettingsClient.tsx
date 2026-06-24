@@ -9,7 +9,7 @@ import {
   Loader2, Save, ArrowLeft, Plus, Trash2, HelpCircle, 
   Code, Share2, Calendar, CheckCircle, ChevronDown, ChevronUp,
   Briefcase, GraduationCap, Folder, Search, X, Edit, GitBranch,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight, Eye, EyeOff
 } from "lucide-react";
 import Link from "next/link";
 import { PortfolioData } from "@/lib/schema";
@@ -1051,8 +1051,31 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                     {portfolio.skills.map((skillGroup, idx) => (
                       <div 
                         key={idx} 
-                        className="border rounded-2xl p-5 space-y-4 relative transition-all bg-[#1e293b]/20 border-white/5"
+                        className={`border rounded-2xl p-5 space-y-4 relative transition-all ${
+                          skillGroup.show === false
+                            ? "bg-[#1e293b]/5 border-red-500/20 opacity-60"
+                            : "bg-[#1e293b]/20 border-white/5"
+                        }`}
                       >
+                        {/* Nút ẩn/hiện nhóm kỹ năng */}
+                        <button
+                          onClick={() => {
+                            const updated = [...portfolio.skills];
+                            updated[idx] = {
+                              ...updated[idx],
+                              show: skillGroup.show === false ? true : false
+                            };
+                            setPortfolio(prev => ({ ...prev, skills: updated }));
+                          }}
+                          className={`absolute top-4 right-12 p-1.5 rounded-lg transition-all ${
+                            skillGroup.show === false 
+                              ? "text-red-400 hover:text-red-300 hover:bg-red-500/10" 
+                              : "text-slate-500 hover:text-blue-400 hover:bg-white/5"
+                          }`}
+                          title={skillGroup.show === false ? (lang === "vi" ? "Đang ẩn (Click để hiện)" : "Hidden (Click to show)") : (lang === "vi" ? "Đang hiện (Click để ẩn)" : "Shown (Click to hide)")}
+                        >
+                          {skillGroup.show === false ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
 
                         {/* Nút xóa nhóm kỹ năng */}
                         <button
@@ -1164,8 +1187,32 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                       return (
                         <div 
                           key={`${social.name}-${idx}`} 
-                          className="relative p-5 rounded-2xl border transition-all space-y-4 bg-[#1e293b]/20 border-white/5"
+                          className={`relative p-5 rounded-2xl border transition-all space-y-4 ${
+                            social.show === false 
+                              ? "bg-[#1e293b]/5 border-red-500/20 opacity-60" 
+                              : "bg-[#1e293b]/20 border-white/5"
+                          }`}
                         >
+                          {/* Visibility Toggle Button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [...portfolio.socialLinks];
+                              updated[idx] = {
+                                ...updated[idx],
+                                show: social.show === false ? true : false
+                              };
+                              setPortfolio(prev => ({ ...prev, socialLinks: updated }));
+                            }}
+                            className={`absolute top-4 right-12 p-1.5 rounded-lg transition-all ${
+                              social.show === false 
+                                ? "text-red-400 hover:text-red-300 hover:bg-red-500/10" 
+                                : "text-slate-500 hover:text-blue-400 hover:bg-white/5"
+                            }`}
+                            title={social.show === false ? (lang === "vi" ? "Đang ẩn (Click để hiện)" : "Hidden (Click to show)") : (lang === "vi" ? "Đang hiện (Click để ẩn)" : "Shown (Click to hide)")}
+                          >
+                            {social.show === false ? <EyeOff size={16} /> : <Eye size={16} />}
+                          </button>
 
                           {/* Delete Button */}
                           <button
@@ -1312,7 +1359,13 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                     return (
                       <div 
                         key={idx} 
-                        className={`border rounded-2xl overflow-hidden transition-all duration-300 ${isExpanded ? "bg-[#141b2b]/60 border-blue-500/30 shadow-xl shadow-blue-900/5" : "bg-[#1e293b]/10 border-white/5 hover:border-white/10"}`}
+                        className={`border rounded-2xl overflow-hidden transition-all duration-300 ${
+                          project.show === false
+                            ? "bg-[#1e293b]/5 border-red-500/20 opacity-60"
+                            : isExpanded 
+                              ? "bg-[#141b2b]/60 border-blue-500/30 shadow-xl shadow-blue-900/5" 
+                              : "bg-[#1e293b]/10 border-white/5 hover:border-white/10"
+                        }`}
                       >
                         {/* Header Accordion */}
                         <div 
@@ -1348,6 +1401,26 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                           </div>
                           
                           <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+                            {/* Visibility Toggle */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...portfolio.projects];
+                                updated[idx] = {
+                                  ...updated[idx],
+                                  show: project.show === false ? true : false
+                                };
+                                setPortfolio(prev => ({ ...prev, projects: updated }));
+                              }}
+                              className={`p-2 rounded-xl transition-colors ${
+                                project.show === false 
+                                  ? "text-red-400 hover:text-red-300 hover:bg-red-500/10" 
+                                  : "text-slate-500 hover:text-blue-400 hover:bg-white/5"
+                              }`}
+                              title={project.show === false ? (lang === "vi" ? "Đang ẩn (Click để hiện)" : "Hidden (Click to show)") : (lang === "vi" ? "Đang hiện (Click để ẩn)" : "Shown (Click to hide)")}
+                            >
+                              {project.show === false ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </button>
 
                             <button
                               onClick={() => {
@@ -1683,7 +1756,13 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                     return (
                       <div 
                         key={item.id} 
-                        className={`border rounded-2xl overflow-hidden transition-all duration-300 ${isExpanded ? "bg-[#141b2b]/60 border-purple-500/30 shadow-xl shadow-purple-900/5" : "bg-[#1e293b]/10 border-white/5 hover:border-white/10"}`}
+                        className={`border rounded-2xl overflow-hidden transition-all duration-300 ${
+                          item.show === false
+                            ? "bg-[#1e293b]/5 border-red-500/20 opacity-60"
+                            : isExpanded 
+                              ? "bg-[#141b2b]/60 border-purple-500/30 shadow-xl shadow-purple-900/5" 
+                              : "bg-[#1e293b]/10 border-white/5 hover:border-white/10"
+                        }`}
                       >
                         {/* Header Accordion */}
                         <div 
@@ -1725,6 +1804,26 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                           </div>
                           
                           <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+                            {/* Visibility Toggle */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...portfolio.timeline];
+                                updated[idx] = {
+                                  ...updated[idx],
+                                  show: item.show === false ? true : false
+                                };
+                                setPortfolio(prev => ({ ...prev, timeline: updated }));
+                              }}
+                              className={`p-2 rounded-xl transition-colors ${
+                                item.show === false 
+                                  ? "text-red-400 hover:text-red-300 hover:bg-red-500/10" 
+                                  : "text-slate-500 hover:text-blue-400 hover:bg-white/5"
+                              }`}
+                              title={item.show === false ? (lang === "vi" ? "Đang ẩn (Click để hiện)" : "Hidden (Click to show)") : (lang === "vi" ? "Đang hiện (Click để ẩn)" : "Shown (Click to hide)")}
+                            >
+                              {item.show === false ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </button>
 
                             <button
                               onClick={() => {

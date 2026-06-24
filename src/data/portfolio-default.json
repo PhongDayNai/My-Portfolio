@@ -52,13 +52,7 @@
           "professional": "Dự án Công ty",
           "personal": "Dự án Cá nhân"
         }
-      },
-      "socials": [
-        { "name": "GitHub", "desc": "@PhongDayNai" },
-        { "name": "Facebook", "desc": "Phong" },
-        { "name": "TikTok", "desc": "Sở thích & Đời sống" },
-        { "name": "HomeLab", "desc": "Hệ thống Self-hosted" }
-      ]
+      }
     },
     "en": {
       "nav": {
@@ -103,13 +97,7 @@
           "professional": "Professional Work",
           "personal": "Personal Lab"
         }
-      },
-      "socials": [
-        { "name": "GitHub", "desc": "@PhongDayNai" },
-        { "name": "Facebook", "desc": "Phong" },
-        { "name": "TikTok", "desc": "Hobby & Life" },
-        { "name": "HomeLab", "desc": "Self-hosted Lab" }
-      ]
+      }
     }
   },
   "skills": [
@@ -136,28 +124,120 @@
       "icon": "Github",
       "link": "https://github.com/PhongDayNai",
       "color": "hover:bg-white/10",
-      "desc": "@PhongDayNai"
+      "desc": {
+        "vi": "@PhongDayNai",
+        "en": "@PhongDayNai"
+      }
     },
     {
       "name": "Facebook",
       "icon": "Facebook",
       "link": "https://www.facebook.com/phongdaynai",
       "color": "hover:bg-blue-600/20",
-      "desc": "Phong"
+      "desc": {
+        "vi": "Phong",
+        "en": "Phong"
+      }
     },
     {
       "name": "TikTok",
       "icon": "TikTok",
       "link": "https://www.tiktok.com/@phongdaynai",
       "color": "hover:bg-pink-600/20",
-      "desc": "Hobby & Life"
+      "desc": {
+        "vi": "Sở thích & Đời sống",
+        "en": "Hobby & Life"
+      }
     },
     {
       "name": "HomeLab",
       "icon": "Server",
       "link": "https://portfolio.phongdaynai.id.vn",
       "color": "hover:bg-orange-500/20",
-      "desc": "Self-hosted Lab"
+      "desc": {
+        "vi": "Hệ thống Self-hosted",
+        "en": "Self-hosted Lab"
+      }
+    },
+    {
+      "name": "LinkedIn",
+      "icon": "Linkedin",
+      "link": "https://www.linkedin.com/in/phongdaynai",
+      "color": "hover:bg-blue-700/20",
+      "desc": {
+        "vi": "Kết nối công việc",
+        "en": "Professional Network"
+      }
+    },
+    {
+      "name": "X",
+      "icon": "X",
+      "link": "https://x.com/phongdaynai",
+      "color": "hover:bg-slate-800/40",
+      "desc": {
+        "vi": "Tin tức & Chia sẻ",
+        "en": "Thoughts & Tech"
+      }
+    },
+    {
+      "name": "Reddit",
+      "icon": "Reddit",
+      "link": "https://www.reddit.com/user/phongdaynai",
+      "color": "hover:bg-orange-600/20",
+      "desc": {
+        "vi": "Cộng đồng & Thảo luận",
+        "en": "Communities & Forums"
+      }
+    },
+    {
+      "name": "Telegram",
+      "icon": "Telegram",
+      "link": "https://t.me/phongdaynai",
+      "color": "hover:bg-sky-500/20",
+      "desc": {
+        "vi": "Kênh trao đổi lập trình",
+        "en": "Developer Chat Channel"
+      }
+    },
+    {
+      "name": "Zalo",
+      "icon": "Zalo",
+      "link": "https://zalo.me/0855576569",
+      "color": "hover:bg-blue-500/20",
+      "desc": {
+        "vi": "Liên hệ trực tiếp",
+        "en": "Direct Contact"
+      }
+    },
+    {
+      "name": "Discord",
+      "icon": "Discord",
+      "link": "https://discord.gg/phongdaynai",
+      "color": "hover:bg-indigo-600/20",
+      "desc": {
+        "vi": "Cộng đồng công nghệ",
+        "en": "Tech Community"
+      }
+    },
+    {
+      "name": "YouTube",
+      "icon": "Youtube",
+      "link": "https://youtube.com/@phongdaynai",
+      "color": "hover:bg-red-600/20",
+      "desc": {
+        "vi": "Chia sẻ video & Hướng dẫn",
+        "en": "Video Tutorials"
+      }
+    },
+    {
+      "name": "Instagram",
+      "icon": "Instagram",
+      "link": "https://instagram.com/phongdaynai",
+      "color": "hover:bg-pink-600/20",
+      "desc": {
+        "vi": "Hình ảnh đời sống",
+        "en": "Life & Photos"
+      }
     }
   ],
   "projects": [

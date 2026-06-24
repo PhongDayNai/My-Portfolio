@@ -28,13 +28,14 @@ export default function ProjectSection() {
 
   const companies = useMemo(() => {
     const allCompanies = projects
-      .filter((p) => p.category === "work" && p.company)
+      .filter((p) => p.show !== false && p.category === "work" && p.company)
       .map((p) => p.company as string);
     return Array.from(new Set(allCompanies));
   }, [projects]);
 
   const list = useMemo(() => {
     return projects.filter((p) => {
+      if (p.show === false) return false;
       if (activeTab === "professional") {
         if (p.category !== "work") return false;
         if (selectedCompany !== "ALL" && p.company !== selectedCompany) return false;

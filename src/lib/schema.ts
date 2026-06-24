@@ -24,6 +24,7 @@ export const ProjectSchema = z.object({
   repositories: z.array(SubRepositorySchema).optional(),
   website: z.string().optional(),
   company: z.string().optional(),
+  show: z.boolean().optional().default(true),
 });
 
 export const TimelineItemSchema = z.object({
@@ -46,6 +47,7 @@ export const TimelineItemSchema = z.object({
     en: z.array(z.string()),
   }),
   type: z.enum(["work", "education"]),
+  show: z.boolean().optional().default(true),
 });
 
 export const SkillGroupSchema = z.object({
@@ -54,6 +56,7 @@ export const SkillGroupSchema = z.object({
     en: z.string(),
   }),
   items: z.string(),
+  show: z.boolean().optional().default(true),
 });
 
 export const SocialLinkSchema = z.object({
@@ -61,7 +64,11 @@ export const SocialLinkSchema = z.object({
   icon: z.string(),
   link: z.string(),
   color: z.string(),
-  desc: z.string(),
+  desc: z.object({
+    vi: z.string(),
+    en: z.string(),
+  }),
+  show: z.boolean().optional().default(true),
 });
 
 export const PortfolioDataSchema = z.object({
@@ -119,12 +126,6 @@ export const PortfolioDataSchema = z.object({
           personal: z.string(),
         }),
       }),
-      socials: z.array(
-        z.object({
-          name: z.string(),
-          desc: z.string(),
-        })
-      ),
     }),
     en: z.object({
       nav: z.object({
@@ -170,12 +171,6 @@ export const PortfolioDataSchema = z.object({
           personal: z.string(),
         }),
       }),
-      socials: z.array(
-        z.object({
-          name: z.string(),
-          desc: z.string(),
-        })
-      ),
     }),
   }),
   skills: z.array(SkillGroupSchema),

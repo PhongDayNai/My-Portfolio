@@ -3,18 +3,21 @@ import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import Magnetic from "./Magnetic";
 import { usePortfolio } from '@/context/PortfolioDataContext';
+import { useLanguage } from "@/context/LanguageContext";
 import { ICON_MAP } from "@/lib/icons";
 
 export default function SocialGrid() {
-  const { socialLinks, translations } = usePortfolio();
-  const socialTranslations = translations.socials;
+  const { socialLinks } = usePortfolio();
+  const { lang } = useLanguage();
+  const visibleSocials = socialLinks.filter(social => social.show !== false);
 
   return (
     <div className="grid grid-cols-2 gap-4">
-      {socialLinks.map((social, idx) => {
+      {visibleSocials.map((social, idx) => {
         const IconComponent = ICON_MAP[social.icon] || ICON_MAP.Server;
+        const displayDesc = lang === "vi" ? social.desc.vi : social.desc.en;
         return (
-          <Magnetic key={social.name}>
+          <Magnetic key={`${social.name}-${idx}`}>
             <motion.a
               href={social.link}
               target="_blank"
@@ -35,10 +38,10 @@ export default function SocialGrid() {
               </div>
               <div className="mt-4">
                 <span className="block text-sm font-bold text-white uppercase tracking-tighter">
-                  {socialTranslations[idx]?.name || social.name}
+                  {social.name}
                 </span>
                 <span className="text-[10px] text-slate-500 font-mono">
-                  {socialTranslations[idx]?.desc || social.desc}
+                  {displayDesc}
                 </span>
               </div>
             </motion.a>

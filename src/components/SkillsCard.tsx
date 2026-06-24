@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 export default function SkillsCard() {
   const { skills, translations, lang } = usePortfolio();
   const t = translations.sections;
+  const visibleSkills = skills.filter(s => s.show !== false);
 
   return (
     <motion.div 
@@ -14,7 +15,7 @@ export default function SkillsCard() {
     >
       <h4 className="text-xl font-bold mb-4 text-white">{t.skills}</h4>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-slate-400 text-sm">
-        {skills.map((skillGroup, idx) => (
+        {visibleSkills.map((skillGroup, idx) => (
           <div key={idx}>
             <p className="text-blue-500 font-bold mb-1">{skillGroup.category[lang]}</p>
             <p>{skillGroup.items}</p>

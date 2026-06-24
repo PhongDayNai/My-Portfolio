@@ -5,13 +5,14 @@ import { usePortfolio } from "@/context/PortfolioDataContext";
 
 export default function Timeline() {
   const { timeline, lang } = usePortfolio();
+  const visibleTimeline = timeline.filter(item => item.show !== false);
 
   return (
     <div className="relative max-w-4xl mx-auto py-12 px-4">
       <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500/0 via-blue-500/50 to-blue-500/0 hidden md:block" />
 
       <div className="space-y-12">
-        {timeline.map((item, index) => {
+        {visibleTimeline.map((item, index) => {
           return (
             <motion.div
               key={item.id}
