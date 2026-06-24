@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   LogOut, Settings, User, FileText, ShieldCheck,
   Loader2, Save, ArrowLeft, CheckCircle, ChevronRight, GitBranch,
-  Upload, Trash2, Copy, ExternalLink, Paperclip
+  Upload, Trash2, Copy, ExternalLink, Paperclip,
+  Eye, EyeOff
 } from "lucide-react";
 import Link from "next/link";
 import { PortfolioData } from "@/lib/schema";
@@ -35,6 +36,12 @@ export default function SettingsClient({ data }: SettingsClientProps) {
   const [isUploadingDoc, setIsUploadingDoc] = useState(false);
   const [deletingDocName, setDeletingDocName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const fetchDocuments = async () => {
     setIsLoadingDocs(true);
@@ -172,6 +179,74 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       fetchDocuments();
     }
   }, [activeSection]);
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setToast(null);
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setToast({
+        type: "error",
+        message: lang === "vi" ? "Vui lòng điền đầy đủ các trường." : "Please fill in all fields."
+      });
+      setTimeout(() => setToast(null), 4000);
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setToast({
+        type: "error",
+        message: lang === "vi" ? "Mật khẩu mới phải có ít nhất 6 ký tự." : "New password must be at least 6 characters."
+      });
+      setTimeout(() => setToast(null), 4000);
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setToast({
+        type: "error",
+        message: lang === "vi" ? "Xác nhận mật khẩu mới không khớp." : "Confirm password does not match."
+      });
+      setTimeout(() => setToast(null), 4000);
+      return;
+    }
+
+    setIsChangingPassword(true);
+
+    try {
+      const response = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+
+      const resData = await response.json();
+      if (response.ok && resData.success) {
+        setToast({
+          type: "success",
+          message: lang === "vi" ? "Đổi mật khẩu thành công!" : "Password changed successfully!"
+        });
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      } else {
+        setToast({
+          type: "error",
+          message: resData.error || (lang === "vi" ? "Đổi mật khẩu thất bại." : "Password change failed.")
+        });
+      }
+    } catch (err: any) {
+      setToast({
+        type: "error",
+        message: err?.message || (lang === "vi" ? "Đã xảy ra lỗi hệ thống." : "A system error occurred.")
+      });
+    } finally {
+      setIsChangingPassword(false);
+      setTimeout(() => setToast(null), 4000);
+    }
+  };
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -587,25 +662,111 @@ export default function SettingsClient({ data }: SettingsClientProps) {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
-              className="bg-[#141b2b]/40 border border-white/5 p-8 rounded-2xl shadow-xl min-h-[300px] flex flex-col items-center justify-center text-center space-y-4"
+              className="max-w-md mx-auto"
             >
-              <div className="w-16 h-16 rounded-full bg-emerald-600/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                <ShieldCheck size={32} />
+              <div className="bg-[#141b2b]/40 border border-white/5 p-6 md:p-8 rounded-2xl shadow-xl space-y-6">
+                <div className="flex items-center gap-3 border-b border-white/5 pb-4">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-600/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                    <ShieldCheck size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">
+                      {lang === "vi" ? "Bảo mật & Mật khẩu" : "Security & Password"}
+                    </h3>
+                    <p className="text-slate-400 text-xs mt-0.5">
+                      {lang === "vi" ? "Thay đổi mật khẩu quản trị hệ thống" : "Change system admin password"}
+                    </p>
+                  </div>
+                </div>
+
+                <form onSubmit={handleChangePassword} className="space-y-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                      {lang === "vi" ? "Mật khẩu hiện tại" : "Current Password"}
+                    </label>
+                    <div className="relative flex items-center">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        placeholder="••••••••"
+                        required
+                        className="w-full bg-[#101622]/50 border border-white/5 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30 text-white rounded-xl py-3 pl-4 pr-12 text-sm transition-all focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 text-slate-500 hover:text-slate-300 transition-colors focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                      {lang === "vi" ? "Mật khẩu mới" : "New Password"}
+                    </label>
+                    <div className="relative flex items-center">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="••••••••"
+                        required
+                        className="w-full bg-[#101622]/50 border border-white/5 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30 text-white rounded-xl py-3 pl-4 pr-12 text-sm transition-all focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 text-slate-500 hover:text-slate-300 transition-colors focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                      {lang === "vi" ? "Xác nhận mật khẩu mới" : "Confirm New Password"}
+                    </label>
+                    <div className="relative flex items-center">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="••••••••"
+                        required
+                        className="w-full bg-[#101622]/50 border border-white/5 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30 text-white rounded-xl py-3 pl-4 pr-12 text-sm transition-all focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 text-slate-500 hover:text-slate-300 transition-colors focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isChangingPassword}
+                    className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 cursor-pointer text-sm"
+                  >
+                    {isChangingPassword ? (
+                      <Loader2 className="animate-spin" size={16} />
+                    ) : (
+                      <ShieldCheck size={16} />
+                    )}
+                    <span>
+                      {isChangingPassword
+                        ? (lang === "vi" ? "Đang cập nhật..." : "Updating...")
+                        : (lang === "vi" ? "Cập nhật mật khẩu" : "Update Password")}
+                    </span>
+                  </button>
+                </form>
               </div>
-              <h3 className="text-lg font-bold text-white">
-                {lang === "vi" ? "Bảo mật & Tài khoản" : "Security & Account"}
-              </h3>
-              <p className="text-slate-400 text-sm max-w-md">
-                {lang === "vi"
-                  ? "Tính năng thay đổi mật khẩu và quản lý cấu hình bảo mật sẽ khả dụng trong phiên bản tiếp theo."
-                  : "Change password and account security configurations will be available in the next version."}
-              </p>
-              <button
-                onClick={() => setActiveSection("dashboard")}
-                className="bg-white/5 hover:bg-white/10 text-slate-300 font-bold py-2 px-6 rounded-xl border border-white/5 transition-all text-xs"
-              >
-                {lang === "vi" ? "Quay lại" : "Go Back"}
-              </button>
             </motion.div>
           )}
 
