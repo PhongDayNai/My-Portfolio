@@ -77,4 +77,29 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
   return result.data;
 });
 
+export const savePortfolioData = async (data: PortfolioData): Promise<void> => {
+  const { dataPath } = getPaths();
+
+  // 1. Validate data using Zod schema
+  PortfolioDataSchema.parse(data);
+
+  // 2. Backup current portfolio.json if it exists
+  if (fs.existsSync(dataPath)) {
+    const backupPath = `${dataPath}.bak`;
+    try {
+      fs.copyFileSync(dataPath, backupPath);
+    } catch (error) {
+      console.error(`Warning: Failed to create backup file at ${backupPath}`, error);
+    }
+  }
+
+  // 3. Write new data to portfolio.json
+  try {
+    fs.writeFileSync(dataPath, JSON.stringify(data, null, 2), "utf-8");
+  } catch (error) {
+    console.error("Error writing portfolio data file:", error);
+    throw new Error(`Failed to write portfolio data. ${error}`);
+  }
+};
+
 
