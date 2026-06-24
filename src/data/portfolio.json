@@ -195,7 +195,7 @@
         "vi": "Kết nối công việc",
         "en": "Professional Network"
       },
-      "show": true
+      "show": false
     },
     {
       "name": "X",
@@ -206,7 +206,7 @@
         "vi": "Tin tức & Chia sẻ",
         "en": "Thoughts & Tech"
       },
-      "show": true
+      "show": false
     },
     {
       "name": "Reddit",
@@ -217,7 +217,7 @@
         "vi": "Cộng đồng & Thảo luận",
         "en": "Communities & Forums"
       },
-      "show": true
+      "show": false
     },
     {
       "name": "Telegram",
@@ -228,7 +228,7 @@
         "vi": "Kênh trao đổi lập trình",
         "en": "Developer Chat Channel"
       },
-      "show": true
+      "show": false
     },
     {
       "name": "Zalo",
@@ -239,7 +239,7 @@
         "vi": "Liên hệ trực tiếp",
         "en": "Direct Contact"
       },
-      "show": true
+      "show": false
     },
     {
       "name": "Discord",
@@ -250,7 +250,7 @@
         "vi": "Cộng đồng công nghệ",
         "en": "Tech Community"
       },
-      "show": true
+      "show": false
     },
     {
       "name": "YouTube",
@@ -261,7 +261,7 @@
         "vi": "Chia sẻ video & Hướng dẫn",
         "en": "Video Tutorials"
       },
-      "show": true
+      "show": false
     },
     {
       "name": "Instagram",
@@ -272,7 +272,7 @@
         "vi": "Hình ảnh đời sống",
         "en": "Life & Photos"
       },
-      "show": true
+      "show": false
     }
   ],
   "projects": [

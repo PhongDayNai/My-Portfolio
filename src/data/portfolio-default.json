@@ -134,7 +134,8 @@
       "desc": {
         "vi": "@PhongDayNai",
         "en": "@PhongDayNai"
-      }
+      },
+      "show": true
     },
     {
       "name": "Facebook",
@@ -144,7 +145,8 @@
       "desc": {
         "vi": "Phong",
         "en": "Phong"
-      }
+      },
+      "show": true
     },
     {
       "name": "TikTok",
@@ -154,7 +156,8 @@
       "desc": {
         "vi": "Sở thích & Đời sống",
         "en": "Hobby & Life"
-      }
+      },
+      "show": true
     },
     {
       "name": "HomeLab",
@@ -164,7 +167,8 @@
       "desc": {
         "vi": "Hệ thống Self-hosted",
         "en": "Self-hosted Lab"
-      }
+      },
+      "show": true
     },
     {
       "name": "LinkedIn",
@@ -174,7 +178,8 @@
       "desc": {
         "vi": "Kết nối công việc",
         "en": "Professional Network"
-      }
+      },
+      "show": false
     },
     {
       "name": "X",
@@ -184,7 +189,8 @@
       "desc": {
         "vi": "Tin tức & Chia sẻ",
         "en": "Thoughts & Tech"
-      }
+      },
+      "show": false
     },
     {
       "name": "Reddit",
@@ -194,7 +200,8 @@
       "desc": {
         "vi": "Cộng đồng & Thảo luận",
         "en": "Communities & Forums"
-      }
+      },
+      "show": false
     },
     {
       "name": "Telegram",
@@ -204,7 +211,8 @@
       "desc": {
         "vi": "Kênh trao đổi lập trình",
         "en": "Developer Chat Channel"
-      }
+      },
+      "show": false
     },
     {
       "name": "Zalo",
@@ -214,7 +222,8 @@
       "desc": {
         "vi": "Liên hệ trực tiếp",
         "en": "Direct Contact"
-      }
+      },
+      "show": false
     },
     {
       "name": "Discord",
@@ -224,7 +233,8 @@
       "desc": {
         "vi": "Cộng đồng công nghệ",
         "en": "Tech Community"
-      }
+      },
+      "show": false
     },
     {
       "name": "YouTube",
@@ -234,7 +244,8 @@
       "desc": {
         "vi": "Chia sẻ video & Hướng dẫn",
         "en": "Video Tutorials"
-      }
+      },
+      "show": false
     },
     {
       "name": "Instagram",
@@ -244,7 +255,8 @@
       "desc": {
         "vi": "Hình ảnh đời sống",
         "en": "Life & Photos"
-      }
+      },
+      "show": false
     }
   ],
   "projects": [
