@@ -1224,6 +1224,18 @@ export default function SettingsClient({ data }: SettingsClientProps) {
                           <Trash2 size={16} />
                         </button>
 
+                        {/* Tiêu đề nhóm kỹ năng để đẩy các trường nhập liệu xuống tránh đè nút */}
+                        <div className="flex items-center gap-3 pr-20 pb-3 border-b border-white/5 mb-2">
+                          <div className={`w-2 h-2 rounded-full shrink-0 ${skillGroup.show === false ? "bg-red-500 shadow-lg shadow-red-500/50" : "bg-blue-500 shadow-lg shadow-blue-500/50"}`} />
+                          <h4 className="text-[11px] font-black text-slate-300 uppercase tracking-widest truncate">
+                            {lang === "vi" ? `Nhóm kỹ năng #${idx + 1}` : `Skill Group #${idx + 1}`}
+                          </h4>
+                          {skillGroup.show === false && (
+                            <span className="text-[9px] font-bold bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded-lg shrink-0">
+                              {lang === "vi" ? "Đang ẩn" : "Hidden"}
+                            </span>
+                          )}
+                        </div>
 
                         {/* TÊN NHÓM KỸ NĂNG */}
                         <div className="space-y-3 bg-[#1e293b]/10 border border-white/5 rounded-xl p-4.5 pt-3">
