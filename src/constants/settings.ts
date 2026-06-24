@@ -1,0 +1,220 @@
+export const settingsTranslations = {
+  vi: {
+    // General Tabs & Actions
+    title: "CÀI ĐẶT PORTFOLIO",
+    subtitle: "Quản lý thông tin & cấu hình hệ thống",
+    welcome: "Xin chào, Admin",
+    logoutBtn: "Đăng xuất",
+    loggingOut: "Đang đăng xuất...",
+    statusActive: "Phiên làm việc hợp lệ",
+    backToHome: "Trang chủ Portfolio",
+    tabGeneral: "Thông tin chung",
+    tabSkillsSocials: "Kỹ năng & Mạng xã hội",
+    tabProjects: "Dự án",
+    tabTimeline: "Dòng thời gian",
+    saveBtn: "Lưu thay đổi",
+    saving: "Đang lưu cấu hình...",
+    saveSuccess: "Đã lưu cấu hình Portfolio thành công!",
+    saveError: "Có lỗi xảy ra khi lưu cấu hình.",
+    addProject: "Thêm dự án",
+    addTimeline: "Thêm dòng thời gian",
+
+    // General Fields
+    adminName: "Tên Admin",
+    adminRole: "Vai trò",
+    email: "Email",
+    phone: "Số điện thoại",
+    address: "Địa chỉ",
+    expStartDate: "Ngày bắt đầu tính kinh nghiệm",
+    
+    // Translation Sections
+    sectionVi: "Bản Dịch Tiếng Việt (VI)",
+    sectionEn: "Bản Dịch Tiếng Anh (EN)",
+
+    // Hero Fields
+    heroHello: "Lời chào Hero",
+    heroFirstName: "Họ & Tên đệm",
+    heroLastName: "Tên",
+    heroSummary: "Tóm tắt Hero",
+    heroSummaryDesc: "(Sử dụng {experience} để hiển thị số năm kinh nghiệm tự động)",
+    profileDesc: "Giới thiệu bản thân",
+
+    // Skills & Socials
+    skillsTitle: "Kỹ năng Chuyên môn",
+    socialsTitle: "Liên kết Mạng xã hội",
+    socialName: "Tên mạng xã hội",
+    socialLink: "Đường dẫn (URL)",
+    socialDesc: "Mô tả / Tên hiển thị",
+    addSkillGroup: "Thêm nhóm kỹ năng",
+    skillCategoryName: "Tên nhóm kỹ năng",
+    skillItems: "Các kỹ năng chuyên môn",
+    skillItemsPlaceholder: "Nhập các kỹ năng phân tách bằng dấu phẩy (ví dụ: React, TypeScript, Vue)",
+    confirmDeleteSkillGroup: "Xóa nhóm kỹ năng này?",
+    addSocialLink: "Thêm mạng xã hội",
+    confirmDeleteSocial: "Xóa liên kết mạng xã hội này?",
+    socialType: "Loại mạng xã hội",
+    socialDescVi: "Mô tả (Tiếng Việt)",
+    socialDescEn: "Mô tả (Tiếng Anh)",
+    duplicateSocialError: "Không được trùng URL cho các liên kết có cùng loại: ",
+
+    // Project Fields
+    projectList: "Danh sách Dự án",
+    projectTitle: "Tên dự án",
+    projectCategory: "Phân loại dự án",
+    projectCategoryPersonal: "Dự án cá nhân",
+    projectCategoryWork: "Dự án công việc / công ty",
+    projectLink: "Đường dẫn dự án (GitHub)",
+    projectWebsite: "Trang web chạy thử (nếu có)",
+    projectCompany: "Tên công ty",
+    projectTechTags: "Công nghệ sử dụng",
+    projectTechTagsPlaceholder: "Nhập các công nghệ, phân tách bằng dấu chấm phẩy (ví dụ: React; Node.js)",
+    projectDesc: "Mô tả dự án",
+    searchPlaceholderProjects: "Tìm kiếm dự án (theo tên, công nghệ, công ty...)",
+    
+    // Timeline Fields
+    timelineTitle: "Danh sách dòng thời gian",
+    timelineType: "Loại dòng thời gian",
+    timelineTypeWork: "Kinh nghiệm làm việc",
+    timelineTypeEducation: "Học vấn & Bằng cấp",
+    timelineStatus: "Trạng thái",
+    timelineStatusActiveLabel: "Đang làm việc / Học tập tại đây",
+    timelineStatusCompletedLabel: "Đã hoàn thành / Đã kết thúc",
+    timelineStatusActiveDesc: "Hiển thị chấm tròn xanh lá nhấp nháy trên trang chủ để làm nổi bật mốc thời gian hiện tại của bạn.",
+    timelineStatusCompletedDesc: "Mốc thời gian bình thường trong lịch sử, không hiển thị hiệu ứng nhấp nháy trên trang chủ.",
+    timelineDate: "Thời gian diễn ra",
+    timelineOrg: "Tổ chức / Trường học / Công ty",
+    timelineDetailDesc: "Mô tả chi tiết công việc",
+    timelineDetailDescPlaceholder: "Nhập mô tả, mỗi dòng là một gạch đầu dòng",
+    searchPlaceholderTimeline: "Tìm kiếm dòng thời gian (theo tiêu đề, tổ chức, mô tả...)",
+
+    // Sub-repositories
+    subReposTitle: "Danh sách Repo con / Nhánh dự án",
+    addSubRepo: "Thêm Repo con",
+    subRepoTitle: "Tên Repo con",
+    subRepoLink: "Đường dẫn (GitHub)",
+    subRepoWebsite: "Trang web chạy thử (nếu có)",
+    subRepoTech: "Công nghệ sử dụng (phân tách bằng `;`)",
+    subRepoDescVi: "Mô tả (Tiếng Việt)",
+    subRepoDescEn: "Mô tả (Tiếng Anh)",
+    confirmDeleteSubRepo: "Xóa Repo con này?",
+
+    // Dynamic Labels for Subfields
+    fieldVietnamese: "Tiếng Việt",
+    fieldEnglish: "Tiếng Anh",
+
+    // Accordion State
+    clickToExpand: "Nhấn để mở rộng chi tiết",
+    clickToCollapse: "Nhấn để thu gọn",
+    noItem: "Chưa có mục nào được thêm.",
+    clearSearch: "Xóa tìm kiếm",
+  },
+  en: {
+    // General Tabs & Actions
+    title: "PORTFOLIO SETTINGS",
+    subtitle: "Manage information & system configurations",
+    welcome: "Hello, Admin",
+    logoutBtn: "Logout",
+    loggingOut: "Logging out...",
+    statusActive: "Active Session",
+    backToHome: "Portfolio Home",
+    tabGeneral: "General Info",
+    tabSkillsSocials: "Skills & Socials",
+    tabProjects: "Projects",
+    tabTimeline: "Timeline",
+    saveBtn: "Save Changes",
+    saving: "Saving configuration...",
+    saveSuccess: "Portfolio configuration saved successfully!",
+    saveError: "An error occurred while saving configuration.",
+    addProject: "Add Project",
+    addTimeline: "Add Timeline Item",
+
+    // General Fields
+    adminName: "Admin Name",
+    adminRole: "Role",
+    email: "Email",
+    phone: "Phone Number",
+    address: "Address",
+    expStartDate: "Experience Start Date",
+
+    // Translation Sections
+    sectionVi: "Vietnamese Translation (VI)",
+    sectionEn: "English Translation (EN)",
+
+    // Hero Fields
+    heroHello: "Hero Welcome Text",
+    heroFirstName: "First Name",
+    heroLastName: "Last Name",
+    heroSummary: "Hero Summary",
+    heroSummaryDesc: "(Use {experience} to display years of experience automatically)",
+    profileDesc: "Profile Description",
+
+    // Skills & Socials
+    skillsTitle: "Professional Skills",
+    socialsTitle: "Social Media Links",
+    socialName: "Social Platform Name",
+    socialLink: "Link URL",
+    socialDesc: "Description / Display Name",
+    addSkillGroup: "Add Skill Group",
+    skillCategoryName: "Skill Group Name",
+    skillItems: "Specialized Skills",
+    skillItemsPlaceholder: "Enter skills separated by commas (e.g. React, TypeScript, Vue)",
+    confirmDeleteSkillGroup: "Delete this skill group?",
+    addSocialLink: "Add Social Link",
+    confirmDeleteSocial: "Delete this social link?",
+    socialType: "Social Network Type",
+    socialDescVi: "Description (Vietnamese)",
+    socialDescEn: "Description (English)",
+    duplicateSocialError: "URLs must be different for social links of the same type: ",
+
+    // Project Fields
+    projectList: "Projects List",
+    projectTitle: "Project Title",
+    projectCategory: "Project Category",
+    projectCategoryPersonal: "Personal Project",
+    projectCategoryWork: "Professional Work",
+    projectLink: "Project Link (GitHub)",
+    projectWebsite: "Live Website (Optional)",
+    projectCompany: "Company Name",
+    projectTechTags: "Technologies Used",
+    projectTechTagsPlaceholder: "Enter technologies separated by semicolons (e.g. React; Node.js)",
+    projectDesc: "Project Description",
+    searchPlaceholderProjects: "Search projects (by title, tech, company...)",
+
+    // Timeline Fields
+    timelineTitle: "Timeline List",
+    timelineType: "Timeline Type",
+    timelineTypeWork: "Work Experience",
+    timelineTypeEducation: "Education & Degree",
+    timelineStatus: "Status",
+    timelineStatusActiveLabel: "Currently working / studying here",
+    timelineStatusCompletedLabel: "Completed / Finished",
+    timelineStatusActiveDesc: "Displays a pulsing green dot on the home page to highlight this active milestone.",
+    timelineStatusCompletedDesc: "Standard historical entry with no pulsing dot animations on the homepage.",
+    timelineDate: "Duration",
+    timelineOrg: "Organization / University / Company",
+    timelineDetailDesc: "Detailed Description",
+    timelineDetailDescPlaceholder: "Enter details, one bullet point per line",
+    searchPlaceholderTimeline: "Search timeline (by title, organization, description...)",
+
+    // Sub-repositories
+    subReposTitle: "Sub-Repositories / Project Sub-modules",
+    addSubRepo: "Add Sub-Repository",
+    subRepoTitle: "Sub-Repo Title",
+    subRepoLink: "Link URL (GitHub)",
+    subRepoWebsite: "Live Website (Optional)",
+    subRepoTech: "Technologies Used (separated by `;`)",
+    subRepoDescVi: "Description (Vietnamese)",
+    subRepoDescEn: "Description (English)",
+    confirmDeleteSubRepo: "Delete this sub-repository?",
+
+    // Dynamic Labels for Subfields
+    fieldVietnamese: "Vietnamese",
+    fieldEnglish: "English",
+
+    // Accordion State
+    clickToExpand: "Click to expand details",
+    clickToCollapse: "Click to collapse",
+    noItem: "No items added yet.",
+    clearSearch: "Clear search",
+  }
+};

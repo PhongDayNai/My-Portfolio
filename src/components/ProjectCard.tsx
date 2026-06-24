@@ -165,7 +165,7 @@ export default function ProjectCard({
           </span>
         ))}
         {project.tech.length > 6 && (
-          <span className="px-3 py-1 bg-white/5 rounded-full text-[10px] text-slate-500 font-mono border border-white/5 border-dashed" title={project.tech.slice(6).join(', ')}>
+          <span className="px-3 py-1 bg-white/5 rounded-full text-[10px] text-slate-500 font-mono border border-white/5 border-dashed" title={project.tech.slice(6).join('; ')}>
             +{project.tech.length - 6}
           </span>
         )}
