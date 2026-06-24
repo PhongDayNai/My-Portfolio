@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -31,7 +31,7 @@ const tLogin = {
   },
 };
 
-export default function LoginPage() {
+export default function LoginPage() { 
   const { lang } = useLanguage();
   const t = tLogin[lang] || tLogin.vi;
   const router = useRouter();
@@ -40,9 +40,28 @@ export default function LoginPage() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSetup, setIsSetup] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkSetupStatus = async () => {
+      try {
+        const response = await fetch("/api/auth/status");
+        if (response.ok) {
+          const data = await response.json();
+          setIsSetup(data.isSetup);
+        } else {
+          setIsSetup(true); // Fallback to login mode if API fails
+        }
+      } catch (err) {
+        setIsSetup(true);
+      }
+    };
+    checkSetupStatus();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,6 +96,57 @@ export default function LoginPage() {
     }
   };
 
+  const handleSetupSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!password.trim() || !confirmPassword.trim()) {
+      setError(lang === "vi" ? "Vui lòng nhập mật khẩu và xác nhận mật khẩu." : "Please enter password and confirmation.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError(lang === "vi" ? "Mật khẩu phải có độ dài ít nhất 6 ký tự." : "Password must be at least 6 characters.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError(lang === "vi" ? "Mật khẩu xác nhận không khớp." : "Password confirmation does not match.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/auth/setup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        router.push(redirectPath);
+        router.refresh();
+      } else {
+        setError(data.error || "Thiết lập thất bại. Vui lòng thử lại.");
+      }
+    } catch (err) {
+      setError("Đã xảy ra lỗi kết nối. Vui lòng thử lại sau.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isSetup === null) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center bg-[#101622]">
+        <Loader2 className="animate-spin text-blue-500" size={36} />
+      </div>
+    );
+  }
+
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center p-6 bg-[#101622] overflow-hidden select-none">
       {/* Decorative background glows */}
@@ -97,7 +167,7 @@ export default function LoginPage() {
         </MotionLink>
       </div>
 
-      {/* Login Card */}
+      {/* Login/Setup Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -110,12 +180,14 @@ export default function LoginPage() {
         <div className="relative border border-white/10 bg-[#141b2b]/80 backdrop-blur-xl p-8 rounded-2xl shadow-2xl flex flex-col items-center">
           <div className="mb-8 text-center">
             <h1 className="text-2xl font-black text-white tracking-widest uppercase mb-2">
-              {t.title}
+              {isSetup ? t.title : (lang === "vi" ? "THIẾT LẬP HỆ THỐNG" : "SYSTEM SETUP")}
             </h1>
-            <p className="text-slate-400 text-sm font-medium">{t.subtitle}</p>
+            <p className="text-slate-400 text-sm font-medium">
+              {isSetup ? t.subtitle : (lang === "vi" ? "Cấu hình mật khẩu quản trị ban đầu" : "Configure initial admin password")}
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="w-full space-y-6">
+          <form onSubmit={isSetup ? handleSubmit : handleSetupSubmit} className="w-full space-y-6">
             {/* Error message */}
             <AnimatePresence mode="wait">
               {error && (
@@ -130,49 +202,106 @@ export default function LoginPage() {
               )}
             </AnimatePresence>
 
-            {/* Username Input */}
-            <div className="space-y-2">
-              <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
-                {t.usernameLabel}
-              </label>
-              <div className="relative flex items-center">
-                <User className="absolute left-4 text-slate-500" size={18} />
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  disabled={isLoading}
-                  placeholder="admin"
-                  className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all text-sm"
-                />
-              </div>
-            </div>
+            {isSetup ? (
+              <>
+                {/* Username Input */}
+                <div className="space-y-2">
+                  <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
+                    {t.usernameLabel}
+                  </label>
+                  <div className="relative flex items-center">
+                    <User className="absolute left-4 text-slate-500" size={18} />
+                    <input
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      disabled={isLoading}
+                      placeholder="admin"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all text-sm"
+                    />
+                  </div>
+                </div>
 
-            {/* Password Input */}
-            <div className="space-y-2">
-              <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
-                {t.passwordLabel}
-              </label>
-              <div className="relative flex items-center">
-                <Lock className="absolute left-4 text-slate-500" size={18} />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={isLoading}
-                  placeholder="••••••••"
-                  className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-12 text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 text-slate-500 hover:text-slate-300 transition-colors focus:outline-none cursor-none"
-                  data-cursor-color="rgba(255, 255, 255, 0.4)"
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
+                {/* Password Input */}
+                <div className="space-y-2">
+                  <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
+                    {t.passwordLabel}
+                  </label>
+                  <div className="relative flex items-center">
+                    <Lock className="absolute left-4 text-slate-500" size={18} />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={isLoading}
+                      placeholder="••••••••"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-12 text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 text-slate-500 hover:text-slate-300 transition-colors focus:outline-none cursor-none"
+                      data-cursor-color="rgba(255, 255, 255, 0.4)"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Initial Setup Mode */}
+                <div className="space-y-2">
+                  <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
+                    {lang === "vi" ? "Mật khẩu quản trị mới" : "New Admin Password"}
+                  </label>
+                  <div className="relative flex items-center">
+                    <Lock className="absolute left-4 text-slate-500" size={18} />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={isLoading}
+                      placeholder="••••••••"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-12 text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 text-slate-500 hover:text-slate-300 transition-colors focus:outline-none cursor-none"
+                      data-cursor-color="rgba(255, 255, 255, 0.4)"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
+                    {lang === "vi" ? "Xác nhận mật khẩu" : "Confirm Password"}
+                  </label>
+                  <div className="relative flex items-center">
+                    <Lock className="absolute left-4 text-slate-500" size={18} />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      disabled={isLoading}
+                      placeholder="••••••••"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-12 text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 text-slate-500 hover:text-slate-300 transition-colors focus:outline-none cursor-none"
+                      data-cursor-color="rgba(255, 255, 255, 0.4)"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* Submit Button */}
             <motion.button
@@ -185,10 +314,10 @@ export default function LoginPage() {
               {isLoading ? (
                 <div className="flex items-center gap-2">
                   <Loader2 className="animate-spin" size={18} />
-                  <span>{t.loggingIn}</span>
+                  <span>{isSetup ? t.loggingIn : (lang === "vi" ? "Đang thiết lập..." : "Setting up...")}</span>
                 </div>
               ) : (
-                <span>{t.loginBtn}</span>
+                <span>{isSetup ? t.loginBtn : (lang === "vi" ? "Thiết lập & Đăng nhập" : "Setup & Sign In")}</span>
               )}
             </motion.button>
           </form>
