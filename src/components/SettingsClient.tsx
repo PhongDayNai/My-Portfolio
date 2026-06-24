@@ -2033,8 +2033,12 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       {/* MODAL THÊM MẠNG XÃ HỘI */}
       <AnimatePresence>
         {isAddSocialModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div 
+            onClick={() => setIsAddSocialModalOpen(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
             <motion.div
+              onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -2149,8 +2153,12 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       {/* MODAL THÊM NHÓM KỸ NĂNG */}
       <AnimatePresence>
         {isAddSkillModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div 
+            onClick={() => setIsAddSkillModalOpen(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
             <motion.div
+              onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -2241,8 +2249,12 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       {/* MODAL THÊM DỰ ÁN */}
       <AnimatePresence>
         {isAddProjectModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div 
+            onClick={() => setIsAddProjectModalOpen(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
             <motion.div
+              onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -2402,8 +2414,12 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       {/* MODAL THÊM DÒNG THỜI GIAN */}
       <AnimatePresence>
         {isAddTimelineModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div 
+            onClick={() => setIsAddTimelineModalOpen(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
             <motion.div
+              onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -2614,8 +2630,12 @@ export default function SettingsClient({ data }: SettingsClientProps) {
       {/* MODAL THÊM/SỬA REPO CON (SUB-REPO) */}
       <AnimatePresence>
         {isSubRepoModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div 
+            onClick={() => setIsSubRepoModalOpen(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
             <motion.div
+              onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
