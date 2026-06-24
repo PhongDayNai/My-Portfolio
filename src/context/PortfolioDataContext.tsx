@@ -17,6 +17,7 @@ interface PortfolioDataContextType {
     experienceStartDate: string;
     summary: string;
   };
+  profileImages: string[];
   projects: PortfolioData["projects"];
   timeline: PortfolioData["timeline"];
   socialLinks: PortfolioData["socialLinks"];
@@ -50,6 +51,7 @@ export function PortfolioProvider({
         ...data.personalInfo,
         summary: updatedSummary,
       },
+      profileImages: data.profileImages || [],
       projects: data.projects,
       timeline: data.timeline,
       socialLinks: data.socialLinks,

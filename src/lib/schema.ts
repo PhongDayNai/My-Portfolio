@@ -81,6 +81,7 @@ export const PortfolioDataSchema = z.object({
     github: z.string(),
     experienceStartDate: z.string(), // Định dạng YYYY-MM-DD
   }),
+  profileImages: z.array(z.string()).optional().default([]),
   translations: z.object({
     vi: z.object({
       nav: z.object({
